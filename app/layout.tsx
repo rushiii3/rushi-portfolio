@@ -37,7 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="max-w-5xl mx-auto px-10 md:px-0">{children}</main>
+          <main className="max-w-5xl mx-auto px-10 ">{children}</main>
         </ThemeProvider>
 
         <FooterSection />

@@ -31,7 +31,7 @@ const Header = () => {
 //     };
 //   }, [handleScroll, prevScrollY]);
   return (
-    <motion.header className="h-20 flex flex-row justify-between fixed w-full z-10  items-center md:px-40 px-10  md:bg-black/10 md:backdrop-blur">
+    <motion.header className="h-20 flex flex-row justify-between fixed w-full z-10  items-center lg:px-40 px-10  md:bg-black/10 md:backdrop-blur">
       <div className="hidden md:block">
         <p>Asia/Mumbai</p>
       </div>

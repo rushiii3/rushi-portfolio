@@ -53,6 +53,8 @@ export default function Navbar() {
             style={{
               WebkitTapHighlightColor: "transparent",
             }}
+            id={tab.label}
+            aria-label={tab.label}
           >
             {activeTab === tab.id && (
               <motion.span

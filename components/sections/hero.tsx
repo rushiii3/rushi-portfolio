@@ -5,25 +5,25 @@ import { motion } from "framer-motion";
 import React from "react";
 import Image from "next/image";
 
-
 const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
 const variants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
   visible: { filter: "blur(0)", opacity: 1 },
 };
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 const Hero1 = () => {
-  const words = "Hello There".split(" ");
+  const words = "Hrushikesh Shinde".split(" ");
   return (
-    <section className="py-32">
-      <div className="container">
+    <section className="md:mt-52 mt-20 mx-auto lg:mb-32">
+      <div className="w-full container">
         <div className="grid items-center gap-8 lg:grid-cols-3">
           <motion.div
             className="flex flex-col items-center text-center lg:items-start lg:text-left order-2 lg:order-1 lg:col-span-2"
             initial="hidden"
             whileInView="visible"
             transition={{ staggerChildren: 0.04 }}
+            viewport={{ once: true }}
           >
             {/* {badge && (
               <Badge variant="outline">
@@ -36,7 +36,7 @@ const Hero1 = () => {
                 <React.Fragment key={index}>
                   <motion.span
                     className="inline-block"
-                    transition={transition}
+                    transition={[transition]}
                     variants={variants}
                   >
                     {word}
@@ -50,6 +50,7 @@ const Hero1 = () => {
               className="mb-8 max-w-xl text-muted-foreground lg:text-xl"
               transition={transition}
               variants={variants}
+              viewport={{ once: true }}
             >
               Cyber Secuirty from India 🇮🇳
             </motion.p>
@@ -84,18 +85,27 @@ const Hero1 = () => {
             </div>
           </motion.div>
           <motion.div
-            className="order-1 lg:order-2 lg:col-span-1"
+            className="order-1 lg:order-2 lg:col-span-1 aspect-square"
             transition={transition}
             initial={variants.hidden}
             animate={variants.visible}
           >
-
             <Image
-              src={"https://res.cloudinary.com/dmuhioahv/image/upload/v1694342370/IMG_9440.jpg"}
+              src={"/profile.webp"}
+              height={400}
+              width={300}
               alt={"Profile Image"}
-              className="rounded-md h-full w-full object-cover "
-              height={300}
-              width={200}
+              className="rounded-md md:h-96 h-full w-full object-cover "
+              quality={100}
+              priority
+              sizes="(max-width: 320px) 100vw,
+         (max-width: 480px) 90vw,
+         (max-width: 640px) 80vw,
+         (max-width: 768px) 70vw,
+         (max-width: 1024px) 60vw,
+         (max-width: 1100px) 50vw,
+         (max-width: 1200px) 40vw,
+         10vw"
             />
           </motion.div>
         </div>

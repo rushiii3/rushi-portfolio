@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface TimelineEntry {
   title: string;
+  subtitle: string;
+  timeline:string;
   content: React.ReactNode;
 }
 const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 };
@@ -68,7 +70,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         {data.map((item, index) => (
           <div
             key={index}
-            className="flex justify-start pt-10 md:pt-40 md:gap-10"
+            className="flex justify-start pt-10 md:pt-14 md:gap-10"
           >
             <div className="sticky flex flex-col z-40 items-center top-40 self-start max-w-xs ">
               <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
@@ -76,11 +78,22 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               </div>
             </div>
 
-            <div className="relative pl-20 pr-4 w-full">
-              <h3 className="text-2xl mb-4 text-left font-bold text-white">
-                {item.title}
-              </h3>
-              {item.content}{" "}
+            <div className="relative pl-20 pr-4 w-full ">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 ">
+                <div className="col-span-2">
+                  <h3 className="text-2xl text-left font-bold text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm  text-left italic text-white">
+                    {item.subtitle}
+                  </p>
+                </div>
+                <p className="text-left md:text-right">{item.timeline}</p>
+              </div>
+              <div className="pl-4">
+              {item.content}
+              </div>
+              
             </div>
           </div>
         ))}

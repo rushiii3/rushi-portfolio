@@ -4,7 +4,9 @@ import "./globals.css";
 import CursorGlow from "@/components/cursor-glow";
 import Header from "@/components/Header";
 import FooterSection from "@/components/footer";
-import { ThemeProvider } from "@/Provider";
+import { LenisProvider, ThemeProvider } from "@/Provider";
+import NextTopLoader from "nextjs-toploader";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,18 +32,34 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="max-w-5xl mx-auto px-10 ">{children}</main>
-        </ThemeProvider>
+        <NextTopLoader
+          color="rgba(32,194,14,0.8)"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          zIndex={1600}
+          showAtBottom={false}
+        />
+        <LenisProvider>
+          <Header />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main className="max-w-5xl mx-auto px-10 min-h-dvh">
+              {children}
+            </main>
+          </ThemeProvider>
 
-        <FooterSection />
-        <CursorGlow />
+          <FooterSection />
+          <CursorGlow />
+        </LenisProvider>
       </body>
     </html>
   );

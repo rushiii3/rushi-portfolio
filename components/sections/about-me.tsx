@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 };
+const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
 
 const variants = {
   hidden: {
@@ -14,7 +14,7 @@ const variants = {
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
     filter: "blur(0)",
     opacity: 1,
-    transition: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
+    transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
 

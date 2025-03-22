@@ -8,22 +8,28 @@ import {
   HomeIcon,
   SquareActivityIcon,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
+// import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import React, { useEffect } from "react";
 import { useState } from "react";
 const tabs = [
-  { id: 1, label: "Home", icon: HomeIcon },
-  { id: 2, label: "About", icon: CircleUser },
-  { id: 4, label: "Projects", icon: SquareActivityIcon },
-  { id: 5, label: "Experience", icon: Briefcase },
-  { id: 6, label: "Blog", icon: BookTextIcon },
-  { id: 7, label: "Contact", icon: Contact2Icon },
+  { id: 1, label: "Home", icon: HomeIcon, href: "/" },
+  { id: 2, label: "About", icon: CircleUser, href: "/about" },
+  { id: 4, label: "Projects", icon: SquareActivityIcon, href: "/projects" },
+  { id: 5, label: "Experience", icon: Briefcase, href: "/experience" },
+  { id: 6, label: "Blog", icon: BookTextIcon, href: "/blog" },
+  { id: 7, label: "Contact", icon: Contact2Icon, href: "/contact" },
 ];
 const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] };
 
 export default function Navbar() {
-  const [activeTab, setActiveTab] = useState(tabs[0].id);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const path = usePathname();
+  console.log(path);
 
+  const [activeTab, setActiveTab] = useState(tabs.find((tab) => tab.href === path)?.id || 1);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const router = useRouter();
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
@@ -46,7 +52,10 @@ export default function Navbar() {
       {tabs.map((tab) => (
         <React.Fragment key={tab.id}>
           <button
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => {
+              setActiveTab(tab.id);
+              router.push(`${tab.href}`);
+            }}
             className={`${
               activeTab === tab.id ? "text-white" : "hover:text-white/60"
             } relative rounded-xl px-3 py-1.5 text-sm font-medium dark:text-white outline-sky-400 transition focus-visible:outline-2 flex flex-row items-center gap-2 `}

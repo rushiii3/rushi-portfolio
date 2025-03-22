@@ -1,5 +1,5 @@
 import AboutMe from "@/components/sections/about-me";
-import { TimelineDemo } from "@/components/sections/experience";
+import { Experience } from "@/components/sections/experience";
 import { Hero1 } from "@/components/sections/hero";
 import Skills from "@/components/sections/skills";
 
@@ -9,7 +9,7 @@ export default function Home() {
       <Hero1 />
       <AboutMe />
       <Skills />
-      <TimelineDemo />
+      <Experience />
     </div>
   );
 }

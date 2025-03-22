@@ -1,7 +1,7 @@
 import React from "react";
 import { Timeline } from "@/components/ui/timeline";
 
-export function TimelineDemo() {
+export function Experience() {
   const data = [
     {
       title: "Hacktify Cyber Security (Virtual Internship) ",
@@ -80,7 +80,7 @@ export function TimelineDemo() {
     },
   ];
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <Timeline data={data} />
     </div>
   );

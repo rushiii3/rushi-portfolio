@@ -84,7 +84,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
                   <h3 className="text-2xl text-left font-bold text-white">
                     {item.title}
                   </h3>
-                  <p className="text-sm  text-left italic text-white">
+                  <p className="text-sm  text-left italic text-[#07a97d]">
                     {item.subtitle}
                   </p>
                 </div>

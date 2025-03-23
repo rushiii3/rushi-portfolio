@@ -9,7 +9,7 @@ export function Experience() {
       timeline: "May 2024 - Present",
       content: (
         <div>
-          <ul className="list-disc list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
+          <ul className="list-disc marker:text-[#07a97d] list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
             <li>
               Conducted penetration testing on web applications, identifying
               vulnerabilities.
@@ -33,7 +33,7 @@ export function Experience() {
       timeline: "May 2024 - Aug 2024",
       content: (
         <div>
-          <ul className="list-disc list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
+          <ul className="list-disc marker:text-[#07a97d] list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
             <li>
               Designed user interfaces, improving user satisfaction and reducing
               bounce rates.
@@ -57,7 +57,7 @@ export function Experience() {
       timeline: "May 2024 - Aug 2024",
       content: (
         <div>
-          <ul className="list-disc list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
+          <ul className="list-disc marker:text-[#07a97d] list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
             <li>
               Collaborated with 5+ stakeholders, including the principal and
               administration, to gather and clarify project requirements.

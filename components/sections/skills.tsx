@@ -130,6 +130,7 @@ const Skills = () => {
     { title: "Backend", value: "backend", content: <SkillContent title="Backend" data={skillsData.backend} /> },
     { title: "Security", value: "security", content: <SkillContent title="Security" data={skillsData.security} /> },
     { title: "Tools", value: "tools", content: <SkillContent title="Tools" data={{ tools: skillsData.tools }} /> },
+
   ];
   return (
     <section className="py-12 lg:py-16 w-full">

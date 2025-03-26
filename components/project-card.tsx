@@ -13,11 +13,11 @@ import { Button } from "./ui/button";
 import { BsGithub } from "react-icons/bs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Projectcard = ({ project }:any) => {
+const Projectcard = ({ project }: any) => {
   return (
     <Card className="w-full h-auto group border bg-transparent backdrop-blur border-white/10 rounded-2xl p-4 gap-4">
       <div className="relative rounded-2xl overflow-hidden">
-        <Link href={`/projects/"`}>
+        <Link href={`/projects/${project.slug}`}>
           <Image
             src={"/poster1.png"}
             alt={"project"}
@@ -30,10 +30,12 @@ const Projectcard = ({ project }:any) => {
         </Link>
       </div>
       <div className="flex flex-row gap-2 justify-between items-center w-full p-0">
-        <Badge className="uppercase">{project.category}</Badge>
+        <Badge className="uppercase">{project.type}</Badge>
       </div>
       <CardHeader className="p-0">
-        <CardTitle><Link href={'/'}> {project.title}</Link></CardTitle>
+        <CardTitle>
+          <Link href={`/projects/${project.slug}`}> {project.title}</Link>
+        </CardTitle>
         <CardDescription>{project.description}</CardDescription>
       </CardHeader>
       <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full p-0">

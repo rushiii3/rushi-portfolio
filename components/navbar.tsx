@@ -64,7 +64,7 @@ export default function Navbar() {
               onClick={() => router.push(`${tab.href}`)}
               className={`${
                 activeTab === tab.id ? "text-white" : "hover:text-white/60"
-              } relative rounded-xl px-3 py-1.5 text-sm font-medium dark:text-white outline-sky-400 transition focus-visible:outline-2 flex flex-row items-center gap-2 `}
+              } relative rounded-xl cursor-pointer px-3 py-1.5 text-sm font-medium dark:text-white outline-sky-400 transition focus-visible:outline-2 flex flex-row items-center gap-2 `}
               style={{
                 WebkitTapHighlightColor: "transparent",
               }}

@@ -27,7 +27,7 @@ const Projects = ({ limit }: { limit?: number }) => {
       setError(null); // Reset error before fetching
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/projects?category=${category}&limit=${limit}`
+          `/api/projects?category=${category}&limit=${limit}`
         );
 
         if (!res.ok) {

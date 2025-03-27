@@ -80,8 +80,8 @@ export function Experience() {
     },
   ];
   return (
-    <div className="w-full relative">
+    <section className="py-12 lg:py-16 w-full">
       <Timeline data={data} />
-    </div>
+    </section>
   );
 }

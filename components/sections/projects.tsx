@@ -27,7 +27,7 @@ const Projects = ({ limit }: { limit?: number }) => {
       setError(null); // Reset error before fetching
       try {
         const res = await fetch(
-          `http://localhost:3000/api/projects?category=${category}&limit=${limit}`
+          `${process.env.NEXT_PUBLIC_URL}/api/projects?category=${category}&limit=${limit}`
         );
 
         if (!res.ok) {
@@ -57,7 +57,7 @@ const Projects = ({ limit }: { limit?: number }) => {
           initial={false}
           transition={transition}
           variants={variants}
-          className="my-6 text-2xl tracking-tight font-extrabold text-white sm:text-3xl md:text-4xl"
+          className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8"
         >
           Work & Projects
         </motion.h2>

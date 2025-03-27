@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar`}
       >
         <NextTopLoader
           color="rgba(32,194,14,0.8)"
@@ -52,7 +52,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <main className="max-w-5xl mx-auto px-10 min-h-dvh">
+            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
               {children}
             </main>
           </ThemeProvider>

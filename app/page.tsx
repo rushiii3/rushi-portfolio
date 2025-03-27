@@ -1,4 +1,5 @@
 import AboutMe from "@/components/sections/about-me";
+import Blogs from "@/components/sections/blog";
 import { Experience } from "@/components/sections/experience";
 import { Hero1 } from "@/components/sections/hero";
 import Projects from "@/components/sections/projects";
@@ -12,6 +13,7 @@ export default function Home() {
       <Skills />
       <Experience />
       <Projects limit={6} />
+      <Blogs />
     </div>
   );
 }

@@ -17,7 +17,7 @@ const tabs = [
   { id: 1, label: "Home", icon: HomeIcon, href: "/" },
   { id: 2, label: "About", icon: CircleUser, href: "/about" },
   { id: 4, label: "Experience", icon: Briefcase, href: "/experience" },
-  { id: 5, label: "Projects", icon: SquareActivityIcon, href: "/projects" },
+  { id: 5, label: "Work", icon: SquareActivityIcon, href: "/work" },
   { id: 6, label: "Blog", icon: BookTextIcon, href: "/blog" },
   { id: 7, label: "Contact", icon: Contact2Icon, href: "/contact" },
 ];
@@ -25,8 +25,6 @@ const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] };
 
 export default function Navbar() {
   const path = usePathname();
-  console.log(path);
-
   const [activeTab, setActiveTab] = useState(
     tabs.find((tab) => tab.href === path)?.id || 1
   );

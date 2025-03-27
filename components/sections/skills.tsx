@@ -144,7 +144,7 @@ const Skills = () => {
         <motion.h2
           transition={transition}
           variants={variants}
-          className="mb-6 text-2xl tracking-tight font-extrabold text-white sm:text-3xl md:text-4xl"
+          className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8"
         >
           Skills & Expertise
         </motion.h2>

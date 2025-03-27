@@ -9,7 +9,7 @@ import Image from "next/image";
 const rootDirectory = path.join(process.cwd(), "/content/projects");
 
 const Page = () => {
-  const filePath = path.join(rootDirectory, "ultimate-health.mdx");
+  const filePath = path.join(rootDirectory, "oddnoteven-store.mdx");
   const fileContent = fs.readFileSync(filePath, { encoding: "utf8" });
   const { data, content } = matter(fileContent);
 

@@ -4,7 +4,7 @@ import React from "react";
 
 const Page = () => {
   return (
-    <div className="w-full  pt-15 md:pt-28">
+    <div className="w-full md:pt-14">
       <AboutMe />
       <Skills />
     </div>

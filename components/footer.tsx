@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BsFacebook, BsGithub, BsInstagram, BsLinkedin, BsTwitterX } from "react-icons/bs";
+import { BsFacebook, BsGithub, BsInstagram, BsLinkedin } from "react-icons/bs";
+import { IoMdMail } from "react-icons/io";
 
 export default function FooterSection() {
   return (
@@ -13,7 +14,7 @@ export default function FooterSection() {
             aria-label="X/Twitter"
             className="text-muted-foreground hover:text-primary block"
           >
-            <BsTwitterX className="size-6" />
+            <IoMdMail className="size-6" />
           </Link>
           <Link
             href="#"

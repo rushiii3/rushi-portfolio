@@ -36,14 +36,14 @@ const Projectcard = ({ project }: any) => {
         </CardTitle>
         <CardDescription>{project.description}</CardDescription>
       </CardHeader>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row flex-wrap gap-2">
         {project.stack.map((tag: string, index: number) => (
           <Badge key={index}>{tag}</Badge>
         ))}
       </div>
       <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full p-0">
         <p className="text-sm font-medium">December 5, 2024 </p>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row flex-wrap gap-2">
           {
             project.github && <Button className="rounded-full" size={"icon"} asChild>
             <Link

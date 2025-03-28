@@ -1,0 +1,461 @@
+---
+title: "Identifying Security Threats"
+description: "A deep dive into the anatomy of cyber threats: attacker motivations, malware analysis, network vulnerabilities, and wireless security risks. Gain a robust understanding of the attack vectors that threaten digital security."
+date: "November 27, 2024"
+category: "Cyber Security"
+slug: "identifying-security-threats"
+image: "https://images.unsplash.com/photo-1614064642639-e398cf05badb?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+---
+
+# Identify Types of Attackers
+
+## Hackers & Attackers
+
+1. Hacker and attacker are related terms for individuals who have the skills to gain access to computer systems through unauthorized or unapproved means.
+2. The term cracker refers to an individual who breaks encryption codes, defeats software copy protections, or specializes in breaking into systems.
+
+## Types of Attackers
+
+### 1. White Hat Hacker
+
+A white hat is a hacker who discovers and exposes security flaws in applications and operating systems so that manufacturers can fix them before they become widespread problems. This activity is performed with the consent of the manufacturers.
+
+### 2. Black Hat Hacker
+
+A black hat is a hacker who discovers and exposes security vulnerabilities for financial gain or for some malicious purpose. This activity is performed without organisational authorization or consent.
+
+### 3. Grey Hat Hacker
+
+1. A Grey Hat is a hacker who is a white hat and discovers security problems but without the organizational permissions.
+2. The difference between the grey and black hat hacker is one of the intent.
+
+## Threat Actors
+
+A threat actor is an entity that is partially or wholly responsible for an incident that affects or has the potential to affect an organization's security. Threat actors are also referred to as malicious actors. There are several types of threat actors.
+
+- **Script kiddie**
+  A novice or inexperienced hacker with limited technical knowledge who relies on automated tools to hack.
+- **Electronic activist ("hacktivist")**
+  A hacker who gains unauthorised access to and cause disruption in a computer system in an attempt to achieve political or social change.
+- **Organized crime**
+  Groups of individuals who plan to engage in criminal activity, most commonly for monetary profit.
+- **Nation states**
+  Government intelligence agencies often use various types of threats to achieve their political and military goals.
+- **Insiders**
+  An insider threat originates from within the targeted organization. Insiders include present and past employees, contractors, partners, and any entity that has access to proprietary or confidential information.
+- **Competitors**
+  Organizations that gain unauthorized access to a business rival's sensitive information.
+
+## Open-Source Intelligence
+
+Open-source intelligence (OSINT) is information that is legally collected from publicly available origins. These sources include, but are not limited to:
+
+- Traditional media, such as newspapers, television, radio, and magazines.
+- Social networking sites, such as Facebook, Twitter, Instagram, and YouTube.
+  Public information, such as budgets, legal documents, and government reports.
+- Professional and academic communications.
+- Geospatial content, such as maps, environmental data, and spatial databases.
+- Deep web information, or content that can't be indexed by traditional search engines, such as dynamic content, web-based email, and online banking transactions.
+
+Because of the huge amount of data from these sources, the challenge for OSINT practitioners is identifying that information that is relevant and accurate. Many entities that leverage OSINT are government, intelligence, and military agencies, but private businesses also conduct it.
+
+# Identify Social Engineering Attackers
+
+## Social Engineering
+
+A social engineering attack is a type of attack that uses deception and trickery to convince unsuspecting users to provide sensitive data or to violate security guidelines.
+
+## Effectiveness of Social engineering.
+
+Social engineering is one of the most common and successful malicious techniques in information security. There are several basic principles that social engineers use to exploit trust and other common human thought processes and behavior.
+
+### **Authority**
+
+A social engineer may pose as an authority figure, like a manager or IT administrator.
+
+### **Intimidation**
+
+Threatening a user's job or financial situation can easily lead the user to comply with the social engineer's demands.
+
+### **Consensus**
+
+An attacker may be able to fool a user into believing that a malicious website is actually legitimate by posting numerous fake reviews and testimonials praising the site.
+
+### **Scarcity**
+
+The idea of gaining something that is not avalable to everyone can be tempting. Social engineers can take advantage of this human tendency by offering something of perceived value as a reward for certain actions.
+
+### **Familiarity**
+
+A social engineer may pose as someone the user is familiar with, like a friend or family member.
+
+### **Urgency**
+
+If an attacker convinces a user that they need to log in and fix their account immediately or something bad will happen, the user may panic and fail to exercise critical thinking.
+
+## **Impersonation**
+
+### Definition
+
+Impersonation is a social engineering attack where an attacker pretends to be someone they are not, often to gain unauthorized access to sensitive information.
+
+### **How Impersonation Works**
+
+- The attacker typically contacts a target, such as an employee, and pretends to be from a trusted department (e.g., IT help desk).
+- They create a believable story, such as requiring login credentials to update or fix a system.
+- If the target cannot verify the attacker’s identity, they may unknowingly share confidential information.
+
+### **Example**
+
+An attacker calls an employee claiming to be from the help desk. They ask for the employee’s username and password to "ensure the system migration works correctly."
+
+### **Why Impersonation Succeeds**
+
+- Lack of identity verification systems.
+- The target may not personally know the real individual or contact information of the department being impersonated.
+
+**Key Point**: Impersonation relies on trust and deception, making it a powerful social engineering tactic.
+
+## **Phishing and Related Attacks**
+
+### Definition
+
+**Phishing** is an email-based social engineering attack where attackers trick victims into revealing sensitive information, such as account numbers or passwords, often by posing as a trusted entity like a bank. These emails may falsely claim that sharing the information is necessary for security reasons.
+
+### **Best Practices**:
+
+- Never share personal or financial information via email or phone.
+- Legitimate institutions will never ask for sensitive information this way.
+
+### **Types of Phishing and Related Attacks**:
+
+1. **Phishing**:
+   - General email-based attack to steal sensitive data.
+2. **Spear Phishing**:
+   - Targets specific individuals or organizations with tailored messages.
+3. **Whaling**:
+   - Focuses on high-profile targets like executives or wealthy individuals.
+   - Riskier but can yield significant rewards.
+4. **Pharming**:
+   - Redirects users to a fake website that mimics a real one to steal data.
+5. **Vishing (Voice Phishing)**:
+   - Uses phone calls or VoIP services to trick victims into sharing sensitive information.
+   - Exploits the trust people place in real-time conversations.
+6. **Smishing (SMS Phishing)**:
+   - Uses text messages to lure victims into sharing confidential information.
+
+## **Hoaxes**
+
+### Definition
+
+A **hoax** is a deceptive message delivered through email, instant messaging (IM), or websites. It tricks users into taking unnecessary or harmful actions, such as:
+
+- **Deleting essential system files** by falsely claiming they are viruses.
+- **Providing personal or financial information** for fake offers or scams.
+
+### **Key Characteristics of Hoaxes**:
+
+- **Deceptive claims**: Often include urgent warnings or enticing offers.
+- **Exploits inexperience**: Targets users unfamiliar with technology or standard security practices.
+
+### **Example**:
+
+- An email claims, “Delete file `X` immediately; it’s a virus!” Experienced users would recognize antivirus software should be used instead.
+
+### **How to Avoid Falling for Hoaxes**:
+
+1. Verify the source of the information.
+2. Avoid taking immediate action based on unsolicited instructions.
+3. Use antivirus software to assess claims about malicious files.
+4. Be cautious with offers that seem too good to be true or ask for sensitive information.
+
+## **Physical Exploits in Social Engineering**
+
+### Definition
+
+Attackers use physical methods to gain unauthorized access to restricted areas or sensitive information. Common types include:
+
+### **1. Shoulder Surfing**
+
+- **What it is**: Observing someone as they enter sensitive information, such as passwords or PINs.
+- **Example**: An attacker watches over your shoulder while you type a PIN at an ATM or on your computer.
+- **Prevention**: Shield your screen or keypad and stay alert in public spaces.
+
+### **2. Dumpster Diving**
+
+- **What it is**: Searching through trash to find valuable information, such as discarded documents or old calendars with passwords.
+- **Example**: An attacker retrieves financial records or login credentials from a company’s dumpster.
+- **Prevention**: Shred sensitive documents and dispose of them securely.
+
+### **3. Tailgating**
+
+- **What it is**: Following an authorized employee into a restricted area without their knowledge.
+- **Example**: An attacker slips into a secure office by walking closely behind an employee.
+- **Prevention**:
+  - Install secure access controls (e.g., biometric scanners).
+  - Train employees to deny entry to unknown individuals.
+
+### **4. Piggybacking**
+
+- **What it is**: Gaining access to a secure area with an employee's permission, often by deception.
+- **Example**: An attacker poses as a delivery person or cleaner and convinces someone to hold the door open for them.
+- **Prevention**:
+  - Verify the identity of visitors.
+  - Ensure employees understand the risks of unauthorized access.
+
+## **Watering Hole Attacks**
+
+### Definition
+
+A watering hole attack is a targeted cyberattack where an attacker infects websites commonly visited by a specific group or organization.
+
+### **How it Works**:
+
+1. The attacker identifies websites frequently visited by the target group.
+2. Malicious code is injected into these trusted websites.
+3. When members of the group visit the compromised site, their devices become infected.
+4. The infection can provide the attacker with access to sensitive resources or networks associated with the target.
+
+### **Key Features**:
+
+- Focuses on **legitimate, popular websites**, making detection challenging.
+- Often targets **high-security organizations** like government offices or large corporations.
+
+### **Prevention**:
+
+1. **User Awareness Training**: Educate users on safe browsing habits and recognizing unusual website behaviors.
+2. **Endpoint Protection**: Use updated antivirus software and intrusion detection systems.
+3. **Web Traffic Monitoring**: Regularly analyze web traffic for suspicious activity.
+4. **Patch Management**: Ensure all systems and browsers are up-to-date to minimize vulnerabilities.
+
+# Identify Malware
+
+## Malware
+
+- Malware is a Malicious software that is placed into the target system to disrupt operations or to redirect system resources for the attacker’s benefit.
+- Potential uses of malicious code include launching Denial of service attacks on other systems; hosting illegal data, theft, extortion or displaying unsolicited advertisements.
+
+## Types of Malware
+
+### **1. Viruses**
+
+A **virus** is a type of malicious software (malware) that spreads from one computer to another by attaching itself to other files. It replicates through human actions, such as opening an infected email attachment, triggering the code to execute when the file is accessed.
+
+**Key Characteristics**:
+
+- **Self-replicating**: Viruses infect other files on a computer without the user's knowledge, often causing further attacks, sending data back to the attacker, or corrupting and destroying data.
+- **Difficult to remove**: Because of their self-replicating nature, viruses can be hard to completely eliminate from a system and cause significant damage, resulting in billions of dollars in losses annually.
+
+**Virus Types**:
+
+1. **Encrypted Viruses**:
+   - **Mechanism**: Encrypt the virus code with a cryptographic key and decryption module stored in plaintext.
+   - **Detection**: Antivirus software needs to detect the virus through the decryption module, making it difficult to detect if it changes frequently.
+2. **Polymorphic Viruses**:
+   - **Mechanism**: The decryption module is altered each time the virus infects a new file, making the virus appear different each time, thus evading detection by antivirus software.
+3. **Armored Viruses**:
+   - **Mechanism**: These viruses try to hide from antivirus software by obscuring their true location in a system and sometimes using obfuscated code. This prevents antivirus from accurately detecting and removing them.
+
+### **2. Worms**
+
+A **worm** is a type of malware that replicates itself across an infected system without the need for human interaction. Unlike a virus, it does not attach to other programs or files. While viruses interfere with the functions of a specific machine, worms are primarily designed to interrupt network capabilities.
+
+**Key Characteristics**:
+
+- **Self-replicating**: Worms spread automatically from one system to another, often targeting network connections rather than specific files or programs.
+- **No need for user interaction**: Worms replicate themselves independently, making them harder to control and detect.
+- **Primary Function**: The main goal of a worm is to spread across networks and potentially cripple network bandwidth.
+- **Payload Function**: Some worms may carry malicious payloads, such as turning infected computers into "zombies" for launching further attacks, like distributed denial-of-service (DDoS) attacks.
+
+### **3. Adware**
+
+**Adware** is software designed to automatically display or download unsolicited advertisements when used. It often appears on a user’s computer as a browser pop-up or through other means, such as banner ads on webpages.
+
+**Key Characteristics**:
+
+- **Displays unsolicited ads**: Adware automatically shows advertisements without user consent.
+- **Not always malicious**: While not all adware is harmful, many adware programs can track user activity and serve targeted ads, sometimes associating with spyware and other malicious software.
+- **Reduction in productivity**: Adware can slow down computer performance and be a constant source of annoyance for users.
+
+### **4. Spyware**
+
+**Spyware** is a type of malware that is secretly installed on a computer or device with the intent of tracking and reporting the usage or collecting sensitive data from the target system. This data can include:
+
+- **Web browsing history**
+- **Personal information**
+- **Banking and financial details**
+- **User names and passwords**
+
+Spyware can infect a computer through social engineering tactics (e.g., misleading emails or links) or may be included with otherwise legitimate software that users unknowingly download and install. Once installed, spyware can monitor a user's activity, gather information without consent, and send it back to an attacker.
+
+### **5. Trojan Horses**
+
+A **Trojan horse**, often simply called a **Trojan**, is a type of hidden malware designed to cause harm to a system or provide an attacker with access for monitoring and controlling the system. Unlike viruses, Trojans do not replicate themselves, nor do they attach to other files. Instead, they are deceptive—appearing as legitimate software such as games, screensavers, or other innocuous programs, but secretly containing a payload of malicious code. Once installed, Trojans can lead to data theft, system damage, or unauthorized access to sensitive information.
+
+### **6. Keyloggers**
+
+A **keylogger** is a hardware device or software application that records every keystroke made by a user. Keyloggers can capture sensitive information such as passwords, credit card numbers, and other personal data. They can also pose a significant security risk if used for identity theft or unauthorized access, especially when used in conjunction with a keystroke-based authentication factor. Keyloggers are widely available online as software, and specialized hardware devices like **KeyGhost** and **KeyGrabber** are also used for this purpose.
+
+### **7. Ransomware**
+
+**Ransomware** is a type of malware that restricts a victim's access to their computer or data, demanding a ransom for restoration. Attackers often encrypt files and threaten to delete them if payment isn't made, which compels victims to pay for decryption. Payments are usually requested through online services like PayPal, Green Dot MoneyPak, or Bitcoin. Ransomware can cause significant damage, especially when it exploits encryption to make data inaccessible. One notable example is the **WannaCry** attack in May 2017, which affected hundreds of thousands of computers by encrypting files and spreading across unpatched Windows systems. The increasing prevalence of ransomware has made it a major cybersecurity threat.
+
+# Identify Software-Based Threats
+
+## Software Attacks
+
+A software attack is any attack against software resources, including operating systems, applications, services, protocols, and files. The goal of a software attack is to disrupt or disable the software running on the target system.
+
+## **Password Attacks**
+
+A **password attack** is an attempt to gain unauthorized access to a system by discovering or cracking passwords. It can involve guessing, stealing, or breaking encrypted password files.
+
+**Types of Password Attacks:**
+
+1. **Guessing**: This is the simplest form, where the attacker tries different common passwords like the user's name, spouse's name, or a significant date.
+2. **Stealing**: Passwords can be stolen through methods such as sniffing network traffic, reading handwritten notes, or observing users entering passwords.
+3. **Dictionary Attack**: This automated attack method compares passwords against a predetermined list of common passwords and their variations. It targets simple, obvious passwords.
+4. **Brute Force Attack**: Using password-cracking software, the attacker tries every possible combination of alphanumeric characters. This method is constrained by time and computing resources.
+5. **Rainbow Table Attack**: Precomputed tables of password hashes and their plaintext counterparts are used to quickly match hashes and reveal passwords.
+6. **Hybrid Password Attack**: This combines methods like dictionary, rainbow table, and brute force attacks to crack passwords, exploiting weaknesses in hashing algorithms.
+7. **Birthday Attack**: This attack uses statistical principles to exploit the probability of different inputs producing the same encrypted outputs, often leading to vulnerabilities in hashing algorithms.
+
+# Identify Network-Based Threats
+
+## **Spoofing Attacks**
+
+**Spoofing** is a network-based attack where the attacker pretends to be someone else to conceal their identity and gain unauthorized access or information. It is often used to deceive users or systems into trusting the attacker as a legitimate entity.
+
+**Common Types of Spoofing Attacks:**
+
+1. **IP Address Spoofing**: The attacker changes the source IP address of their packets to appear as if they are coming from a trusted or authorized source.
+2. **Media Access Control (MAC) Address Spoofing**: This involves altering the MAC address of a network device to impersonate another device on the network.
+3. **ARP Poisoning/Spoofing**: An attacker sends falsified Address Resolution Protocol (ARP) messages on a local network to map a fake MAC address to a legitimate IP address, allowing them to intercept or redirect network traffic.
+4. **DNS Poisoning/Spoofing**: The attacker redirects a domain name to a different IP address, often to a fake website that appears legitimate, tricking users into providing sensitive information.
+
+### IP Address Spoofing
+
+IP address spoofing is one of the most popular attack methods. In an IP address spoofing attack, an attacker sends IP packets from a false (or spoofed) source address to communicate with targets.
+The intent of the communication varies, from generating network traffic to obtaining sensitive information, to bypassing authentication schemes that are based on IP addresses.
+
+### MAC Address Spoofing
+
+MAC address spoofing changes the factory-assigned MAC address of a network interface on a networked device.
+
+### ARP Poisoning
+
+Address Resolution Protocol (ARP) is the mechanism by which individual hardware MAC addresses are matched to an IP address on a network. ARP poisoning, also known as ARP spoofing, occurs when an attacker with access to the target network redirects an IP address to the MAC address of a computer that is not the intended recipient.
+
+### Port Scanning Attacks
+
+The logical endpoints of a connection between hosts are called ports, and a given port can be open, to allow communication of a certain type, or closed, to prevent it. Hosts use ports to connect to rocesses or services on other hosts. A port scanning attack is a type of network attack where a potential attacker scans the computers and devices that are connected to the Internet or other networks to see which CP and UDP ports are listening and which services on the system are active.
+
+**Types of Port Scanning Attacks**
+
+1. SYN Scan Attack
+   - In a SYN Scan Attack, the attacker uses only the SYN request to identify whether the particular port is open or close.
+   - SYN Scan Attack is also called **STEALTH** Scan.
+2. TCP connect Scan Attack
+   - In this type of port scan attack, the attacker performs complete 3 way handshake and since he gets connected to a particular port this type of port scan is called TCP connect scan.
+   - The TCP connect scan is a very noisy scan.
+
+### **Eavesdropping Attacks**
+
+An **eavesdropping attack**, also known as a sniffing attack, involves monitoring and capturing private network communications. This can be done to either steal the content of the communication or to obtain user names and passwords for future attacks. Eavesdropping attacks can be conducted on both wired and wireless networks.
+
+- **On a wired network**: The attacker typically needs physical access to the network or must tap into the network cable to monitor traffic.
+- **On a wireless network**: The attacker requires a device capable of receiving signals from the wireless network.
+
+Eavesdropping is challenging to detect unless an unknown computer is observed leasing an IP address from a DHCP server.
+
+**Eavesdropping Utilities**: Several tools are available for network monitoring and traffic capture:
+
+1. **Wireshark** - Captures and analyzes network traffic.
+2. **Microsoft Network Monitor Capture Utility** - Part of Windows, it can monitor network traffic on Windows machines.
+3. **tcpdump** - A command-line packet analyzer used on Unix-based systems.
+4. **sniff** - Generic term for tools that capture network traffic.
+
+### **Man-in-the-Middle Attacks**
+
+A **man-in-the-middle attack** (MITM) is a form of eavesdropping where an attacker intercepts and relays information between two parties who believe they are communicating directly with each other. In this scenario, the attacker makes an independent connection between the two victims—two clients or a client and a server—and intercepts, modifies, or relays information as if they are directly communicating over a closed connection. The attacker controls the information that flows between the two parties, allowing them to view or steal data and use it fraudulently.
+
+**Example Scenario**:
+
+1. The attacker intercepts packets from **User A** that are destined for **User B**.
+2. The attacker modifies the packets to include malicious or fraudulent information.
+3. The attacker sends these modified packets to **User B**, pretending to be the original sender (**User A**).
+
+### **Denial of Service (DoS) Attacks**
+
+A **Denial of Service (DoS)** attack is an attempt to disrupt or disable systems that provide network services, thereby making them unavailable to legitimate users. DoS attacks can occur through various methods, including:
+
+1. **Flooding a network link with data**: This method aims to consume all available bandwidth, making it impossible for legitimate traffic to pass through.
+2. **Sending data designed to exploit known flaws in an application**: The attacker sends malformed packets or malicious data that targets vulnerabilities in software applications to crash the system.
+3. **Sending multiple service requests to consume a system’s resources**: This tactic overloads servers or network devices by making excessive requests, leading to a denial of service for legitimate users.
+4. **Flooding a user’s email inbox with spam messages**: This can cause genuine emails to bounce back, overwhelming the target’s email server.
+
+DoS attacks often involve **IP spoofing** to overload networks and devices with packets that appear to originate from legitimate IP addresses:
+
+- **Flooding a selected target** with packets from multiple spoofed source addresses: This approach sends more data to the victim than it can handle, overwhelming it.
+- **Spoofing the target’s IP address** and sending packets from that address to multiple recipients: This method causes legitimate systems to respond to spoofed requests, flooding the target’s IP address with responses and making it unavailable.
+
+DoS attacks commonly target servers or routers, preventing them from responding to legitimate network requests, but can affect any network service or device. The attack can even be as simple as disconnecting a network cable.
+
+# Identify Wireless Threats
+
+## Rogue Access Points
+
+- A rogue access point is an unauthorized wireless access point on a corporate or private network.
+- Rogue access points can cause considerable damage to an organization's data.
+- A rogue access point can allow man-in-the-middle attacks and access to private information.
+
+## Evil Twins
+
+- An evil twin is an access point on a wireless network that fools users into believing it is legitimate.
+- Evil twins can be more dangerous than rogue access points because the user thinks that the wireless signal is genuine, making it difficult to differentiate from a valid access point with the same, or a similar, name.
+
+## Jamming
+
+- In wireless networking, jamming, also called interference, is an attack in which radio waves disrupt 802.11 wireless signals.
+- Attackers may use a radio transceiver to intercept transmissions and inject jamming packets, disrupting the normal flow of traffic across a network.
+
+## Bluejacking
+
+Bluejacking is a method used by attackers to send out unwanted Bluetooth signals from smartphones, mobile phones, tablets, and laptops to other Bluetooth-enabled devices. Because Bluetooth has relatively low transmission limits, bluejacking tends to be a close-range attack. These types of signals can lead to many different types of threats.
+
+## Bluesnarfing
+
+- Bluesnarfing is a method in which attackers gain access to unauthorized information on a wireless device using a Bluetooth connection within the 328-foot Bluetooth transmission limit.
+- Bluesnarfing can lead to the exploitation of private information, including email messages, contact information, calendar entries, images, videos, and any data stored on the device.
+
+## Near Field Communication Attacks
+
+- Near Field Communication (NFC) is a standard of communication between mobile devices like smartphones and tablets in very close proximity, usually when touching or being only a few inches apart from each other.
+- NFC is often used for in-person transactions or data exchange.
+
+## Radio-Frequency Identification System Attacks
+
+Radio-Frequency Identification (RFID) is a technology that uses electromagnetic fields to automatically identify and track tags or chips that are affixed to selected objects and that store information about the objects. RFID systems consist of a tag (which has an embedded transmitter and receiver) and a reader. Their use has increased greatly due to their ease of implementation and includes many different applications, such as:
+
+- Inventory management and tracking
+- Human and animal identification and tracking
+- Contactless payments
+- Smart cards
+
+Of course, their ubiquitous nature also makes them a likely target for attackers. One type of RFID attack is skimming, which is where an attacker uses a fraudulent RFID reader to read the signals from a contactless bank card.
+
+## **War Driving, War Walking, and War Chalking**
+
+**War driving** or **war walking** refers to the act of searching for wireless networks using wireless tracking devices like smartphones, tablets, or laptops. It helps locate wireless access points that can be exploited for unauthorized Internet access or to steal data.
+
+**War chalking** involves marking a sidewalk or wall with symbols to indicate the presence and status of a nearby wireless network:
+
+- **Two semi-circles back to back** indicate an open node.
+- **A circle** indicates a closed node.
+- **A circle with a W in it** indicates a WEP-protected node. The SSID and other relevant information of the network might also be noted with the symbols.
+
+## **Packet Sniffing**
+
+**Packet sniffing** is a technique used in attacks on wireless networks where an attacker employs a protocol analyzer to capture and monitor data packets as they travel through the network. By analyzing the data contained in these packets, the attacker can gather valuable information that can be used to launch more targeted attacks.
+
+In its legitimate use, **packet sniffing** helps organizations monitor their networks for suspicious activity and protect against threats. While it is also possible on wired networks, it is less commonly successful due to the use of managed switches that can filter traffic and limit the effectiveness of packet sniffing.

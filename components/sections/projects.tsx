@@ -21,10 +21,11 @@ const Projects = ({ limit }: { limit?: number }) => {
   const items = ["All", "Freelance", "Open-Source", "Personal Projects"];
   const [displayData, setDisplayData] = useState([]);
   const [error, setError] = useState<string | null>(null);
-
+  const [loading, setloading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       setError(null); // Reset error before fetching
+      setloading(true);
       try {
         const res = await fetch(
           `/api/projects?category=${category}&limit=${limit}`
@@ -38,6 +39,8 @@ const Projects = ({ limit }: { limit?: number }) => {
         setDisplayData(data);
       } catch (err) {
         setError((err as Error).message);
+      }finally{
+        setloading(false);
       }
     };
 
@@ -98,11 +101,19 @@ const Projects = ({ limit }: { limit?: number }) => {
           </p>
         )}
 
+        {
+          loading && (
+            <p className="w-full text-base font-normal leading-7 text-center text-neutral-200">
+              Loading...
+            </p>
+          )
+        }
+
         {/* Project Grid */}
         <motion.div
           transition={transition}
           variants={variants}
-          className="grid grid-cols-1 gap-3 py-6 lg:py-10 sm:grid-cols-2"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10"
         >
           <AnimatePresence>
             {displayData.map((project, i) => (
@@ -120,7 +131,7 @@ const Projects = ({ limit }: { limit?: number }) => {
         </motion.div>
 
         {/* No Projects Message */}
-        {displayData.length === 0 && !error && (
+        {displayData.length === 0 && !error && !loading && (
           <p className="w-full text-base font-normal leading-7 text-center text-neutral-200">
             No Projects with this category
           </p>

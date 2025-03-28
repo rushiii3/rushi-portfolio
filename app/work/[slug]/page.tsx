@@ -6,10 +6,10 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import Image from "next/image";
-const rootDirectory = path.join(process.cwd(), "/content/projects");
+const rootDirectory = path.join(process.cwd(), "/content/blogs");
 
 const Page = () => {
-  const filePath = path.join(rootDirectory, "oddnoteven-store.mdx");
+  const filePath = path.join(rootDirectory, "identifying-security-threats.mdx");
   const fileContent = fs.readFileSync(filePath, { encoding: "utf8" });
   const { data, content } = matter(fileContent);
 
@@ -25,7 +25,7 @@ const Page = () => {
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
       <p className="my-3 text-xs text-muted-foreground">August 3, 2023</p>
       <Image
-        src={"/poster1.png"}
+        src={data.image}
         alt={"project"}
         width={960}
         height={480}

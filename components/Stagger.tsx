@@ -17,13 +17,23 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-interface StaggeredListProps<T> {
+interface RootObject {
+  slug: string;
+  date: string;
+  description: string;
+  image: string;
+  title: string;
+  category: string;
+}
+
+
+interface StaggeredListProps<T extends RootObject> {
   items: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
   className?: string;
 }
 
-const StaggeredList = <T,>({ items, renderItem, className }: StaggeredListProps<T>) => {
+const StaggeredList = <T extends RootObject>({ items, renderItem, className }: StaggeredListProps<T>) => {
   return (
     <motion.div
       className={className}

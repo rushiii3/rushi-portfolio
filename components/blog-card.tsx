@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Card,
@@ -8,21 +9,17 @@ import {
 import Link from "next/link";
 // import Image from "next/image";
 import { Badge } from "./ui/badge";
-type Article = {
-  id: number;
-  category: string;
-  title: string;
+interface RootObject {
+  slug: string;
+  date: string;
   description: string;
-  author: {
-      name: string;
-      avatar: string;
-      date: string;
-  };
   image: string;
+  title: string;
+  category: string;
 }
 
 type BlogCardProps = {
-  article: Article;
+  article: RootObject;
 }
 const BlogCard = ({ article }: BlogCardProps) => {
   return (

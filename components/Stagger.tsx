@@ -41,7 +41,7 @@ const StaggeredList = <T extends RootObject>({ items, renderItem, className }: S
       initial="hidden"
       animate="visible"
     >
-      {items.map((item, index) => (
+      {items?.map((item, index) => (
         <motion.div key={index} variants={itemVariants}>
           {renderItem(item, index)}
         </motion.div>

@@ -1,5 +1,6 @@
-import { ArrowRight, ChevronDown } from "lucide-react";
-import React from "react";
+"use client";
+import { ArrowRight, Search, X } from "lucide-react";
+import React, { useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -8,6 +9,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Tabs from "@/components/Tabs";
+import { Button } from "@/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
 
 const articles = [
   {
@@ -55,39 +60,40 @@ const articles = [
 ];
 
 const Page = () => {
+  const blogCategories = [
+    "All",
+    "Web Security",
+    "Ethical Hacking",
+    "Labs & Research",
+    "General Cybersecurity",
+  ];
+  const [category, setcategory] = useState(blogCategories[0]);
+  const [isVisible, setisVisible] = useState(false);
+  console.log(isVisible);
+
   return (
     <div className="min-h-screen text-white w-full md:pt-14">
       {/* Hero Section */}
       <div className="pt-12 lg:pt-16 w-full mb-10">
-        <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8">Blogs</h1>
-        <p className="text-gray-400 max-w-2xl">
+        <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8">
+          Blogs
+        </h1>
+        {/* <p className="text-gray-400 max-w-2xl">
           The Untitled UI Journal features carefully selected good works from
           studios and designers from around the globe. Subscribe for new posts
           in your inbox every Thursday for free.
-        </p>
+        </p> */}
       </div>
 
       {/* Featured Article */}
-      <div className="w-full mx-auto mb-16">
+      {/* <div className="w-full mx-auto mb-16">
         <div className="relative rounded-2xl overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1600"
+            src="https://images.unsplash.com/photo-1614064642639-e398cf05badb?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Featured"
             className="w-full h-[500px] object-cover"
           />
           <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
-            <div className="flex items-center space-x-2 mb-4">
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-                alt="Author"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="text-sm">Written by</p>
-                <p className="font-medium">Emilia Laurent</p>
-              </div>
-              <span className="text-sm text-gray-400">• 17 April 2024</span>
-            </div>
             <h2 className="text-2xl font-bold mb-2">
               Improve your design skills: Develop an for design
             </h2>
@@ -108,29 +114,84 @@ const Page = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Article Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex space-x-4">
-            <button className="text-white font-medium">View all</button>
-            <button className="text-gray-400 hover:text-white">Design</button>
-            <button className="text-gray-400 hover:text-white">Product</button>
-            <button className="text-gray-400 hover:text-white">
-              Software Engineering
-            </button>
-            <button className="text-gray-400 hover:text-white">
-              Customer Success
-            </button>
+      <div className="">
+        <div className="flex flex-col md:flex-row items-center gap-5 justify-between mb-5">
+          <div className="w-full">
+            {/* Tabs with Smooth Fade Animation */}
+            <AnimatePresence mode="popLayout">
+              {!isVisible && (
+                <motion.div
+                  key="tabs"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Tabs
+                    items={blogCategories}
+                    category={category}
+                    handleClick={(category) => setcategory(category)}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Search Input with Smooth Slide-In */}
+            <AnimatePresence mode="popLayout">
+              {isVisible && (
+                <motion.div
+                  key="search-input"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full"
+                >
+                  <Input placeholder="Search blogs..." className="w-full" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-400 mr-2">Most recent</span>
-            <ChevronDown className="h-4 w-4 text-gray-400" />
+          <div className="ml-auto">
+            <Button
+              className="rounded-full relative overflow-hidden"
+              size="icon"
+              onClick={() => setisVisible(!isVisible)}
+            >
+              <AnimatePresence mode="wait">
+                {isVisible ? (
+                  <motion.div
+                    key="close"
+                    initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <X />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="search"
+                    initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <Search />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <p>You searched for &#34;hello&#34; </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-5">
           {articles.map((article) => (
             <div key={article.id} className="group cursor-pointer">
               <div className="relative aspect-video mb-4 rounded-2xl overflow-hidden">

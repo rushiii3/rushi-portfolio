@@ -2,6 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import Projectcard from "../project-card";
+import Tabs from "../Tabs";
 
 const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
 const variants = {
@@ -39,7 +40,7 @@ const Projects = ({ limit }: { limit?: number }) => {
         setDisplayData(data);
       } catch (err) {
         setError((err as Error).message);
-      }finally{
+      } finally {
         setloading(false);
       }
     };
@@ -65,34 +66,11 @@ const Projects = ({ limit }: { limit?: number }) => {
           Work & Projects
         </motion.h2>
 
-        <div className="flex flex-row items-center justify-start relative overflow-auto sm:overflow-visible no-visible-scrollbar max-w-full w-full">
-          {items.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setCategory(tab)}
-              className="relative text-nowrap px-4 py-2 rounded-full"
-            >
-              <AnimatePresence>
-                {category === tab && (
-                  <motion.div
-                    layoutId="clickedbutton"
-                    transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-                    className="absolute inset-0 bg-background dark:bg-foreground rounded-full"
-                  />
-                )}
-              </AnimatePresence>
-              <span
-                className={`relative block text-sm font-bold text-nowrap ${
-                  category === tab
-                    ? "dark:text-background"
-                    : "dark:text-foreground"
-                } `}
-              >
-                {tab}
-              </span>
-            </button>
-          ))}
-        </div>
+        <Tabs
+          category={category}
+          items={items}
+          handleClick={(tab) => setCategory(tab)}
+        />
 
         {/* Show Error Message if API Fails */}
         {error && (
@@ -101,13 +79,11 @@ const Projects = ({ limit }: { limit?: number }) => {
           </p>
         )}
 
-        {
-          loading && (
-            <p className="w-full text-base font-normal leading-7 text-center text-neutral-200">
-              Loading...
-            </p>
-          )
-        }
+        {loading && (
+          <p className="w-full text-base font-normal leading-7 text-center text-neutral-200">
+            Loading...
+          </p>
+        )}
 
         {/* Project Grid */}
         <motion.div

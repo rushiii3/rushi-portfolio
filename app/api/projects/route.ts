@@ -24,6 +24,9 @@ export async function GET(request: NextRequest): Promise<Response> {
     const category = searchParams.get("category")?.toLowerCase() || "";
     const limit = searchParams.get("limit");
 
+    // Simulating delay (e.g., 2 seconds)
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const projects = await getProjects(
       limit ? Number(limit) : undefined,
       category && category !== "all" ? category : undefined
@@ -41,6 +44,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     });
   }
 }
+
 
 async function getProjects(limit?: number, category?: string): Promise<ProjectMetadata[]> {
   try {

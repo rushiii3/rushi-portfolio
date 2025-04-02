@@ -1,6 +1,7 @@
-"use client";
-import { ArrowRight, Search, X } from "lucide-react";
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// "use client";
+import { ArrowRight } from "lucide-react";
+import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,10 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Tabs from "@/components/Tabs";
-import { Button } from "@/components/ui/button";
-import { AnimatePresence, motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
+import BlogTab from "@/components/blog-tab";
 
 const articles = [
   {
@@ -59,18 +57,17 @@ const articles = [
   },
 ];
 
-const Page = () => {
-  const blogCategories = [
-    "All",
-    "Web Security",
-    "Ethical Hacking",
-    "Labs & Research",
-    "General Cybersecurity",
-  ];
-  const [category, setcategory] = useState(blogCategories[0]);
-  const [isVisible, setisVisible] = useState(false);
-  console.log(isVisible);
-
+const Page = async (props: {
+  searchParams?: Promise<{
+    search?: string;
+    category?: string;
+    page?: string;
+  }>;
+}) => {
+  const searchParams = await props.searchParams;
+  const search = searchParams?.search || "";
+  const category = searchParams?.category || "";
+  const currentPage = Number(searchParams?.page) || 1;
   return (
     <div className="min-h-screen text-white w-full md:pt-14">
       {/* Hero Section */}
@@ -118,79 +115,9 @@ const Page = () => {
 
       {/* Article Grid */}
       <div className="">
-        <div className="flex flex-col md:flex-row items-center gap-5 justify-between mb-5">
-          <div className="w-full">
-            {/* Tabs with Smooth Fade Animation */}
-            <AnimatePresence mode="popLayout">
-              {!isVisible && (
-                <motion.div
-                  key="tabs"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Tabs
-                    items={blogCategories}
-                    category={category}
-                    handleClick={(category) => setcategory(category)}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+        <BlogTab />
 
-            {/* Search Input with Smooth Slide-In */}
-            <AnimatePresence mode="popLayout">
-              {isVisible && (
-                <motion.div
-                  key="search-input"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full"
-                >
-                  <Input placeholder="Search blogs..." className="w-full" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <div className="ml-auto">
-            <Button
-              className="rounded-full relative overflow-hidden"
-              size="icon"
-              onClick={() => setisVisible(!isVisible)}
-            >
-              <AnimatePresence mode="wait">
-                {isVisible ? (
-                  <motion.div
-                    key="close"
-                    initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <X />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="search"
-                    initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <Search />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Button>
-          </div>
-        </div>
-
-        <p>You searched for &#34;hello&#34; </p>
+        {search && <p>You searched for &#34;{search}&#34; </p>}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-5">
           {articles.map((article) => (
             <div key={article.id} className="group cursor-pointer">

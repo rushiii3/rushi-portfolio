@@ -18,13 +18,15 @@ export async function GET(request: NextRequest): Promise<Response> {
   try {
     const searchParams = new URL(request.url).searchParams;
     const category = searchParams.get("category")?.toLowerCase() || "";
+    const searchQuery = searchParams.get("search")?.toLowerCase() || "";
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 10;
 
     const { blogs, total } = await getBlogs(
       limit,
       page,
-      category && category !== "all" ? category : undefined
+      category && category !== "all" ? category : undefined,
+      searchQuery
     );
 
     return new Response(
@@ -48,7 +50,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   }
 }
 
-async function getBlogs(limit: number, page: number, category?: string) {
+async function getBlogs(limit: number, page: number, category?: string, searchQuery?: string) {
   try {
     const files = await fs.readdir(rootDirectory);
 
@@ -61,6 +63,14 @@ async function getBlogs(limit: number, page: number, category?: string) {
 
     if (category) {
       blogs = blogs.filter((blog) => blog.category.toLowerCase() === category);
+    }
+
+    if (searchQuery) {
+      blogs = blogs.filter(
+        (blog) =>
+          blog.title.toLowerCase().includes(searchQuery) ||
+          blog.description.toLowerCase().includes(searchQuery)
+      );
     }
 
     const total = blogs.length;

@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 // import Image from "next/image";
 import { Badge } from "./ui/badge";
+import Image from "next/image";
 interface RootObject {
   slug: string;
   date: string;
@@ -20,15 +21,17 @@ interface RootObject {
 
 type BlogCardProps = {
   article: RootObject;
-}
+};
 const BlogCard = ({ article }: BlogCardProps) => {
   return (
-    <Link href={`/blog/helloo`}>
+    <Link href={`/blog/${article.slug}`}>
       <Card className="group cursor-pointer pt-0 rounded-2xl bg-transparent gap-5 h-full">
         <div className="relative aspect-video rounded-2xl overflow-hidden">
-          <img
+          <Image
             src={article.image}
             alt={article.title}
+            width={960}
+            height={480}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
           />
         </div>
@@ -42,7 +45,7 @@ const BlogCard = ({ article }: BlogCardProps) => {
           <CardDescription>{article.description}</CardDescription>
         </CardHeader>
         <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full px-6">
-          <p className="text-sm font-medium">December 5, 2024 </p>
+          <p className="text-sm font-medium">{article.date}</p>
         </div>
       </Card>
     </Link>

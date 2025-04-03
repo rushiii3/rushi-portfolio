@@ -9,7 +9,7 @@ import Image from "next/image";
 const rootDirectory = path.join(process.cwd(), "/content/blogs");
 
 const Page = () => {
-  const filePath = path.join(rootDirectory, "identifying-security-threats.mdx");
+  const filePath = path.join(rootDirectory, "owasp-top-10.mdx");
   const fileContent = fs.readFileSync(filePath, { encoding: "utf8" });
   const { data, content } = matter(fileContent);
 

@@ -15,7 +15,7 @@ const BlogTab = () => {
     "Web Security",
     "Ethical Hacking",
     "Labs & Research",
-    "General Cybersecurity",
+    "Cyber Security",
   ];
   const [isVisible, setisVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(

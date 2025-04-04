@@ -4,7 +4,6 @@ import {
   BookTextIcon,
   Briefcase,
   CircleUser,
-  Contact2Icon,
   HomeIcon,
   SquareActivityIcon,
 } from "lucide-react";
@@ -16,18 +15,18 @@ import { useState } from "react";
 const tabs = [
   { id: 1, label: "Home", icon: HomeIcon, href: "/" },
   { id: 2, label: "About", icon: CircleUser, href: "/about" },
-  { id: 4, label: "Experience", icon: Briefcase, href: "/experience" },
-  { id: 5, label: "Work", icon: SquareActivityIcon, href: "/work" },
-  { id: 6, label: "Blog", icon: BookTextIcon, href: "/blog" },
-  { id: 7, label: "Contact", icon: Contact2Icon, href: "/contact" },
+  { id: 3, label: "Experience", icon: Briefcase, href: "/experience" },
+  { id: 4, label: "Work", icon: SquareActivityIcon, href: "/work" },
+  { id: 5, label: "Blog", icon: BookTextIcon, href: "/blog" },
 ];
 const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] };
 
 export default function Navbar() {
   const path = usePathname();
-  const [activeTab, setActiveTab] = useState(
-    tabs.find((tab) => tab.href === path)?.id || 1
-  );
+  console.log(path);
+
+  const [activeTab, setActiveTab] = useState(1);
+
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const router = useRouter();
   useEffect(() => {
@@ -44,7 +43,10 @@ export default function Navbar() {
 
   // Sync activeTab with route path
   useEffect(() => {
-    const currentTab = tabs.find((tab) => tab.href === path)?.id || 1;
+    const matchedTab = tabs
+      .filter((tab) => path.startsWith(tab.href)) // Get all possible matches
+      .sort((a, b) => b.href.length - a.href.length)[0]; // Pick the longest match
+    const currentTab = matchedTab?.id || 1; // Default to Home (id: 1)
     setActiveTab(currentTab);
   }, [path]); // Runs when `path` changes
 

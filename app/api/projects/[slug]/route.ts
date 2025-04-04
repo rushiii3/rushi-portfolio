@@ -3,7 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { NextRequest } from "next/server";
 
-const rootDirectory = path.join(process.cwd(), "/content/blogs");
+const rootDirectory = path.join(process.cwd(), "/content/projects");
 
 interface BlogMetadata {
   slug: string;

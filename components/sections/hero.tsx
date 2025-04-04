@@ -1,10 +1,11 @@
 "use client";
-import { Download, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import React from "react";
 import Image from "next/image";
-
+import Link from "next/link";
+import { BsGithub, BsLinkedin } from "react-icons/bs";
+import { IoMdMail } from "react-icons/io";
 const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
 const variants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
@@ -25,12 +26,6 @@ const Hero1 = () => {
             transition={{ staggerChildren: 0.04 }}
             viewport={{ once: true }}
           >
-            {/* {badge && (
-              <Badge variant="outline">
-                {badge}
-                <ArrowUpRight className="ml-2 size-4" />
-              </Badge>
-            )} */}
             <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
               {words.map((word, index) => (
                 <React.Fragment key={index}>
@@ -54,35 +49,55 @@ const Hero1 = () => {
             >
               Cyber Secuirty from India 🇮🇳
             </motion.p>
-            <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.3, // Delay between children animations
+                },
+              }}
+              transition={{ staggerChildren: 0.5 }}
+              viewport={{ once: true }}
+              className="flex max-w-2xl  justify-center md:justify-start gap-2 flex-row "
+            >
               <MotionButton
                 asChild
-                className="w-full sm:w-auto"
                 transition={transition}
                 initial={variants.hidden}
                 animate={variants.visible}
-                variant={"default"}
-              >
-                <a href={""}>
-                  Contact Me
-                  <Phone className="size-4" />
-                </a>
-              </MotionButton>
-
-              <MotionButton
-                asChild
                 variant={"outline"}
-                className="w-full sm:w-auto"
+              >
+                <Link href={""}>
+                  <BsGithub className="size-4" />
+                  <span>Github</span>
+                </Link>
+              </MotionButton>
+              <MotionButton
+                asChild
                 transition={transition}
                 initial={variants.hidden}
                 animate={variants.visible}
+                variant={"outline"}
               >
-                <a href="">
-                  Download Resume
-                  <Download className="size-4" />
-                </a>
+                <Link href={""}>
+                  <BsLinkedin className="size-4" />
+                  <span>LinkedIn</span>
+                </Link>
               </MotionButton>
-            </div>
+              <MotionButton
+                asChild
+                transition={transition}
+                initial={variants.hidden}
+                animate={variants.visible}
+                variant={"outline"}
+              >
+                <Link href={""}>
+                  <IoMdMail className="size-4" />
+                  <span>Email</span>
+                </Link>
+              </MotionButton>
+            </motion.div>
           </motion.div>
           <motion.div
             className="order-1 lg:order-2 lg:col-span-1 aspect-square"

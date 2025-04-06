@@ -65,7 +65,8 @@ async function getBlogs(limit: number, page: number, category?: string, searchQu
       blogs = blogs.filter((blog) => blog.category.toLowerCase() === category);
     }
 
-    if (searchQuery) {
+    // ✅ Only filter if searchQuery exists and is not empty
+    if (searchQuery && searchQuery.trim() !== "") {
       blogs = blogs.filter(
         (blog) =>
           blog.title.toLowerCase().includes(searchQuery) ||
@@ -82,6 +83,7 @@ async function getBlogs(limit: number, page: number, category?: string, searchQu
     return { blogs: [], total: 0 };
   }
 }
+
 
 async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
   try {

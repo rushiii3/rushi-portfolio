@@ -63,6 +63,13 @@ export const metadata: Metadata = {
       "Hi, I'm Hrushikesh Shinde — a Cybersecurity Specialist from Mumbai, India 🇮🇳. I specialize in Vulnerability Assessment and Penetration Testing (VAPT), web/mobile application security, and digital forensics. Passionate about securing digital assets and enhancing cyber resilience with a security-first approach.",
     images: ["/og.webp"],
   },
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_URL,
+    languages: {
+      "en-IN": "/",
+    },
+  },
+  publisher: "https://www.linkedin.com/in/hrushikesh-shinde/",
 };
 
 export default function RootLayout({
@@ -72,6 +79,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar`}
       >

@@ -50,7 +50,7 @@ const Page = async (props: Params) => {
         <span>Back to projects</span>
       </Link>
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
-      <p className="my-3 text-xs text-muted-foreground">August 3, 2023</p>
+      <p className="my-3 text-xs text-muted-foreground">{data.date}</p>
       <div className="aspect-video relative rounded-2xl overflow-hidden">
         <Image
           alt={data.title}

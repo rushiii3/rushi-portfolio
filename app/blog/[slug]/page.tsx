@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
 async function getBlog(slug: string) {
   try {
     const res = await fetch(
@@ -30,7 +31,6 @@ type Params = {
 const Page = async (props: Params) => {
   const {slug} = await props.params;
   const data = await getBlog(slug);
-  
   return (
     <div className="md:pt-32 pt-16 w-full">
       <Link
@@ -42,17 +42,12 @@ const Page = async (props: Params) => {
       </Link>
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
       <p className="my-3 text-xs text-muted-foreground">August 3, 2023</p>
-      <div className="aspect-video rounded-2xl overflow-hidden">
+      <div className="aspect-video relative rounded-2xl overflow-hidden">
         <Image
           alt={data.title}
           src={data.image}
-          style={{
-            width: "100%",
-            height: "auto",
-          }}
-          width={1000}
-          height={1000}
-          priority
+          priority={true}
+          fill={true}
         />
       </div>
 
@@ -64,3 +59,5 @@ const Page = async (props: Params) => {
 };
 
 export default Page;
+
+

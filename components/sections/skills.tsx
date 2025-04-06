@@ -2,26 +2,9 @@
 "use client";
 import { motion } from "framer-motion";
 import React from "react";
-import {
-  SiGithub,
-  SiFigma,
-  SiReact,
-  SiNextdotjs,
-  SiRedux,
-  SiTailwindcss,
-  SiMongodb,
-  SiPostgresql,
-  SiDocker,
-  SiJest,
-  SiShopify,
-  SiFramer,
-} from "react-icons/si";
-import { FaCode, FaTools } from "react-icons/fa";
 import { Badge } from "../ui/badge";
 import { Tabs } from "../ui/tabs";
-// import { Button } from "../ui/button";
-// import { Download, Phone } from "lucide-react";
-// import Image from "next/image";
+import { skillsData } from "@/content/info";
 const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 };
 const variants = {
   hidden: {
@@ -34,69 +17,6 @@ const variants = {
     transition: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
-const skillsData = {
-  frontend: {
-    languages: ["HTML", "CSS", "JavaScript", "TypeScript", "Dart"],
-    frameworks: [
-      { name: "React.js", icon: <SiReact /> },
-      { name: "Next.js", icon: <SiNextdotjs /> },
-      { name: "Shopify", icon: <SiShopify /> },
-      { name: "Framer", icon: <SiFramer /> },
-    ],
-    state_management: ["Zustand", { name: "Redux", icon: <SiRedux /> }],
-    data_fetching: ["TanStack Query", "Axios"],
-    styling: [
-      { name: "Tailwind CSS", icon: <SiTailwindcss /> },
-      "Styled Components",
-      "CSS Modules",
-      "SASS",
-      "Bootstrap",
-    ],
-    ui_libraries: ["Material UI", "Mantine UI", "Chakra UI", "Shadcn UI"],
-    animations: ["Framer Motion", "Motion"],
-    cross_platform: ["React Native", "Flutter"],
-  },
-  backend: {
-    languages: ["Node.js", "Bun"],
-    frameworks: ["Express.js", "Socket.io", "Mongoose", "Prisma", "Drizzle"],
-    databases: [
-      { name: "MongoDB", icon: <SiMongodb /> },
-      { name: "PostgreSQL", icon: <SiPostgresql /> },
-      "SQLite",
-      "Redis",
-    ],
-    cms: ["Firebase", "Supabase", "Appwrite", "Sanity.io", "Payload CMS"],
-    authentication: ["JWT", "OAuth/OIDC"],
-    hosting: ["Vercel", "Netlify"],
-    scalability: ["WebSockets", "WebRTC", "Cloudinary"],
-  },
-  security: {
-    fundamentals: ["OWASP Top 10", "Secure Coding", "Encryption", "CSP"],
-    testing: [
-      "Penetration Testing",
-      "Security Audits",
-      "Vulnerability Assessment",
-      "Threat Modeling",
-    ],
-    tools: ["Burp Suite", "OWASP ZAP", "Metasploit", "SAST/DAST"],
-  },
-  devops: {
-    ci_cd: [{ name: "Docker", icon: <SiDocker /> }, "GitHub Actions"],
-    testing: [
-      { name: "Jest", icon: <SiJest /> },
-      "React Testing Library",
-      "Postman",
-    ],
-    debugging: ["React DevTools", "Chrome DevTools"],
-  },
-  tools: [
-    { name: "VS Code", icon: <FaCode /> },
-    { name: "Git", icon: <FaCode /> },
-    { name: "GitHub", icon: <SiGithub /> },
-    { name: "ESLint", icon: <FaTools /> },
-    { name: "Figma", icon: <SiFigma /> },
-  ],
-};
 
 
 const Skills = () => {
@@ -106,7 +26,7 @@ const Skills = () => {
       <div className="flex flex-wrap gap-2">
         {skills.map((item, index) => (
           <Badge key={index} className="flex items-center gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg">
-            {item.icon && <span>{item.icon}</span>}
+            {item.icon && <span><item.icon /></span>}
             {item.name || item}
           </Badge>
         ))}

@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { BsGithub, BsLinkedin } from "react-icons/bs";
-import { IoMdMail } from "react-icons/io";
+import { personalInfo, socialLinks } from "@/content/info";
 const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
 const variants = {
   hidden: { filter: "blur(10px)", opacity: 0 },
@@ -14,7 +13,7 @@ const variants = {
 const MotionButton = motion.create(Button);
 
 const Hero1 = () => {
-  const words = "Hrushikesh Shinde".split(" ");
+  const words = personalInfo.name.split(" ");
   return (
     <section className="md:mt-52 mt-20 mx-auto lg:mb-32">
       <div className="w-full container">
@@ -47,7 +46,7 @@ const Hero1 = () => {
               variants={variants}
               viewport={{ once: true }}
             >
-              Cyber Secuirty from India 🇮🇳
+              {personalInfo.title}
             </motion.p>
             <motion.div
               initial={{ opacity: 0 }}
@@ -61,42 +60,26 @@ const Hero1 = () => {
               viewport={{ once: true }}
               className="flex max-w-2xl  justify-center md:justify-start gap-2 flex-row "
             >
-              <MotionButton
-                asChild
-                transition={transition}
-                initial={variants.hidden}
-                animate={variants.visible}
-                variant={"outline"}
-              >
-                <Link href={""}>
-                  <BsGithub className="size-4" />
-                  <span>Github</span>
-                </Link>
-              </MotionButton>
-              <MotionButton
-                asChild
-                transition={transition}
-                initial={variants.hidden}
-                animate={variants.visible}
-                variant={"outline"}
-              >
-                <Link href={""}>
-                  <BsLinkedin className="size-4" />
-                  <span>LinkedIn</span>
-                </Link>
-              </MotionButton>
-              <MotionButton
-                asChild
-                transition={transition}
-                initial={variants.hidden}
-                animate={variants.visible}
-                variant={"outline"}
-              >
-                <Link href={""}>
-                  <IoMdMail className="size-4" />
-                  <span>Email</span>
-                </Link>
-              </MotionButton>
+              {socialLinks.map((link) => (
+                <MotionButton
+                  asChild
+                  key={link.name}
+                  transition={transition}
+                  initial={variants.hidden}
+                  animate={variants.visible}
+                  variant={"outline"}
+                >
+                  <Link
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.name}
+                  >
+                    <link.icon className="size-4" />
+                    <span>{link.name}</span>
+                  </Link>
+                </MotionButton>
+              ))}
             </motion.div>
           </motion.div>
           <motion.div
@@ -106,7 +89,7 @@ const Hero1 = () => {
             animate={variants.visible}
           >
             <Image
-              src={"/profile.webp"}
+              src={personalInfo.image}
               height={400}
               width={300}
               alt={"Profile Image"}

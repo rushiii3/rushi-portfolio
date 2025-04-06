@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 interface TimelineEntry {
   title: string;
   subtitle: string;
-  timeline:string;
-  content: React.ReactNode;
+  timeline: string;
+  content: string[];
 }
 const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 };
 const variants = {
@@ -91,9 +91,18 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
                 <p className="text-left md:text-right">{item.timeline}</p>
               </div>
               <div className="pl-4">
-              {item.content}
+                {/* {item.content} */}
+                <ul className="list-disc marker:text-[#07a97d] list-outside space-y-1 text-neutral-800 dark:text-neutral-200 text-md font-normal mb-8 text-justify">
+                  
+                  {
+                    item?.content?.map((content, index) => (
+                      <li key={index} >
+                        {content}
+                      </li>
+                    ))
+                  }
+                </ul>
               </div>
-              
             </div>
           </div>
         ))}

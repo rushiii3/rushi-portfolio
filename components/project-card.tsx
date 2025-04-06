@@ -15,14 +15,13 @@ import { BsGithub } from "react-icons/bs";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Projectcard = ({ project }: any) => {
   return (
-    <Card className="w-full h-auto group border bg-transparent backdrop-blur border-white/10 rounded-2xl p-4 gap-4 h-full">
-      <div className="relative rounded-2xl overflow-hidden">
+    <Card className="w-full group border bg-transparent backdrop-blur border-white/10 rounded-2xl p-4 gap-4 h-full">
+      <div className="relative rounded-2xl aspect-video overflow-hidden">
         <Link href={`/work/${project.slug}`}>
           <Image
             src={"/poster1.png"}
             alt={"project"}
-            width={960}
-            height={480}
+            fill={true}
             className="aspect-video"
           />
         </Link>
@@ -42,7 +41,7 @@ const Projectcard = ({ project }: any) => {
         ))}
       </div>
       <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full p-0">
-        <p className="text-sm font-medium">December 5, 2024 </p>
+        <p className="text-sm font-medium">{project.date}</p>
         <div className="flex flex-row flex-wrap gap-2">
           {
             project.github && <Button className="rounded-full" size={"icon"} asChild>

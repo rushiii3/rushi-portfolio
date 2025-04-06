@@ -43,7 +43,7 @@ const Page = async (props: Params) => {
   return (
     <div className="md:pt-32 pt-16 w-full">
       <Link
-        href="/blog"
+        href="/work"
         className="mb-8 inline-flex items-center gap-2 text-sm font-light text-muted-foreground hover:text-foreground border-[1px] border-transparent hover:border-white/10 p-2 rounded-2xl transition-all"
       >
         <ArrowLeftIcon className="h-5 w-5" />
@@ -51,17 +51,13 @@ const Page = async (props: Params) => {
       </Link>
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
       <p className="my-3 text-xs text-muted-foreground">August 3, 2023</p>
-      <div className="aspect-video rounded-2xl overflow-hidden">
+      <div className="aspect-video relative rounded-2xl overflow-hidden">
         <Image
           alt={data.title}
           src={data.image}
-          style={{
-            width: "100%",
-            height: "auto",
-          }}
-          width={1000}
-          height={1000}
-          priority
+          priority={true}
+          fill={true}
+          objectFit="cover"
         />
       </div>
 

@@ -19,8 +19,8 @@ const Projectcard = ({ project }: any) => {
       <div className="relative rounded-2xl aspect-video overflow-hidden">
         <Link href={`/work/${project.slug}`}>
           <Image
-            src={"/poster1.png"}
-            alt={"project"}
+            src={project.image}
+            alt={`project image for ${project.title}`}
             fill={true}
             className="aspect-video"
           />

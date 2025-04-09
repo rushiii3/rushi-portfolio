@@ -13,6 +13,10 @@ interface BlogMetadata {
   title: string;
   category: string;
   content?: string; // Add content field for single blog
+  stack: string[];
+  link: string;
+  github: string;
+  type: string;
 }
 
 // Fetch Single Blog by Slug
@@ -66,9 +70,13 @@ async function getBlogBySlug(slug: string): Promise<BlogMetadata | null> {
     return {
       slug,
       date: data.date ?? "",
+      stack: data.stack ?? [],
+      link: data.link ?? "",
+      github: data.github ?? "",
       description: data.description ?? "",
       image: data.image ?? "",
       title: data.title ?? "",
+      type: data.type ?? "",
       category: data.category ?? "",
       content, // Include MDX content
     };

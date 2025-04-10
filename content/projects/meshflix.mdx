@@ -1,0 +1,126 @@
+---
+title: "MeshFlix"
+description: "MeshFlix is a fast, mobile-first streaming discovery app built with React Native and Expo. It features blazing-fast movie & series exploration using TMDB, persistent state management with MMKV and Zustand, efficient rendering with FlashList, and seamless video playback using the VidBinge API via WebView. Users can browse the latest releases, filter by genre, search across titles, view casting and related recommendations, and bookmark content to watch later — all from one clean interface."
+date: "November 18, 2024"
+updated: null
+type: "mobile"
+stack: ["React Native", "Expo", "TypeScript", "TanStack Query", "Zustand", "MMKV"]
+category: "Personal Project"
+slug: "meshflix"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-home.png"
+github: "https://github.com/rushiii3/movie-app2"
+---
+
+**MeshFlix** is a sleek and performance-first mobile app where users can explore the **latest movies and TV series** using the **TMDB API**, stream them using **VidBinge** via `react-native-webview`, and enjoy a smooth UI experience backed by **Zustand**, **MMKV**, **FlashList**, and **Reanimated**.
+
+It includes **genre-based filtering**, **search**, **cast info**, **related movie/show suggestions**, and a **Watch Later list** — all optimized for mobile.
+
+---
+
+## 📱 Download APK
+
+👉 [**Download APK**](https://github.com/rushiii3/movie-app2/blob/main/application-cbe05966-a89c-4ceb-a489-1468e821cd0e.apk)  
+
+---
+
+## 🔑 Key Features
+
+- 🏠 **Tabbed Navigation**
+  - `Home`: Discover trending and popular content.
+  - `Movies`: Browse movies, filter by genre, or search by name.
+  - `Series`: Find TV shows, filter by genre, or search quickly.
+  - `Watch Later`: Save content for future viewing (persisted with MMKV).
+
+- 🔎 **Search & Filter**
+  - Genre-based filtering for both **Movies** and **Series** tabs.
+  - Real-time text search to find titles across TMDB.
+
+- 🎬 **Detailed View with Suggestions**
+  - Each movie/series shows:
+    - Title, release date, rating, overview, and full cast list.
+    - 🔁 **Suggested related titles** using TMDB’s recommendation API.
+
+- 📺 **Streaming with VidBinge**
+  - Seamless video playback using `react-native-webview`.
+
+- ⭐ **Bookmark to Watch Later**
+  - Use Zustand + MMKV to persist watchlist across sessions.
+
+- ⚡ **Smooth Performance**
+  - Ultra-fast rendering using `FlashList`.
+  - Data fetching via `@tanstack/react-query`.
+  - Network status handled by `@react-native-community/netinfo`.
+
+- 🌙 **Dark Mode & Reanimated Transitions**
+  - Fully responsive UI with animated screen transitions and dark mode support.
+
+---
+
+## 🚀 Getting Started
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/rushiii3/movie-app2.git
+cd movie-app2
+```
+
+2. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn
+```
+
+3. **Start the App**
+
+```bash
+npx expo start
+```
+
+4. **API Setup**
+
+Make sure to add your **TMDB API key** and use **VidBinge URLs** for video playback inside `.env`.
+
+---
+
+## 🖼️ Screenshots
+
+### Home Screen
+
+![Home](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-home.png)
+
+### Filter by Genre + Search
+
+![Filter](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-filter.png)
+
+### Movie/Show Details + Cast + Suggestions
+
+![Details](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-details.png)
+
+### Streaming in WebView
+
+![Playback](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-playback.png)
+
+### Watch Later / Bookmarks
+
+![Watch Later](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/meshflix-watchlater.png)
+
+---
+
+## ⚙️ Tech Stack
+
+- **Framework:** React Native (Expo)
+- **Languages:** TypeScript
+- **Data Fetching:** [`@tanstack/react-query`](https://tanstack.com/query/latest)
+- **State Management:** [`zustand`](https://github.com/pmndrs/zustand)
+- **Persistent Storage:** [`react-native-mmkv`](https://github.com/mrousavy/react-native-mmkv)
+- **Video Streaming:** [`react-native-webview`](https://github.com/react-native-webview/react-native-webview)
+- **Rendering Optimization:** [`@shopify/flashlist`](https://shopify.github.io/flashlist/)
+- **Animations:** [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/)
+- **Network Awareness:** [`@react-native-community/netinfo`](https://github.com/react-native-netinfo/react-native-netinfo)
+
+---
+
+**MeshFlix** delivers fast, reliable, and ad-free access to the world of movies and series — letting you explore, stream, and save with just a few taps.

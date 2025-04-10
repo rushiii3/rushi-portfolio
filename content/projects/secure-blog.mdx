@@ -1,0 +1,92 @@
+---
+title: "SecureBlog"
+description: "SecureBlog is a cybersecurity-focused blog viewing platform built using Next.js, Supabase, and shadcn/ui. It allows users to browse and search high-quality cybersecurity blogs with a modern, responsive design and infinite scrolling experience."
+date: "March 27, 2025"
+updated: null
+type: "web"
+stack:
+  ["Next.js", "Supabase", "React", "shadcn/ui", "Tailwind CSS", "TypeScript"]
+category: "Personal Projects"
+slug: "secure-blog"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1744286509/og_hjii4r.png"
+github: "https://github.com/rushiii3/blog-app"
+link: "https://blog-app-beryl-five.vercel.app/"
+---
+
+**SecureBlog** is a blog viewer platform focused on cybersecurity content. Built using **Next.js**, **Supabase**, and **shadcn/ui**, this read-only app allows users to explore curated blog posts with real-time search and seamless infinite scrolling.
+
+> 🔐 **Note:** This project is read-only — users cannot post, edit, or delete articles.
+
+## Key Features
+
+- 🔎 **Search Blogs by Keyword**  
+  Real-time blog search to help users quickly find relevant cybersecurity content.
+
+- 🔁 **Infinite Scrolling**  
+  Loads more blog posts as the user scrolls, improving user experience and performance.
+
+- 🎨 **Built with shadcn/ui & Tailwind CSS**  
+  Uses accessible and customizable UI components for a clean, responsive interface.
+
+- ⚡ **Supabase Integration**  
+  Pulls real-time blog data from Supabase, making it fast and scalable.
+
+- 📱 **Mobile-Responsive Design**  
+  Optimized for various screen sizes for a great reading experience across devices.
+
+## How to Use
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/rushiii3/blog-app.git
+cd blog-app
+```
+
+2. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn
+```
+
+3. **Configure Environment Variables**
+
+Create a `.env.local` file and add:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. **Run the Development Server**
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+5. **View & Search Blogs**
+
+- Browse the blog feed on the homepage.
+- Use the search bar to filter posts by title or keywords.
+- Scroll down to load more posts automatically.
+
+## Screenshots
+
+### Blog Homepage with Search
+
+![Feed](https://res.cloudinary.com/dmuhioahv/image/upload/v1744287636/2_gpnqs5.png)
+
+### Individual Blog View
+
+![Blog](https://res.cloudinary.com/dmuhioahv/image/upload/v1744287636/1_aqqlmg.png)
+
+## Tech Stack
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **UI:** shadcn/ui
+- **Database:** Supabase (read-only)
+- **Deployment:** Vercel (suggested)

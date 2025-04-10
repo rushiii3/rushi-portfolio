@@ -70,15 +70,19 @@ const Page = async (props: Params) => {
             </Link>
           </Button>
         )}
-
-        <Button
-          className="rounded-full transition-all"
-        >
-          <Link className="flex flex-row gap-2 items-center" href={data.link} target="_blank" referrerPolicy="no-referrer">
-            View
-            <ArrowUpRight />
-          </Link>
-        </Button>
+        {data.link && (
+          <Button className="rounded-full transition-all">
+            <Link
+              className="flex flex-row gap-2 items-center"
+              href={data.link}
+              target="_blank"
+              referrerPolicy="no-referrer"
+            >
+              View
+              <ArrowUpRight />
+            </Link>
+          </Button>
+        )}
       </div>
       <div className="aspect-video relative rounded-2xl overflow-hidden">
         <Image

@@ -1,0 +1,113 @@
+---
+title: "Terabox Player"
+description: "Terabox Player is a sleek, ad-free mobile application built with Expo and React Native. It allows users to paste a Terabox video link and instantly view file details, download the content, or stream it in high quality using a built-in native video player or a WebView fallback. It also keeps a history of all played videos using SQLite, and includes dark mode support for comfortable viewing."
+date: "March 12, 2025"
+updated: null
+type: "mobile"
+stack: ["React Native", "Expo", "TypeScript", "React Navigation"]
+category: "Personal Projects"
+slug: "terabox-player"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/terabox-player-home.png"
+github: "https://github.com/rushiii3/terabox-player"
+link: ""
+---
+
+**Terabox Player** is a lightweight, ad-free mobile application that simplifies video playback and downloading from **Terabox** links. Built with **Expo**, the app offers a smooth experience with options to stream videos **natively using `expo-video`** for better quality or **via `react-native-webview`** as a fallback. It also uses **`expo-sqlite`** to store a local **history of played videos**, and supports **dark mode**.
+
+---
+
+## 📱 Download APK
+
+👉 [**Download APK**](https://github.com/rushiii3/terabox-player/blob/main/application-e7f3ab4d-8ba4-40b5-b535-2ffb03b09795.apk)  
+
+---
+
+## 🔑 Key Features
+
+- 🔗 **Paste and Play**  
+  Paste any valid Terabox video link and click **Play** to instantly fetch file details and start streaming.
+
+- 🎥 **Two Playback Modes**  
+  - **Native Player (`expo-video`):** High-quality, full-screen playback without ads.  
+  - **WebView Player (`react-native-webview`):** Lightweight fallback streaming.
+
+- 📥 **Download Option**  
+  Tap to download and save files locally from Terabox.
+
+- 🧾 **File Details Viewer**  
+  View file name, type, and size before downloading or streaming.
+
+- 🧠 **Saved Playback History**  
+  Powered by **`expo-sqlite`**, stores previously played links for quick access.
+
+- 🌙 **Dark Mode Support**  
+  Automatically adapts the UI for better visibility in low-light environments.
+
+- 🚫 **100% Ad-Free**  
+  No interruptions, no banners — just smooth playback.
+
+---
+
+## 🚀 How to Use
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/rushiii3/terabox-player.git
+cd terabox-player
+```
+
+2. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn
+```
+
+3. **Start the App**
+
+```bash
+npx expo start
+```
+
+4. **Workflow**
+
+- Paste a Terabox video link into the input field.
+- Tap **Play** to view file info and choose playback or download.
+- Switch between **Native Player** and **WebView**.
+- Dark mode is applied automatically.
+- Access the **History** tab to revisit played videos.
+
+---
+
+## 🖼️ Screenshots
+
+### Input & Metadata
+
+![Input](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/terabox-player-input.png)
+
+### Video Player (Native)
+
+![Player](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/terabox-player-video.png)
+
+### History Screen
+
+![History](https://res.cloudinary.com/dmuhioahv/image/upload/v1744100000/screenshots/terabox-player-history.png)
+
+---
+
+## ⚙️ Tech Stack
+
+- **Framework:** React Native (Expo)
+- **Languages:** TypeScript
+- **Navigation:** React Navigation
+- **Video Playback:**
+  - Native: [`expo-video`](https://docs.expo.dev/versions/latest/sdk/video/)
+  - WebView: [`react-native-webview`](https://github.com/react-native-webview/react-native-webview)
+- **Storage:** [`expo-sqlite`](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+- **State & UI:** SQLite History, Dark Mode, No Ads
+
+---
+
+**Terabox Player** is your ad-free, mobile-first tool for seamless Terabox video streaming and downloading. Clean UI, local storage, and smooth playback — everything you need in one app.

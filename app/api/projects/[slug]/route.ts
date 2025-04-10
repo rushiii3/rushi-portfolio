@@ -14,8 +14,8 @@ interface BlogMetadata {
   category: string;
   content?: string; // Add content field for single blog
   stack: string[];
-  link: string;
-  github: string;
+  link?: string;
+  github?: string;
   type: string;
 }
 

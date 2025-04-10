@@ -33,7 +33,7 @@ const Projectcard = ({ project }: any) => {
         <CardTitle className="hover:underline transition-all">
           <Link href={`/work/${project.slug}`}> {project.title}</Link>
         </CardTitle>
-        <CardDescription>{project.description}</CardDescription>
+        <CardDescription className="line-clamp-3 text-justify">{project.description}</CardDescription>
       </CardHeader>
       <div className="flex flex-row flex-wrap gap-2">
         {project.stack.map((tag: string, index: number) => (
@@ -43,30 +43,32 @@ const Projectcard = ({ project }: any) => {
       <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full p-0">
         <p className="text-sm font-medium">{project.date}</p>
         <div className="flex flex-row flex-wrap gap-2">
-          {
-            project.github && <Button className="rounded-full" size={"icon"} asChild>
-            <Link
-              href={project.github}
-              target="_blank"
-              referrerPolicy="no-referrer"
+          {project.github && (
+            <Button className="rounded-full" size={"icon"} asChild>
+              <Link
+                href={project.github}
+                target="_blank"
+                referrerPolicy="no-referrer"
+              >
+                <BsGithub className="text-8xl" />
+              </Link>
+            </Button>
+          )}
+
+          {project.link && (
+            <Button
+              className="rounded-full hover:rotate-45 transition-all"
+              size={"icon"}
             >
-              <BsGithub className="text-8xl" />
-            </Link>
-          </Button>
-          }
-          
-          <Button
-            className="rounded-full hover:rotate-45 transition-all"
-            size={"icon"}
-          >
-            <Link
-              href={project.link}
-              target="_blank"
-              referrerPolicy="no-referrer"
-            >
-              <ArrowUpRight />
-            </Link>
-          </Button>
+              <Link
+                href={project.link}
+                target="_blank"
+                referrerPolicy="no-referrer"
+              >
+                <ArrowUpRight />
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </Card>

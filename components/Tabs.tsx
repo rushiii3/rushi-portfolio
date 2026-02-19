@@ -11,7 +11,10 @@ const Tabs = ({
   handleClick: (category: string) => void;
 }) => {
   return (
-    <div className="flex flex-row items-center justify-start relative overflow-auto sm:overflow-visible no-visible-scrollbar max-w-full w-full">
+    <div
+      data-lenis-prevent
+      className="flex flex-row items-center justify-start relative overflow-auto  no-visible-scrollbar max-w-full w-full"
+    >
       {items.map((tab) => (
         <button
           key={tab}

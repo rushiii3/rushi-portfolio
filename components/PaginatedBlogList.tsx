@@ -1,27 +1,9 @@
-import React from "react";
 import BlogList from "./BlogList";
 import Paginated from "./Paginated";
-import { notFound } from "next/navigation";
-async function getBlogs(search = "", category = "All", page = 1) {
-  try {
-    const res = await fetch(
-      `${process.env
-        .NEXT_PUBLIC_URL!}/api/blogs?search=${search}&category=${category}&page=${page}`,
+import { getAllBlogs } from "@/lib/blogs";
 
-    );
+const BLOGS_PER_PAGE = 10;
 
-    if (!res.ok) {
-      console.error(`Error fetching post: ${res.status}`);
-      return notFound();
-    }
-
-    const post = await res.json();
-    return post;
-  } catch (error) {
-    console.error("Fetch failed in getPost:", error);
-    return notFound();
-  }
-}
 const PaginatedBlogList = async ({
   search,
   category,
@@ -31,11 +13,18 @@ const PaginatedBlogList = async ({
   category: string;
   page: number;
 }) => {
-  const data = await getBlogs(search, category, page);
+  const { blogs, total } = await getAllBlogs(
+    BLOGS_PER_PAGE,
+    page,
+    category && category.toLowerCase() !== "all" ? category : undefined,
+    search,
+  );
+  const totalPages = Math.ceil(total / BLOGS_PER_PAGE);
+
   return (
     <>
-      <BlogList articles={data.blogs} />{" "}
-      <Paginated totalPages={data.totalPages} currentPage={page} />
+      <BlogList articles={blogs} />{" "}
+      <Paginated totalPages={totalPages} currentPage={page} />
     </>
   );
 };

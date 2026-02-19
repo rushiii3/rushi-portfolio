@@ -6,32 +6,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { BsGithub } from "react-icons/bs";
-async function getBlog(slug: string) {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL!}/api/projects/${slug}`
-    );
-
-    if (res.status === 500) {
-      throw new Error("Internal Server Error (500)");
-    }
-
-    if (res.status === 404) {
-      return null; // Return null instead of throwing an error for 404
-    }
-
-    if (!res.ok) {
-      throw new Error(
-        `Failed to fetch blog post: ${res.status} ${res.statusText}`
-      );
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Fetch failed in getBlog:", error);
-    throw error; // Re-throw for non-404 errors
-  }
-}
+import { getProjectBySlug } from "@/lib/projects";
 
 type Params = {
   params: Promise<{
@@ -40,8 +15,8 @@ type Params = {
 };
 const Page = async (props: Params) => {
   const { slug } = await props.params;
-  const data = await getBlog(slug);
-  if (!data || data.error) {
+  const data = await getProjectBySlug(slug);
+  if (!data) {
     notFound();
   }
 
@@ -49,7 +24,7 @@ const Page = async (props: Params) => {
     <div className="md:pt-32 pt-16 w-full">
       <Link
         href="/work"
-        className="mb-8 inline-flex items-center gap-2 text-sm font-light text-muted-foreground hover:text-foreground border-[1px] border-transparent hover:border-white/10 p-2 rounded-2xl transition-all"
+        className="mb-8 inline-flex items-center gap-2 text-sm font-light text-muted-foreground hover:text-foreground border border-transparent hover:border-white/10 p-2 rounded-2xl transition-all"
       >
         <ArrowLeftIcon className="h-5 w-5" />
         <span>Back to projects</span>

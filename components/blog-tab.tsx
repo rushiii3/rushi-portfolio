@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Tabs from "./Tabs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,29 +9,42 @@ import { Input } from "./ui/input";
 
 const BlogTab = () => {
   const searchParams = useSearchParams();
-  const { push } = useRouter();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const blogCategories = [
     "All",
+    "Cybersecurity Fundamentals",
     "Web Security",
-    "Ethical Hacking",
-    "Labs & Research",
-    "Cyber Security",
+    "Penetration Testing",
+    "Vulnerability Research",
+    "Application Security",
+    "Security Tools",
   ];
   const [isVisible, setisVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
 
-  function handleSearch(term: string) {
-    setSearchTerm(term); // Update local state
-    const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set("search", term);
-    } else {
-      params.delete("search");
-    }
-    push(`?${params.toString()}`, { scroll: false });
-  }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+
+      if (searchTerm) {
+        params.set("search", searchTerm);
+      } else {
+        params.delete("search");
+      }
+
+      params.set("page", "1");
+
+      startTransition(() => {
+        router.replace(`?${params.toString()}`, { scroll: false });
+      });
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
 
   function handleCategory(term: string) {
     const params = new URLSearchParams(searchParams);
@@ -44,7 +57,7 @@ const BlogTab = () => {
     } else {
       params.delete("category");
     }
-    push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`, { scroll: false });
   }
 
   return (
@@ -85,14 +98,14 @@ const BlogTab = () => {
                   placeholder="Filter..."
                   className="max-w-full"
                   value={searchTerm} // Controlled input
-                  onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                  onClick={() => handleSearch("")} // Clear input
+                  onClick={() => setSearchTerm("")} // Clear input
                 >
                   <XIcon className="h-4 w-4" />
                   <span className="sr-only">Clear</span>
@@ -106,6 +119,7 @@ const BlogTab = () => {
         <Button
           className="rounded-full relative overflow-hidden"
           size="icon"
+          title="search"
           onClick={() => setisVisible(!isVisible)}
         >
           <AnimatePresence mode="wait">

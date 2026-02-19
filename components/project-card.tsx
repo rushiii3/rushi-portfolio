@@ -22,6 +22,7 @@ const Projectcard = ({ project }: any) => {
             src={project.image}
             alt={`project image for ${project.title}`}
             fill={true}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
             className="aspect-video"
           />
         </Link>
@@ -33,7 +34,9 @@ const Projectcard = ({ project }: any) => {
         <CardTitle className="hover:underline transition-all">
           <Link href={`/work/${project.slug}`}> {project.title}</Link>
         </CardTitle>
-        <CardDescription className="line-clamp-3 text-justify">{project.description}</CardDescription>
+        <CardDescription className="line-clamp-3 text-justify">
+          {project.description}
+        </CardDescription>
       </CardHeader>
       <div className="flex flex-row flex-wrap gap-2">
         {project.stack.map((tag: string, index: number) => (
@@ -43,7 +46,7 @@ const Projectcard = ({ project }: any) => {
       <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full p-0">
         <p className="text-sm font-medium">{project.date}</p>
         <div className="flex flex-row flex-wrap gap-2">
-          {project.github && (
+          {project.github ? (
             <Button className="rounded-full" size={"icon"} asChild>
               <Link
                 href={project.github}
@@ -53,9 +56,9 @@ const Projectcard = ({ project }: any) => {
                 <BsGithub className="text-8xl" />
               </Link>
             </Button>
-          )}
+          ) : null}
 
-          {project.link && (
+          {project.link ? (
             <Button
               className="rounded-full hover:rotate-45 transition-all"
               size={"icon"}
@@ -68,7 +71,7 @@ const Projectcard = ({ project }: any) => {
                 <ArrowUpRight />
               </Link>
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </Card>

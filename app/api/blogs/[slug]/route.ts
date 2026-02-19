@@ -1,28 +1,13 @@
-import fs from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
 import { NextRequest } from "next/server";
-
-const rootDirectory = path.join(process.cwd(), "/content/blogs");
-
-interface BlogMetadata {
-  slug: string;
-  date: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-  content?: string; // Add content field for single blog
-}
+import { getBlogBySlug } from "@/lib/blogs";
 
 // Fetch Single Blog by Slug
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const slug = (await params).slug;
-    // throw new Error("Blog not found");
     if (!slug) {
       return new Response(JSON.stringify({ error: "Slug is required" }), {
         status: 400,
@@ -49,31 +34,5 @@ export async function GET(
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
-  }
-}
-
-// Function to Get Blog by Slug
-async function getBlogBySlug(slug: string): Promise<BlogMetadata | null> {
-  try {
-    const filePath = path.join(rootDirectory, `${slug}.mdx`);
-    const fileContent = await fs.readFile(filePath, "utf8");
-    const { data, content } = matter(fileContent);
-
-    if (!data.title || !data.category) {
-      return null;
-    }
-
-    return {
-      slug,
-      date: data.date ?? "",
-      description: data.description ?? "",
-      image: data.image ?? "",
-      title: data.title ?? "",
-      category: data.category ?? "",
-      content, // Include MDX content
-    };
-  } catch (error) {
-    console.error("Error fetching blog content:", error);
-    return null;
   }
 }

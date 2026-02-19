@@ -1,18 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
 import { NextRequest } from "next/server";
-
-const rootDirectory = path.join(process.cwd(), "/content/blogs");
-
-interface BlogMetadata {
-  slug: string;
-  date: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-}
+import { getAllBlogs } from "@/lib/blogs";
 
 export async function GET(request: NextRequest): Promise<Response> {
   try {
@@ -22,11 +9,11 @@ export async function GET(request: NextRequest): Promise<Response> {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 10;
 
-    const { blogs, total } = await getBlogs(
+    const { blogs, total } = await getAllBlogs(
       limit,
       page,
       category && category !== "all" ? category : undefined,
-      searchQuery
+      searchQuery,
     );
 
     return new Response(
@@ -39,7 +26,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("Error fetching blogs:", error);
@@ -47,65 +34,5 @@ export async function GET(request: NextRequest): Promise<Response> {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
-  }
-}
-
-async function getBlogs(limit: number, page: number, category?: string, searchQuery?: string) {
-  try {
-    const files = await fs.readdir(rootDirectory);
-
-    let blogs = (await Promise.all(files.map(getBlogMetadata))).filter(
-      (blog): blog is BlogMetadata => blog !== null
-    );
-
-    // Sort by date (latest first)
-    blogs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-    if (category) {
-      blogs = blogs.filter((blog) => blog.category.toLowerCase() === category);
-    }
-
-    // ✅ Only filter if searchQuery exists and is not empty
-    if (searchQuery && searchQuery.trim() !== "") {
-      blogs = blogs.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(searchQuery) ||
-          blog.description.toLowerCase().includes(searchQuery)
-      );
-    }
-
-    const total = blogs.length;
-    const paginatedBlogs = blogs.slice((page - 1) * limit, page * limit);
-
-    return { blogs: paginatedBlogs, total };
-  } catch (error) {
-    console.error("Error fetching blogs:", error);
-    return { blogs: [], total: 0 };
-  }
-}
-
-
-async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
-  try {
-    const slug = filepath.replace(/\.mdx$/, "");
-    const filePath = path.join(rootDirectory, filepath);
-    const fileContent = await fs.readFile(filePath, "utf8");
-    const { data } = matter(fileContent);
-
-    if (!data.title || !data.category) {
-      return null;
-    }
-
-    return {
-      slug,
-      date: data.date ?? "",
-      description: data.description ?? "",
-      image: data.image ?? "",
-      title: data.title ?? "",
-      category: data.category ?? "",
-    };
-  } catch (error) {
-    console.error("Error fetching blog metadata:", error);
-    return null;
   }
 }

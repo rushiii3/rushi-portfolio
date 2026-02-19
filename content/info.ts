@@ -1,20 +1,28 @@
-import { BsGithub, BsLinkedin } from "react-icons/bs";
+import { BsGithub, BsLinkedin, BsTwitterX } from "react-icons/bs";
 import { IoMdMail } from "react-icons/io";
 import {
   SiGithub,
-  SiFigma,
+  SiLinkedin,
+  SiX,
+  SiJavascript,
+  SiTypescript,
   SiReact,
   SiNextdotjs,
-  SiRedux,
   SiTailwindcss,
-  SiMongodb,
+  SiNodedotjs,
   SiPostgresql,
-  SiDocker,
-  SiJest,
+  SiPython,
+  SiAndroid,
   SiShopify,
   SiFramer,
+  SiRedux,
+  SiMongodb,
+  SiDocker,
+  SiJest,
+  SiFigma,
 } from "react-icons/si";
-import { FaCode, FaTools } from "react-icons/fa";
+import { FaCode, FaTools, FaJava, FaReact } from "react-icons/fa";
+import { FaGolang, FaPhp } from "react-icons/fa6";
 export const personalInfo = {
   name: "Hrushikesh Shinde",
   title: "Cyber Security Enthusiast",

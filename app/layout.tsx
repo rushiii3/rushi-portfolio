@@ -7,6 +7,11 @@ import FooterSection from "@/components/footer";
 import { LenisProvider, ThemeProvider } from "@/Provider";
 import NextTopLoader from "nextjs-toploader";
 
+const preconnectDomains = [
+  "https://images.unsplash.com",
+  "https://res.cloudinary.com",
+];
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -67,9 +72,9 @@ export const metadata: Metadata = {
     },
   },
   publisher: "https://www.linkedin.com/in/hrushikesh-shinde/",
-    verification:{
-    google:`${process.env.NEXT_GOOGLE_CONSOLE}`
-  }
+  verification: {
+    google: `${process.env.NEXT_GOOGLE_CONSOLE}`,
+  },
 };
 
 export default function RootLayout({
@@ -79,7 +84,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        {preconnectDomains.map((domain) => (
+          <link key={domain} rel="preconnect" href={domain} />
+        ))}
+        {preconnectDomains.map((domain) => (
+          <link key={`dns-${domain}`} rel="dns-prefetch" href={domain} />
+        ))}
+      </head>
       <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
+      <link
+        rel="manifest"
+        href="/manifest.webmanifest"
+        crossOrigin="use-credentials"
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar`}
       >

@@ -1,8 +1,43 @@
-import React from "react";
 import BlogTab from "@/components/blog-tab";
 import PaginatedBlogList from "@/components/PaginatedBlogList";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Blog | Hrushikesh Shinde",
+  description:
+    "Read articles on cybersecurity, web security, penetration testing, and secure development practices by Hrushikesh Shinde.",
+  keywords: [
+    "cybersecurity blog",
+    "web security",
+    "penetration testing",
+    "OWASP",
+    "VAPT",
+    "secure coding",
+    "blogs",
+    "blog",
+  ],
+  openGraph: {
+    title: "Blog | Hrushikesh Shinde",
+    description:
+      "Read articles on cybersecurity, web security, penetration testing, and secure development practices.",
+    url: `${process.env.NEXT_PUBLIC_URL}/blog`,
+    type: "website",
+    images: ["/og.webp"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | Hrushikesh Shinde",
+    description:
+      "Read articles on cybersecurity, web security, penetration testing, and secure development practices.",
+    images: ["/og.webp"],
+  },
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_URL}/blog`,
+  },
+};
 
 const Page = async (props: {
   searchParams?: Promise<{
@@ -34,18 +69,21 @@ const Page = async (props: {
       <div className="w-full mx-auto mb-16">
         <div className="relative rounded-2xl overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1662638600476-d563fffbb072?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://images.unsplash.com/photo-1662638600476-d563fffbb072?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Featured"
             height={780}
             width={1170}
+            priority
+            fetchPriority="high"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1170px"
             className="w-full h-[500px] object-cover"
           />
-          <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-black/80 to-transparent">
             <Link href={`blog/owasp-top-10`}>
-            <h2 className="text-2xl font-bold mb-2">
-              OWASP Top 10: Essential Web Security Risks Every Developer Should
-              Know
-            </h2>
+              <h2 className="text-2xl font-bold mb-2">
+                OWASP Top 10: Essential Web Security Risks Every Developer
+                Should Know
+              </h2>
             </Link>
             <p className="text-gray-300 mb-4">
               A comprehensive guide to understanding and mitigating the top
@@ -63,12 +101,16 @@ const Page = async (props: {
       {/* Article Grid */}
       <div className="">
         <BlogTab />
-        {search && <p>You searched for &#34;{search}&#34; </p>}
-        <PaginatedBlogList
-          category={category}
-          page={currentPage}
-          search={search}
-        />
+        {search ? <p>You searched for &#34;{search}&#34; </p> : null}
+        <Suspense
+          fallback={<div className="text-3xl bg-amber-50">Loading...</div>}
+        >
+          <PaginatedBlogList
+            category={category}
+            page={currentPage}
+            search={search}
+          />
+        </Suspense>
       </div>
     </div>
   );

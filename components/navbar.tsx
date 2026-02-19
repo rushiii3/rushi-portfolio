@@ -23,18 +23,19 @@ const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] };
 
 export default function Navbar() {
   const path = usePathname();
-  console.log(path);
 
   const [activeTab, setActiveTab] = useState(1);
 
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth > 768 : true,
+  );
   const router = useRouter();
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -71,16 +72,13 @@ export default function Navbar() {
               id={tab.label}
               aria-label={tab.label}
             >
-              {activeTab === tab.id && (
+              {activeTab === tab.id ? (
                 <motion.span
-                  // layoutId={tab.label}
-                  // layout
-                  // layoutId="button"
                   className="absolute inset-0 z-10 dark:bg-white mix-blend-difference rounded-xl bg-black"
                   style={{ borderRadius: 10 }}
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
-              )}
+              ) : null}
 
               {tab.id === 1 ? (
                 <HomeIcon size={18} />

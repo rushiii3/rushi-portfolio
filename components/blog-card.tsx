@@ -32,6 +32,7 @@ const BlogCard = ({ article }: BlogCardProps) => {
             alt={article.title}
             width={960}
             height={480}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 480px"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
           />
         </div>

@@ -1,17 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function CursorGlow() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updatePosition = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(1600px circle at ${e.clientX}px ${e.clientY}px, rgba(32,194,14, 0.15), transparent 40%)`;
+      }
     };
 
-    window.addEventListener("mousemove", updatePosition);
+    window.addEventListener("mousemove", updatePosition, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", updatePosition);
@@ -19,12 +20,6 @@ export default function CursorGlow() {
   }, []);
 
   return (
-    <motion.div
-      className="pointer-events-none fixed inset-0 z-[-1]"
-      animate={{
-        background: `radial-gradient(1600px circle at ${position.x}px ${position.y}px, rgba(32,194,14, 0.15), transparent 40%)`,
-      }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-    />
+    <div ref={glowRef} className="pointer-events-none fixed inset-0 z-[-1]" />
   );
 }

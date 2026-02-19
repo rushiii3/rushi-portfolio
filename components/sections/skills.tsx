@@ -17,54 +17,47 @@ const variants = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SkillCategory = ({ title, skills }: { title: string; skills: any[] }) => (
+  <div className="mb-4">
+    <h3 className="text-lg font-semibold capitalize mb-2">
+      {title.replace("_", " ")}
+    </h3>
+    <div className="flex flex-wrap gap-2">
+      {skills.map((item, index) => (
+        <h4
+          key={index}
+          className="flex items-center text-xs gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
+        >
+          {item.icon ? (
+            <span>
+              <item.icon />
+            </span>
+          ) : null}
+          {item.name || item}
+        </h4>
+      ))}
+    </div>
+  </div>
+);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SkillContent = ({ title, data }: { title: string; data: any }) => (
+  <div className="w-full  relative h-full overflow-hidden rounded-2xl p-10 text-xl md:text-4xl font-bold text-white  border-[0.5px] border-white">
+    <h2 className="text-2xl font-bold mb-4">{title} Skills</h2>
+    <div className="flex flex-col gap-2">
+      {Object.entries(data).map(([category, items]) => (
+        <SkillCategory
+          key={category}
+          title={category}
+          skills={items as any[]}
+        />
+      ))}
+    </div>
+  </div>
+);
+
 const Skills = () => {
-  const SkillCategory = ({
-    title,
-    skills,
-  }: {
-    title: string;
-    skills: any[];
-  }) => (
-    <div className="mb-4">
-      <h3 className="text-lg font-semibold capitalize mb-2">
-        {title.replace("_", " ")}
-      </h3>
-      <div className="flex flex-wrap gap-2">
-        {skills.map((item, index) => (
-          <h4
-            key={index}
-            className="flex items-center text-xs gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
-          >
-            {item.icon && (
-              <span>
-                <item.icon />
-              </span>
-            )}
-            {item.name || item}
-          </h4>
-          // <Badge key={index} className="flex items-center gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg">
-
-          // </Badge>
-        ))}
-      </div>
-    </div>
-  );
-
-  const SkillContent = ({ title, data }: { title: string; data: any }) => (
-    <div className="w-full  relative h-full overflow-hidden rounded-2xl p-10 text-xl md:text-4xl font-bold text-white  border-[0.5px] border-white">
-      <h2 className="text-2xl font-bold mb-4">{title} Skills</h2>
-      <div className="flex flex-col gap-2">
-        {Object.entries(data).map(([category, items]) => (
-          <SkillCategory
-            key={category}
-            title={category}
-            skills={items as any[]}
-          />
-        ))}
-      </div>
-    </div>
-  );
-
   const tabs = [
     {
       title: "Frontend",

@@ -1,29 +1,30 @@
 "use server";
-import React from "react";
+import React, { Suspense } from "react";
 import { Motion } from "../motion";
 import BlogList from "../BlogList";
+import BlogCard from "../blog-card";
 
 async function getArticles() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL!}/api/blogs?limit=6`, {
-      cache: "no-store", // Ensures fresh data on each request
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch articles: ${response.statusText}`);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL!}/api/blogs?limit=6`,
+    {
+      next: { revalidate: 60 }, // ISR instead of no-store
     }
+  );
 
-    return response.json();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
-    // console.error("Error fetching articles:", error);
-    return []; // Return an empty array to prevent rendering errors
+  if (!res.ok) {
+    throw new Error("Failed to fetch blogs");
   }
+
+  return res.json();
 }
 
 
 const Blogs = async () => {
   const posts = await getArticles();  
+    if (!posts?.blogs?.length) {
+    return <p>No blogs found.</p>;
+  }
   return (
     <section className="pt-12 lg:pt-16">
       <div className="w-full">
@@ -34,8 +35,9 @@ const Blogs = async () => {
           >
             Blogs
           </Motion>
-
+          <Suspense fallback={<div>loadinggggg</div>}>
           <BlogList articles={posts.blogs} />
+          </Suspense>
         </div>
       </div>
     </section>

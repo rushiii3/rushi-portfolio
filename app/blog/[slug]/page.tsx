@@ -28,6 +28,44 @@ type Params = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata(props: Params) {
+    const {slug} = await props.params;
+  const data = await getBlog(slug);
+  return {
+    title: data.title,
+    description: data.description,
+      openGraph: {
+    title: data.title,
+    description: data.description,
+    images: [
+      {
+        url: data.image, // Next.js automatically prepends your domain
+        width: 1200,
+        height: 630,
+        alt: "Site preview",
+      },
+    ],
+    type: "website",
+    siteName: "Hrushikesh Shinde",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: data.title,
+    description: data.description,
+    images: [data.image],
+  },
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_URL}/blog/${slug}`,
+    languages: {
+      "en-IN": "/",
+    },
+  },
+  }
+}
+
+
 const Page = async (props: Params) => {
   const {slug} = await props.params;
   const data = await getBlog(slug);
@@ -48,10 +86,11 @@ const Page = async (props: Params) => {
           src={data.image}
           priority={true}
           fill={true}
+          title={data.title}
         />
       </div>
 
-      <div className="max-w-full mt-5 prose prose-invert prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl  prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
+      <div className="max-w-full mt-5 prose prose-invert prose-strong:text-white prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl  prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl ">
         {data.content && <MDXContent source={data.content} />}
       </div>
     </div>

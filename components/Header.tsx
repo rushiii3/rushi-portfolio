@@ -15,7 +15,11 @@ const Header = () => {
       <DynamicNavbar />
       <div className="hidden md:block">
         <Button asChild>
-          <Link href={"https://cal.com/hrushi-shinde-goijwj"} target="_blank">
+          <Link
+            href={"https://cal.com/hrushi-shinde-goijwj"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Lets Talk
             👋
           </Link>

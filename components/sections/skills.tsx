@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { motion } from "framer-motion";
 import React from "react";
@@ -17,71 +16,92 @@ const variants = {
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SkillCategory = ({ title, skills }: { title: string; skills: any[] }) => (
-  <div className="mb-4">
-    <h3 className="text-lg font-semibold capitalize mb-2">
-      {title.replace("_", " ")}
-    </h3>
-    <div className="flex flex-wrap gap-2">
-      {skills.map((item, index) => (
-        <h4
-          key={index}
-          className="flex items-center text-xs gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
-        >
-          {item.icon ? (
-            <span>
-              <item.icon />
-            </span>
-          ) : null}
-          {item.name || item}
-        </h4>
-      ))}
-    </div>
-  </div>
-);
+type SkillItem = string | { name: string; icon?: React.ComponentType };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SkillContent = ({ title, data }: { title: string; data: any }) => (
+type SkillCategoryData = {
+  title: string;
+  items: SkillItem[];
+};
+
+type SkillGroupData = Record<string, SkillCategoryData>;
+
+const SkillCategory = ({
+  title,
+  skills,
+}: {
+  title: string;
+  skills: SkillCategoryData;
+}) => {
+  return (
+    <div className="mb-4">
+      <h3 className="text-lg font-semibold capitalize mb-2">{title}</h3>
+
+      <div className="flex flex-wrap gap-2">
+        {skills.items.map((item, index) => {
+          const Icon = typeof item === "string" ? null : item.icon;
+          const label = typeof item === "string" ? item : item.name;
+
+          return (
+            <h4
+              key={`${label}-${index}`}
+              className="flex items-center text-xs gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
+            >
+              {Icon ? (
+                <span>
+                  <Icon />
+                </span>
+              ) : null}
+              {label}
+            </h4>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const SkillContent = ({ title, data }: { title: string; data: SkillGroupData }) => (
   <div className="w-full  relative h-full overflow-hidden rounded-2xl p-10 text-xl md:text-4xl font-bold text-white  border-[0.5px] border-white">
     <h2 className="text-2xl font-bold mb-4">{title} Skills</h2>
     <div className="flex flex-col gap-2">
       {Object.entries(data).map(([category, items]) => (
-        <SkillCategory
-          key={category}
-          title={category}
-          skills={items as any[]}
-        />
+        <SkillCategory key={category} title={category} skills={items} />
       ))}
     </div>
   </div>
 );
 
+const tabs = [
+  {
+    title: "Security",
+    value: "security",
+    content: <SkillContent title="Security" data={skillsData.security} />,
+  },
+  {
+    title: "Infrastructure",
+    value: "infrastructure",
+    content: (
+      <SkillContent title="Infrastructure" data={skillsData.infrastructure} />
+    ),
+  },
+  {
+    title: "Programming",
+    value: "programming",
+    content: (
+      <SkillContent
+        title="Programming"
+        data={skillsData.technical_background}
+      />
+    ),
+  },
+  {
+    title: "Soft Skills",
+    value: "soft_skills",
+    content: <SkillContent title="Soft Skills" data={skillsData.soft_skills} />,
+  },
+];
+
 const Skills = () => {
-  const tabs = [
-    {
-      title: "Frontend",
-      value: "frontend",
-      content: <SkillContent title="Frontend" data={skillsData.frontend} />,
-    },
-    {
-      title: "Backend",
-      value: "backend",
-      content: <SkillContent title="Backend" data={skillsData.backend} />,
-    },
-    {
-      title: "Security",
-      value: "security",
-      content: <SkillContent title="Security" data={skillsData.security} />,
-    },
-    {
-      title: "Tools",
-      value: "tools",
-      content: (
-        <SkillContent title="Tools" data={{ tools: skillsData.tools }} />
-      ),
-    },
-  ];
   return (
     <section className="py-12 lg:py-16 w-full">
       <motion.div

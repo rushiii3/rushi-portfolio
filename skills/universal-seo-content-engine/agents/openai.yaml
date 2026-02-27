@@ -1,0 +1,4 @@
+interface:
+  display_name: "Universal SEO Content Engine"
+  short_description: "AI-optimized SEO content workflows across formats"
+  default_prompt: "Use $universal-seo-content-engine to produce source-backed, intent-matched SEO content optimized for search and AI answer engines."

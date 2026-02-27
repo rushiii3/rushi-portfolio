@@ -1,5 +1,4 @@
-import React, { Suspense } from "react";
-import { Motion } from "../motion";
+import React from "react";
 import BlogList from "../BlogList";
 import { getAllBlogs } from "@/lib/blogs";
 import SectionTitle from "../SectionTitle";
@@ -17,9 +16,7 @@ const Blogs = async () => {
             title="Blogs"
             className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8"
           />
-          <Suspense fallback={<div>Loading...</div>}>
-            <BlogList articles={blogs} />
-          </Suspense>
+          <BlogList articles={blogs} />
         </div>
       </div>
     </section>

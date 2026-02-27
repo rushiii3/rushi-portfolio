@@ -7,6 +7,49 @@ import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
 import { cache } from "react";
 
 export const revalidate = 2400;
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "");
+
+function toSchemaDate(dateInput: string): string {
+  const isoDateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (isoDateOnlyPattern.test(dateInput)) {
+    return `${dateInput}T00:00:00Z`;
+  }
+
+  const parsed = Date.parse(dateInput);
+  if (Number.isNaN(parsed)) {
+    return new Date().toISOString();
+  }
+
+  return new Date(parsed).toISOString();
+}
+
+function formatDisplayDate(dateInput: string): string {
+  const isoDateOnlyPattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const match = dateInput.match(isoDateOnlyPattern);
+
+  if (match) {
+    const [, year, month, day] = match;
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  }
+
+  const parsed = Date.parse(dateInput);
+  if (Number.isNaN(parsed)) {
+    return dateInput;
+  }
+
+  return new Date(parsed).toLocaleDateString("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
 
 // Cached data fetch (dedupes across metadata + page within a single request)
 const getBlog = cache(async (slug: string) => {
@@ -52,9 +95,11 @@ export async function generateMetadata(props: { params: Params }) {
       description: data.description,
       images: [data.image],
     },
-    alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_URL}/blog/${slug}`,
-    },
+    alternates: siteUrl
+      ? {
+          canonical: `${siteUrl}/blog/${slug}`,
+        }
+      : undefined,
   };
 }
 
@@ -62,22 +107,28 @@ export async function generateMetadata(props: { params: Params }) {
 export default async function Page(props: { params: Params }) {
   const { slug } = await props.params;
   const data = await getBlog(slug);
+  const faqItems = data.faqSchema ?? [];
+  const canonicalUrl = siteUrl ? `${siteUrl}/blog/${slug}` : undefined;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: data.title,
     description: data.description,
-    datePublished: data.date,
+    datePublished: toSchemaDate(data.date),
     author: {
       "@type": "Person",
       name: "Hrushikesh Shinde",
     },
     image: data.image,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${process.env.NEXT_PUBLIC_URL}/blog/${slug}`,
-    },
+    ...(canonicalUrl
+      ? {
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": canonicalUrl,
+          },
+        }
+      : {}),
     keywords: data.keywords,
     publisher: {
       "@type": "Organization",
@@ -85,6 +136,22 @@ export default async function Page(props: { params: Params }) {
     },
     isAccessibleForFree: true,
   };
+
+  const faqJsonLd =
+    faqItems.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer,
+            },
+          })),
+        }
+      : null;
 
   return (
     <div className="md:pt-32 pt-16 w-full">
@@ -101,8 +168,18 @@ export default async function Page(props: { params: Params }) {
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
           }}
         />
+        {faqJsonLd ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+            }}
+          />
+        ) : null}
         <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
-        <p className="my-3 text-xs text-muted-foreground">{data.date}</p>
+        <p className="my-3 text-xs text-muted-foreground">
+          {formatDisplayDate(data.date)}
+        </p>
         <Image
           src={data.image}
           alt={data.title}
@@ -114,7 +191,7 @@ export default async function Page(props: { params: Params }) {
           className="w-full h-auto object-cover rounded-2xl"
           title={data.title}
         />
-        <div className="max-w-full mt-5 prose prose-invert prose-strong:text-white prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl ">
+        <div className="max-w-full mt-5 prose prose-invert prose-strong:text-white prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
       </article>

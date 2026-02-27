@@ -25,12 +25,17 @@ import { FaCode, FaTools, FaJava, FaReact } from "react-icons/fa";
 import { FaGolang, FaPhp } from "react-icons/fa6";
 export const personalInfo = {
   name: "Hrushikesh Shinde",
-  title: "Cyber Security Enthusiast",
-  description: `I'm a Cybersecurity Specialist with a strong focus on Vulnerability Assessment and Penetration Testing (VAPT), as well as web and mobile application security, network security, and digital forensics. I excel at identifying and mitigating critical vulnerabilities such as XSS, SQL Injection, IDOR, CSRF, and CORS misconfigurations, and I'm experienced in conducting detailed configuration reviews to ensure secure system deployments.
+  title:
+    "Associate Information Security Consultant | Application Security & VAPT Specialist",
+  description: `I am an Associate Information Security Consultant specializing in Application Security and Vulnerability Assessment & Penetration Testing (VAPT), with a strong focus on web application security.
 
-With hands-on skills in manual penetration testing, I’m adept at modifying and compiling exploit code, using OSINT for threat intelligence, and applying secure coding practices to help build robust, secure applications. I work comfortably across Windows, Linux, and Kali Linux, and I'm proficient with tools like Nmap and other industry-standard security platforms.
+My expertise includes identifying and exploiting OWASP Top 10 vulnerabilities such as SQL Injection, Cross-Site Scripting (XSS), IDOR, CSRF, authentication bypass, and access control flaws. I perform structured manual penetration testing, conduct risk impact analysis using CVSS, and provide detailed remediation guidance aligned with industry best practices.
 
-I'm deeply passionate about cyber defense and continuously strive to enhance cyber resilience by securing digital assets and staying ahead of emerging threats—always with a security-first mindset.`,
+I have hands-on experience using tools such as Burp Suite, Nmap, SQLmap, AppScan 360, and Kali Linux for reconnaissance, vulnerability validation, and exploitation. I also leverage OSINT techniques for attack surface mapping and perform configuration reviews to strengthen application security posture.
+
+Currently preparing for HTB Certified Web Exploitation Specialist (CWES), I am continuously advancing my expertise in advanced web exploitation, business logic testing, and offensive application security.
+
+Based in Mumbai, India, I am passionate about strengthening cyber resilience through structured security testing and practical, risk-focused remediation strategies.`,
   image: "/profile.webp",
   location: "Mumbai, India",
 };
@@ -55,100 +60,159 @@ export const socialLinks = [
 
 export const workExperienceData = [
   {
-    title: "Hacktify Cyber Security (Virtual Internship) ",
-    subtitle: "Software Developer Intern",
-    timeline: "May 2024 - Present",
+    title: "qSEAp Infotech Pvt. Ltd",
+    subtitle: "Associate Information Security Consultant",
+    timeline: "Jun 2025 - Present",
     content: [
-      "Conducted penetration testing on web applications, identifying vulnerabilities.",
-      "Exploited HTML Injection, XSS, IDOR, SQL Injection, CSRF, and CORS misconfigurations.",
-      "Used tools like Burp Suite, Nmap, and SQLmap for testing.",
-      "Prepared security assessment reports with PoC exploits and recommended fixes.",
+      "Performed Vulnerability Assessment & Penetration Testing (VAPT) on 5+ web applications in the FinTech domain.",
+      "Identified and validated critical security flaws aligned with OWASP Top 10, including Broken Authentication, IDOR, Injection vulnerabilities, Security Misconfigurations, and Business Logic issues.",
+      "Executed end-to-end application security testing using Burp Suite, AppScan 360, and Kali Linux for crawling, scanning, manual exploitation, and vulnerability verification.",
+      "Prepared comprehensive technical reports and executive summaries with risk ratings, impact analysis, and prioritized mitigation strategies.",
+      "Conducted manual validation to eliminate false positives and improve accuracy of automated scan results.",
+      "Collaborated with development teams to validate fixes and perform re-testing, ensuring secure closure of identified findings.",
+    ],
+  },
+  {
+    title: "Hacktify Cyber Security",
+    subtitle: "Penetration Testing Intern (Virtual Internship)",
+    timeline: "Feb 2025 - Mar 2025",
+    content: [
+      "Conducted penetration testing across multiple security domains, identifying and documenting vulnerabilities in web applications.",
+      "Analyzed and exploited HTML Injection and Cross-Site Scripting (XSS) vulnerabilities, demonstrating attack vectors and mitigation strategies.",
+      "Discovered and reported Insecure Direct Object References (IDOR) and SQL Injection flaws using Burp Suite, Nmap, and SQLmap.",
+      "Assessed Cross-Site Request Forgery (CSRF) and CORS misconfigurations and developed reports with Proof-of-Concept (PoC) exploits.",
+      "Engaged in Capture The Flag (CTF) challenges to enhance practical penetration testing skills.",
+      "Prepared detailed security assessment reports with exploitation techniques and remediation recommendations.",
     ],
   },
   {
     title: "GirlScript Summer of Code",
-    subtitle: "Open Source Contributor",
+    subtitle: "Contributor",
     timeline: "May 2024 - Aug 2024",
     content: [
-      "Designed user interfaces, improving user satisfaction and reducing bounce rates.",
-      "Optimized frontend components, reducing load times by 20%.",
-      "Developed an API handling 1,000 daily requests for doctor specializations.",
-      "Collaborated with a team, increasing feature set by 30% and improving project delivery time by 40%.",
+      "Designed and optimized frontend components, reducing load times by 20% and improving user experience.",
+      "Developed an API handling up to 1,000 daily requests for doctor specializations.",
+      "Improved user satisfaction by 25% and reduced bounce rates by 15% through UI enhancements.",
+      "Collaborated with team members and project managers to increase feature delivery by 30% and improve project timelines by 40%.",
     ],
   },
   {
     title: "V.G. Vaze College of Arts, Science and Commerce (Autonomous)",
     subtitle: "Software Developer",
-    timeline: "May 2024 - Aug 2024",
+    timeline: "May 2023 - Jul 2023",
     content: [
-      "Collaborated with 5+ stakeholders, including the principal and administration, to gather and clarify project requirements.",
-      "Designed a fully responsive web-based interface, increasing user engagement by 30% and receiving 95% positive feedback.",
-      "Created detailed design documents, including technical specifications and user flow diagrams, to ensure project clarity.",
-      "Followed Agile methodology for iterative progress and adaptability.",
+      "Collaborated with 5+ stakeholders to gather and clarify project requirements for a web-based system.",
+      "Designed a fully responsive web interface, increasing user engagement by 30% and receiving 95% positive feedback.",
+      "Created detailed technical specifications and user flow documentation to guide development.",
+      "Executed the project using Agile methodology to ensure structured and iterative progress.",
     ],
   },
 ];
 
 export const skillsData = {
-  frontend: {
-    languages: ["HTML", "CSS", "JavaScript", "TypeScript", "Dart"],
-    frameworks: [
-      { name: "React.js", icon: SiReact },
-      { name: "Next.js", icon: SiNextdotjs },
-      { name: "Shopify", icon: SiShopify },
-      { name: "Framer", icon: SiFramer },
-    ],
-    state_management: ["Zustand", { name: "Redux", icon: SiRedux }],
-    data_fetching: ["TanStack Query", "Axios"],
-    styling: [
-      { name: "Tailwind CSS", icon: SiTailwindcss },
-      "Styled Components",
-      "CSS Modules",
-      "SASS",
-      "Bootstrap",
-    ],
-    ui_libraries: ["Material UI", "Mantine UI", "Chakra UI", "Shadcn UI"],
-    animations: ["Framer Motion", "Motion"],
-    cross_platform: ["React Native", "Flutter"],
-  },
-  backend: {
-    languages: ["Node.js", "Bun"],
-    frameworks: ["Express.js", "Socket.io", "Mongoose", "Prisma", "Drizzle"],
-    databases: [
-      { name: "MongoDB", icon: SiMongodb },
-      { name: "PostgreSQL", icon: SiPostgresql },
-      "SQLite",
-      "Redis",
-    ],
-    cms: ["Firebase", "Supabase", "Appwrite", "Sanity.io", "Payload CMS"],
-    authentication: ["JWT", "OAuth/OIDC"],
-    hosting: ["Vercel", "Netlify"],
-    scalability: ["WebSockets", "WebRTC", "Cloudinary"],
-  },
   security: {
-    fundamentals: ["OWASP Top 10", "Secure Coding", "Encryption", "CSP"],
-    testing: [
-      "Penetration Testing",
-      "Security Audits",
-      "Vulnerability Assessment",
-      "Threat Modeling",
-    ],
-    tools: ["Burp Suite", "OWASP ZAP", "Metasploit", "SAST/DAST"],
+    application_security: {
+      title: "Application Security",
+      items: [
+        "OWASP Top 10 Testing",
+        "Vulnerability Assessment & Penetration Testing (VAPT)",
+        "Authentication & Authorization Testing",
+        "Business Logic Testing",
+        "Access Control Validation",
+        "Session Management Testing",
+        "CVSS Risk Assessment",
+        "Secure Remediation Validation",
+      ],
+    },
+
+    exploitation: {
+      title: "Vulnerability Exploitation",
+      items: [
+        "SQL Injection",
+        "Cross-Site Scripting (XSS)",
+        "Insecure Direct Object References (IDOR)",
+        "Cross-Site Request Forgery (CSRF)",
+        "Security Misconfiguration",
+        "CORS Misconfiguration",
+        "Broken Authentication",
+      ],
+    },
+
+    tools: {
+      title: "Security Tools",
+      items: [
+        "Burp Suite",
+        "AppScan 360",
+        "Nmap",
+        "SQLmap",
+        "Metasploit",
+        "Nessus",
+        "Nikto",
+        "Wireshark",
+        "Netcat",
+        "Whois",
+        "Nslookup",
+      ],
+    },
+
+    methodology: {
+      title: "Security Methodology",
+      items: [
+        "Reconnaissance & Enumeration",
+        "Manual Penetration Testing",
+        "Proof-of-Concept (PoC) Development",
+        "False Positive Validation",
+        "Risk Impact Analysis",
+        "Technical Reporting & Executive Summaries",
+        "Re-testing & Secure Closure",
+      ],
+    },
   },
-  devops: {
-    ci_cd: [{ name: "Docker", icon: SiDocker }, "GitHub Actions"],
-    testing: [
-      { name: "Jest", icon: SiJest },
-      "React Testing Library",
-      "Postman",
-    ],
-    debugging: ["React DevTools", "Chrome DevTools"],
+
+  infrastructure: {
+    networking: {
+      title: "Networking",
+      items: ["TCP/IP", "DNS", "ARP", "DHCP"],
+    },
+    operating_systems: {
+      title: "Operating Systems",
+      items: ["Kali Linux", "Linux", "Windows", "macOS"],
+    },
   },
-  tools: [
-    { name: "VS Code", icon: FaCode },
-    { name: "Git", icon: FaCode },
-    { name: "GitHub", icon: SiGithub },
-    { name: "ESLint", icon: FaTools },
-    { name: "Figma", icon: SiFigma },
-  ],
+
+  technical_background: {
+    languages: {
+      title: "Languages",
+      items: ["Python (Flask)", "Node.js", "PHP", "Bash", "JavaScript"],
+    },
+
+    databases: {
+      title: "Databases",
+      items: ["MongoDB", "MySQL"],
+    },
+
+    frontend: {
+      title: "Frontend",
+      items: ["React.js", "React Native", "HTML", "CSS", "Tailwind CSS"],
+    },
+
+    backend: {
+      title: "Backend",
+      items: ["Express.js", "REST APIs"],
+    },
+  },
+
+  soft_skills: {
+    skills: {
+      title: "Soft Skills",
+      items: [
+        "Analytical Thinking",
+        "Problem Solving",
+        "Risk Assessment",
+        "Technical Reporting",
+        "Collaboration",
+        "Attention to Detail",
+      ],
+    },
+  },
 };

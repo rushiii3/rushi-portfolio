@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Space_Grotesk,
+  Merriweather,
+  Fira_Code,
+} from "next/font/google";
 import "./globals.css";
 import CursorGlow from "@/components/cursor-glow";
 import Header from "@/components/Header";
@@ -22,6 +28,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const fontSans = Space_Grotesk({
+  variable: "--font-grotesk-sans",
+  subsets: ["latin"],
+});
+const fontSerif = Merriweather({
+  variable: "--font-merriweather-serif",
+  subsets: ["latin"],
+});
+const fontMono = Fira_Code({
+  variable: "--font-fira-mono",
+  subsets: ["latin"],
+});
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
 
@@ -99,7 +117,7 @@ export default function RootLayout({
         crossOrigin="use-credentials"
       />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar`}
+        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased scrollbar`}
       >
         <NextTopLoader
           color="rgba(32,194,14,0.8)"

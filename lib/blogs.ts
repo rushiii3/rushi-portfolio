@@ -3,6 +3,29 @@ import path from "path";
 import matter from "gray-matter";
 
 const rootDirectory = path.join(process.cwd(), "/content/blogs");
+const slugPattern = /^[a-z0-9-]+$/;
+
+function sanitizeError(error: unknown): { name: string; message: string } {
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message };
+  }
+  return { name: "UnknownError", message: "Unknown error" };
+}
+
+function isValidSlug(slug: string): boolean {
+  return slugPattern.test(slug);
+}
+
+function resolveSafeBlogPath(slug: string): string | null {
+  const resolved = path.resolve(rootDirectory, `${slug}.mdx`);
+  const rootWithSeparator = `${path.resolve(rootDirectory)}${path.sep}`;
+  return resolved.startsWith(rootWithSeparator) ? resolved : null;
+}
+
+export interface BlogFAQItem {
+  question: string;
+  answer: string;
+}
 
 export interface BlogMetadata {
   slug: string;
@@ -11,8 +34,29 @@ export interface BlogMetadata {
   image: string;
   title: string;
   category: string;
-  keywords: [];
+  keywords: string[];
+  faqSchema?: BlogFAQItem[];
   content?: string;
+}
+
+function parseFaqSchema(value: unknown): BlogFAQItem[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter(
+      (item): item is BlogFAQItem =>
+        typeof item === "object" &&
+        item !== null &&
+        typeof (item as BlogFAQItem).question === "string" &&
+        typeof (item as BlogFAQItem).answer === "string",
+    )
+    .map((item) => ({
+      question: item.question.trim(),
+      answer: item.answer.trim(),
+    }))
+    .filter((item) => item.question.length > 0 && item.answer.length > 0);
 }
 
 export async function getBlogMetadata(
@@ -36,9 +80,10 @@ export async function getBlogMetadata(
       title: data.title ?? "",
       category: data.category ?? "",
       keywords: data.keywords ?? [],
+      faqSchema: parseFaqSchema(data.faqSchema),
     };
   } catch (error) {
-    console.error("Error fetching blog metadata:", error);
+    console.error("Error fetching blog metadata", sanitizeError(error));
     return null;
   }
 }
@@ -83,7 +128,7 @@ export async function getAllBlogs(
 
     return { blogs: paginatedBlogs, total };
   } catch (error) {
-    console.error("Error fetching blogs:", error);
+    console.error("Error fetching blogs", sanitizeError(error));
     return { blogs: [], total: 0 };
   }
 }
@@ -92,7 +137,15 @@ export async function getBlogBySlug(
   slug: string,
 ): Promise<BlogMetadata | null> {
   try {
-    const filePath = path.join(rootDirectory, `${slug}.mdx`);
+    if (!isValidSlug(slug)) {
+      return null;
+    }
+
+    const filePath = resolveSafeBlogPath(slug);
+    if (!filePath) {
+      return null;
+    }
+
     const fileContent = await fs.readFile(filePath, "utf8");
     const { data, content } = matter(fileContent);
 
@@ -108,10 +161,11 @@ export async function getBlogBySlug(
       title: data.title ?? "",
       category: data.category ?? "",
       keywords: data.keywords ?? [],
+      faqSchema: parseFaqSchema(data.faqSchema),
       content,
     };
   } catch (error) {
-    console.error(`Error fetching blog ${slug}:`, error);
+    console.error(`Error fetching blog ${slug}`, sanitizeError(error));
     return null;
   }
 }

@@ -1,32 +1,22 @@
-import fs from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
 import { NextRequest } from "next/server";
+import { getProjectBySlug } from "@/lib/projects";
 
-const rootDirectory = path.join(process.cwd(), "/content/projects");
+const slugPattern = /^[a-z0-9-]+$/;
 
-interface BlogMetadata {
-  slug: string;
-  date: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-  content?: string; // Add content field for single blog
-  stack: string[];
-  link?: string;
-  github?: string;
-  type: string;
+function sanitizeError(error: unknown): { name: string; message: string } {
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message };
+  }
+  return { name: "UnknownError", message: "Unknown error" };
 }
 
 // Fetch Single Blog by Slug
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const slug = (await params).slug;
-    // throw new Error("Blog not found");
     if (!slug) {
       return new Response(JSON.stringify({ error: "Slug is required" }), {
         status: 400,
@@ -34,54 +24,31 @@ export async function GET(
       });
     }
 
-    const blog = await getBlogBySlug(slug);
+    if (!slugPattern.test(slug)) {
+      return new Response(JSON.stringify({ error: "Invalid slug format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    if (!blog) {
-      return new Response(JSON.stringify({ error: "Blog not found" }), {
+    const project = await getProjectBySlug(slug);
+
+    if (!project) {
+      return new Response(JSON.stringify({ error: "Project not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(blog), {
+    return new Response(JSON.stringify(project), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching blog:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch blog" }), {
+    console.error("Error fetching project", sanitizeError(error));
+    return new Response(JSON.stringify({ error: "Failed to fetch project" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
-  }
-}
-
-// Function to Get Blog by Slug
-async function getBlogBySlug(slug: string): Promise<BlogMetadata | null> {
-  try {
-    const filePath = path.join(rootDirectory, `${slug}.mdx`);
-    const fileContent = await fs.readFile(filePath, "utf8");
-    const { data, content } = matter(fileContent);
-
-    if (!data.title || !data.category) {
-      return null;
-    }
-
-    return {
-      slug,
-      date: data.date ?? "",
-      stack: data.stack ?? [],
-      link: data.link ?? "",
-      github: data.github ?? "",
-      description: data.description ?? "",
-      image: data.image ?? "",
-      title: data.title ?? "",
-      type: data.type ?? "",
-      category: data.category ?? "",
-      content, // Include MDX content
-    };
-  } catch (error) {
-    console.error("Error fetching blog content:", error);
-    return null;
   }
 }

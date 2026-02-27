@@ -37,6 +37,7 @@ const Page = async (props: Params) => {
             <Link
               href={data.github}
               target="_blank"
+              rel="noopener noreferrer"
               referrerPolicy="no-referrer"
               className="flex flex-row gap-2 items-center"
             >
@@ -51,6 +52,7 @@ const Page = async (props: Params) => {
               className="flex flex-row gap-2 items-center"
               href={data.link}
               target="_blank"
+              rel="noopener noreferrer"
               referrerPolicy="no-referrer"
             >
               View

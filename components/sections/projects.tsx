@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { getAllProjects } from "@/lib/projects";
 import ProjectGrid from "../ProjectGrid";
 import ProjectTabsWrapper from "../ProjectTabsWrapper";
@@ -29,21 +29,13 @@ const Projects = async ({
 
         <ProjectTabsWrapper items={items} currentCategory={projectCategory} />
 
-        <Suspense
-          fallback={
-            <p className="w-full text-base font-normal leading-7 text-center text-neutral-200 mt-10">
-              Loading projects...
-            </p>
-          }
-        >
-          {displayData.length > 0 ? (
-            <ProjectGrid projects={displayData} />
-          ) : (
-            <p className="w-full text-base font-normal leading-7 text-center text-neutral-200 mt-10">
-              No projects found in this category.
-            </p>
-          )}
-        </Suspense>
+        {displayData.length > 0 ? (
+          <ProjectGrid projects={displayData} />
+        ) : (
+          <p className="w-full text-base font-normal leading-7 text-center text-neutral-200 mt-10">
+            No projects found in this category.
+          </p>
+        )}
       </div>
     </section>
   );

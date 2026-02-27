@@ -51,6 +51,7 @@ const Projectcard = ({ project }: any) => {
               <Link
                 href={project.github}
                 target="_blank"
+                rel="noopener noreferrer"
                 referrerPolicy="no-referrer"
               >
                 <BsGithub className="text-8xl" />
@@ -66,6 +67,7 @@ const Projectcard = ({ project }: any) => {
               <Link
                 href={project.link}
                 target="_blank"
+                rel="noopener noreferrer"
                 referrerPolicy="no-referrer"
               >
                 <ArrowUpRight />

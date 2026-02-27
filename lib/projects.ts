@@ -3,6 +3,24 @@ import path from "path";
 import matter from "gray-matter";
 
 const rootDirectory = path.join(process.cwd(), "/content/projects");
+const slugPattern = /^[a-z0-9-]+$/;
+
+function sanitizeError(error: unknown): { name: string; message: string } {
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message };
+  }
+  return { name: "UnknownError", message: "Unknown error" };
+}
+
+function isValidSlug(slug: string): boolean {
+  return slugPattern.test(slug);
+}
+
+function resolveSafeProjectPath(slug: string): string | null {
+  const resolved = path.resolve(rootDirectory, `${slug}.mdx`);
+  const rootWithSeparator = `${path.resolve(rootDirectory)}${path.sep}`;
+  return resolved.startsWith(rootWithSeparator) ? resolved : null;
+}
 
 export interface ProjectMetadata {
   slug: string;
@@ -44,7 +62,7 @@ export async function getProjectMetadata(
       category: data.category ?? "",
     };
   } catch (error) {
-    console.error("Error fetching project metadata:", error);
+    console.error("Error fetching project metadata", sanitizeError(error));
     return null;
   }
 }
@@ -73,7 +91,7 @@ export async function getAllProjects(
 
     return limit ? projects.slice(0, limit) : projects;
   } catch (error) {
-    console.error("Error fetching projects:", error);
+    console.error("Error fetching projects", sanitizeError(error));
     return [];
   }
 }
@@ -82,7 +100,15 @@ export async function getProjectBySlug(
   slug: string,
 ): Promise<ProjectMetadata | null> {
   try {
-    const filePath = path.join(rootDirectory, `${slug}.mdx`);
+    if (!isValidSlug(slug)) {
+      return null;
+    }
+
+    const filePath = resolveSafeProjectPath(slug);
+    if (!filePath) {
+      return null;
+    }
+
     const fileContent = await fs.readFile(filePath, "utf8");
     const { data, content } = matter(fileContent);
 
@@ -104,7 +130,7 @@ export async function getProjectBySlug(
       content,
     };
   } catch (error) {
-    console.error(`Error fetching project ${slug}:`, error);
+    console.error(`Error fetching project ${slug}`, sanitizeError(error));
     return null;
   }
 }

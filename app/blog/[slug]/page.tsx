@@ -98,6 +98,10 @@ export async function generateMetadata(props: { params: Params }) {
     alternates: siteUrl
       ? {
           canonical: `${siteUrl}/blog/${slug}`,
+          languages: {
+            "en-IN": `${siteUrl}/blog/${slug}`,
+            "x-default": `${siteUrl}/blog/${slug}`,
+          },
         }
       : undefined,
   };

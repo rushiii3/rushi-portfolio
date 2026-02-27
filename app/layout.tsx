@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Geist,
   Geist_Mono,
@@ -95,6 +95,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -109,13 +115,13 @@ export default function RootLayout({
         {preconnectDomains.map((domain) => (
           <link key={`dns-${domain}`} rel="dns-prefetch" href={domain} />
         ))}
+        <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
+        <link
+          rel="manifest"
+          href="/manifest.webmanifest"
+          crossOrigin="use-credentials"
+        />
       </head>
-      <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
-      <link
-        rel="manifest"
-        href="/manifest.webmanifest"
-        crossOrigin="use-credentials"
-      />
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased scrollbar`}
       >

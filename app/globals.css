@@ -153,5 +153,18 @@
 }
 
 html {
-  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+main > section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
+}
+
+@media (max-width: 768px) {
+  button,
+  a[role="button"],
+  .tap-target {
+    min-height: 44px;
+  }
 }

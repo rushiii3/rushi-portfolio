@@ -7,9 +7,8 @@ import {
   HomeIcon,
   SquareActivityIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import { useRouter } from "next/navigation";
-import { useRouter } from "nextjs-toploader/app";
 import React, { useEffect } from "react";
 import { useState } from "react";
 const tabs = [
@@ -29,7 +28,6 @@ export default function Navbar() {
   const [isDesktop, setIsDesktop] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth > 768 : true,
   );
-  const router = useRouter();
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
@@ -54,18 +52,18 @@ export default function Navbar() {
   return (
     <AnimatePresence>
       <motion.div
-        className="flex justify-center items-center place-self-center content-center space-x-1 rounded-xl p-2 border-2 fixed bottom-10 md:relative md:bottom-0 left-1/2 transform -translate-x-1/2 md:left-0 md:translate-0 bg-[#0a0a0a]/10 backdrop-blur"
+        className="z-40 flex justify-center items-center place-self-center content-center space-x-1 rounded-xl p-2 border fixed left-1/2 -translate-x-1/2 bottom-3 md:relative md:left-0 md:translate-x-0 md:bottom-0 bg-[#0a0a0a]/40 backdrop-blur-md"
         initial={{ y: isDesktop ? -100 : 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={transition}
+        transition={{ ...transition, duration: isDesktop ? 0.55 : 0.4 }}
       >
         {tabs.map((tab) => (
           <React.Fragment key={tab.id}>
-            <button
-              onClick={() => router.push(`${tab.href}`)}
+            <Link
+              href={tab.href}
               className={`${
                 activeTab === tab.id ? "text-white" : "hover:text-white/60"
-              } relative rounded-xl cursor-pointer px-3 py-1.5 text-sm font-medium dark:text-white outline-sky-400 transition focus-visible:outline-2 flex flex-row items-center gap-2 `}
+              } relative rounded-xl cursor-pointer px-3 py-2 min-h-11 text-sm font-medium dark:text-white outline-sky-400 transition focus-visible:outline-2 flex flex-row items-center gap-2`}
               style={{
                 WebkitTapHighlightColor: "transparent",
               }}
@@ -76,7 +74,7 @@ export default function Navbar() {
                 <motion.span
                   className="absolute inset-0 z-10 dark:bg-white mix-blend-difference rounded-xl bg-black"
                   style={{ borderRadius: 10 }}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.45 }}
                 />
               ) : null}
 
@@ -88,7 +86,7 @@ export default function Navbar() {
                   <span className="hidden lg:block">{tab.label}</span>
                 </>
               )}
-            </button>
+            </Link>
             {tab.id === 1 && <div className="bg-white px-[0.2px] py-1.5 " />}
           </React.Fragment>
         ))}

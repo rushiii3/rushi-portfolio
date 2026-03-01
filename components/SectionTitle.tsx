@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
+const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };
 const variants = {
   hidden: {
     clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",

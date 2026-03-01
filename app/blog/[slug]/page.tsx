@@ -30,7 +30,9 @@ function formatDisplayDate(dateInput: string): string {
 
   if (match) {
     const [, year, month, day] = match;
-    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    const date = new Date(
+      Date.UTC(Number(year), Number(month) - 1, Number(day)),
+    );
     return date.toLocaleDateString("en-US", {
       month: "long",
       day: "2-digit",
@@ -156,7 +158,6 @@ export default async function Page(props: { params: Params }) {
           })),
         }
       : null;
-
   return (
     <div className="md:pt-32 pt-16 w-full">
       <Link
@@ -191,7 +192,8 @@ export default async function Page(props: { params: Params }) {
           height={630}
           priority
           fetchPriority="high"
-          sizes="(max-width: 768px) 100vw, 1200px"
+          quality={85}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
           className="w-full h-auto object-cover rounded-2xl"
           title={data.title}
         />

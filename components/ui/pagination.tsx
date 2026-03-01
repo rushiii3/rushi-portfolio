@@ -121,7 +121,7 @@ export {
   PaginationContent,
   PaginationLink,
   PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
+  // PaginationPrevious,
+  // PaginationNext,
+  // PaginationEllipsis,
 }

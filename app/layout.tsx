@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import {
-  Geist,
-  Geist_Mono,
   Space_Grotesk,
   Merriweather,
   Fira_Code,
@@ -13,32 +11,33 @@ import FooterSection from "@/components/footer";
 import { LenisProvider, ThemeProvider } from "@/Provider";
 import NextTopLoader from "nextjs-toploader";
 
-const preconnectDomains = [
-  "https://images.unsplash.com",
-  "https://res.cloudinary.com",
-];
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const preconnectDomains = [
+//   "https://images.unsplash.com",
+//   "https://res.cloudinary.com",
+// ];
 
 const fontSans = Space_Grotesk({
   variable: "--font-grotesk-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  weight: ["400", "500", "700"], // Only these 3 weights
 });
+
 const fontSerif = Merriweather({
   variable: "--font-merriweather-serif",
   subsets: ["latin"],
+  display: "swap",
+  // preload: true,
+  weight: ["400", "700"], // Only these 2 weights
 });
+
 const fontMono = Fira_Code({
   variable: "--font-fira-mono",
   subsets: ["latin"],
+  display: "swap",
+  // preload: true,
+  weight: ["400", "500", "700"], // Only these 3 weights
 });
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
@@ -106,21 +105,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
-        {preconnectDomains.map((domain) => (
+        {/* {preconnectDomains.map((domain) => (
           <link key={domain} rel="preconnect" href={domain} />
         ))}
         {preconnectDomains.map((domain) => (
           <link key={`dns-${domain}`} rel="dns-prefetch" href={domain} />
-        ))}
+        ))} */}
         <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
-        <link
-          rel="manifest"
-          href="/manifest.webmanifest"
-          crossOrigin="use-credentials"
-        />
       </head>
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased scrollbar`}
@@ -130,20 +125,19 @@ export default function RootLayout({
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}
-          crawl={true}
+          crawl={false}
           showSpinner={false}
           easing="ease"
           speed={200}
           zIndex={1600}
           showAtBottom={false}
+
         />
         <LenisProvider>
           <Header />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
           >
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
               {children}

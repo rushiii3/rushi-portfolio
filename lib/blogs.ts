@@ -22,12 +22,12 @@ function resolveSafeBlogPath(slug: string): string | null {
   return resolved.startsWith(rootWithSeparator) ? resolved : null;
 }
 
-export interface BlogFAQItem {
+interface BlogFAQItem {
   question: string;
   answer: string;
 }
 
-export interface BlogMetadata {
+interface BlogMetadata {
   slug: string;
   date: string;
   description: string;
@@ -59,7 +59,7 @@ function parseFaqSchema(value: unknown): BlogFAQItem[] {
     .filter((item) => item.question.length > 0 && item.answer.length > 0);
 }
 
-export async function getBlogMetadata(
+async function getBlogMetadata(
   filepath: string,
 ): Promise<BlogMetadata | null> {
   try {

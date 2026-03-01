@@ -18,7 +18,7 @@ const tabs = [
   { id: 4, label: "Work", icon: SquareActivityIcon, href: "/work" },
   { id: 5, label: "Blog", icon: BookTextIcon, href: "/blog" },
 ];
-const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] };
+const transition = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as const };
 
 export default function Navbar() {
   const path = usePathname();

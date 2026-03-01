@@ -8,7 +8,7 @@ interface TimelineEntry {
   timeline: string;
   content: string[];
 }
-const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 };
+const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.5 };
 const variants = {
   hidden: {
     filter: "blur(10px)",
@@ -17,7 +17,7 @@ const variants = {
   visible: {
     filter: "blur(0)",
     opacity: 1,
-    transition: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
+    transition: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] as const },
   },
 };
 export const Timeline = ({ data }: { data: TimelineEntry[] }) => {

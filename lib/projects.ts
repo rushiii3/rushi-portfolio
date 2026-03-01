@@ -22,7 +22,7 @@ function resolveSafeProjectPath(slug: string): string | null {
   return resolved.startsWith(rootWithSeparator) ? resolved : null;
 }
 
-export interface ProjectMetadata {
+interface ProjectMetadata {
   slug: string;
   date: string;
   stack: string[];
@@ -36,7 +36,7 @@ export interface ProjectMetadata {
   content?: string;
 }
 
-export async function getProjectMetadata(
+ async function getProjectMetadata(
   filepath: string,
 ): Promise<ProjectMetadata | null> {
   try {

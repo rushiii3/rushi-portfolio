@@ -156,15 +156,25 @@ html {
   scroll-behavior: smooth;
 }
 
-main > section {
+main>section {
   content-visibility: auto;
   contain-intrinsic-size: 1px 900px;
 }
 
 @media (max-width: 768px) {
+
   button,
   a[role="button"],
   .tap-target {
     min-height: 44px;
   }
+}
+
+
+.linked-heading {
+  @apply no-underline text-inherit;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) {
+  @apply scroll-mt-8 lg:scroll-mt-28;
 }

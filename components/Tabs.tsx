@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 
-
 const Tabs = ({
   items,
   category,
@@ -13,7 +12,7 @@ const Tabs = ({
   return (
     <div
       data-lenis-prevent
-      className="flex flex-row items-center justify-start relative overflow-auto  no-visible-scrollbar max-w-full w-full"
+      className="flex flex-row items-center justify-start relative overflow-auto  no-visible-scrollbar max-w-4xl"
     >
       {items.map((tab) => (
         <button

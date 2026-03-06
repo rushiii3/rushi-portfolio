@@ -18,7 +18,7 @@ const cspHeader = [
 
 const nextConfig: NextConfig = {
   /* config options here */
-  
+
   compress: true,
   productionBrowserSourceMaps: false, // Reduces payload
   reactStrictMode: true,
@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    qualities: [50, 75,85],
+    qualities: [50, 75, 85],
     remotePatterns: [
       {
         protocol: "https",
@@ -79,20 +79,19 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
     turbopackMinify: true,
     optimizePackageImports: [
-      'lodash-es',      // ✅ Tree-shake
-      'date-fns',       // ✅ Tree-shake
-      '@mui/material',  // ✅ Tree-shake
-      '@mui/icons-material',
-      'react-icons',
-      'framer-motion',  // ⚠️ Already somewhat optimized
+      "lodash-es", // ✅ Tree-shake
+      "date-fns", // ✅ Tree-shake
+      "@mui/material", // ✅ Tree-shake
+      "@mui/icons-material",
+      "react-icons",
+      "framer-motion", // ⚠️ Already somewhat optimized
     ],
     turbopackRemoveUnusedExports: true,
     turbopackRemoveUnusedImports: true,
     turbopackInferModuleSideEffects: true,
     cssChunking: true,
-    },
-      poweredByHeader: false,
-
+  },
+  poweredByHeader: false,
 };
 
 export default nextConfig;

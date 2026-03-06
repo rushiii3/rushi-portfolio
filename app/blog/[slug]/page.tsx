@@ -1,57 +1,24 @@
 import MDXContent from "@/components/mdx-content";
-import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
+import { Calendar, CalendarCheck } from "lucide-react";
+import {
+  MdOutlineEditCalendar,
+  MdOutlineCalendarToday,
+  MdOutlineSchedule,
+} from "react-icons/md";
+
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
 import { cache } from "react";
+import RegisterCopyButtoon from "./_component/RegisterCopyButtoon";
+import { buildBlogSchema, buildFAQSchema } from "@/lib/schemaBuilder";
+import { BlogPostNavigation } from "./_component/BlogPostNavigation";
+import ShareArticle from "./_component/ShareArticle";
+import { formatDisplayDate } from "@/lib/helper";
+import { Badge } from "@/components/ui/badge";
 
 export const revalidate = 2400;
-const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "");
-
-function toSchemaDate(dateInput: string): string {
-  const isoDateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
-
-  if (isoDateOnlyPattern.test(dateInput)) {
-    return `${dateInput}T00:00:00Z`;
-  }
-
-  const parsed = Date.parse(dateInput);
-  if (Number.isNaN(parsed)) {
-    return new Date().toISOString();
-  }
-
-  return new Date(parsed).toISOString();
-}
-
-function formatDisplayDate(dateInput: string): string {
-  const isoDateOnlyPattern = /^(\d{4})-(\d{2})-(\d{2})$/;
-  const match = dateInput.match(isoDateOnlyPattern);
-
-  if (match) {
-    const [, year, month, day] = match;
-    const date = new Date(
-      Date.UTC(Number(year), Number(month) - 1, Number(day)),
-    );
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "2-digit",
-      year: "numeric",
-      timeZone: "UTC",
-    });
-  }
-
-  const parsed = Date.parse(dateInput);
-  if (Number.isNaN(parsed)) {
-    return dateInput;
-  }
-
-  return new Date(parsed).toLocaleDateString("en-US", {
-    month: "long",
-    day: "2-digit",
-    year: "numeric",
-  });
-}
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
 
 // Cached data fetch (dedupes across metadata + page within a single request)
 const getBlog = cache(async (slug: string) => {
@@ -72,40 +39,65 @@ export async function generateStaticParams() {
 type Params = Promise<{ slug: string }>;
 
 // ✅ 3. Metadata (no extra request thanks to cache)
-export async function generateMetadata(props: { params: Params }) {
-  const { slug } = await props.params;
+export async function generateMetadata({ params }: { params: Params }) {
+  const { slug } = await params;
   const data = await getBlog(slug);
 
+  if (!data) return {};
+
+  const canonical = siteUrl ? `${siteUrl}/blog/${slug}` : undefined;
+
   return {
-    title: data.title,
+    metadataBase: new URL(siteUrl),
+
+    title: {
+      default: data.title,
+      template: `%s | Hrushikesh Shinde`,
+    },
+
     description: data.description,
     keywords: data.keywords,
+
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+
+    alternates: {
+      canonical,
+    },
+
     openGraph: {
+      type: "article",
+      url: canonical,
       title: data.title,
       description: data.description,
+      siteName: "Hrushikesh Shinde",
+      publishedTime: data.date,
+      modifiedTime: data.dateModified || data.date,
+      authors: ["Hrushikesh Shinde"],
       images: [
         {
           url: data.image,
           width: 1200,
           height: 630,
+          alt: data.title,
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
       title: data.title,
       description: data.description,
       images: [data.image],
+      creator: "@yourhandle", // optional but recommended
     },
-    alternates: siteUrl
-      ? {
-          canonical: `${siteUrl}/blog/${slug}`,
-          languages: {
-            "en-IN": `${siteUrl}/blog/${slug}`,
-            "x-default": `${siteUrl}/blog/${slug}`,
-          },
-        }
-      : undefined,
+
+    category: data.category,
   };
 }
 
@@ -114,77 +106,93 @@ export default async function Page(props: { params: Params }) {
   const { slug } = await props.params;
   const data = await getBlog(slug);
   const faqItems = data.faqSchema ?? [];
-  const canonicalUrl = siteUrl ? `${siteUrl}/blog/${slug}` : undefined;
+  const canonicalUrl = `${siteUrl}/blog/${slug}`;
+  const logoUrl = `${siteUrl}/icon1.png`;
+  const authorUrl = `${siteUrl}/about`;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: data.title,
+  if (!siteUrl) return notFound();
+  if (!data) return notFound();
+  const articleJsonLd = buildBlogSchema({
+    title: data.title,
     description: data.description,
-    datePublished: toSchemaDate(data.date),
-    author: {
-      "@type": "Person",
-      name: "Hrushikesh Shinde",
-    },
-    image: data.image,
-    ...(canonicalUrl
-      ? {
-          mainEntityOfPage: {
-            "@type": "WebPage",
-            "@id": canonicalUrl,
-          },
-        }
-      : {}),
+    publishedAt: data.date,
+    modifiedAt: data.dateModified || data.date,
+    canonicalUrl: canonicalUrl,
+    imageUrl: data.image,
     keywords: data.keywords,
-    publisher: {
-      "@type": "Organization",
-      name: "Hrushikesh Shinde",
-    },
-    isAccessibleForFree: true,
-  };
+    wordCount: data.wordCount,
+    logoUrl: logoUrl,
+    authorUrl: authorUrl,
+    category: data.category,
+    readingMinutes: data.readingMinutes,
+  });
+  const articleJsonLdString = JSON.stringify(articleJsonLd).replace(
+    /</g,
+    "\\u003c",
+  );
 
-  const faqJsonLd =
-    faqItems.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faqItems.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: item.answer,
-            },
-          })),
-        }
-      : null;
+  const faqJsonLd = buildFAQSchema(faqItems);
+  const faqJsonLdString =
+    JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") || "";
+
   return (
     <div className="md:pt-32 pt-16 w-full">
-      <Link
-        href="/blog"
-        className="mb-8 inline-flex items-center gap-2 text-sm font-light text-muted-foreground hover:text-foreground border border-transparent hover:border-white/10 p-2 rounded-2xl transition-all"
-      >
-        <ArrowLeftIcon className="h-5 w-5" /> <span>Back to blogs</span>
-      </Link>
       <article>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+            __html: articleJsonLdString,
           }}
         />
         {faqJsonLd ? (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+              __html: faqJsonLdString,
             }}
           />
         ) : null}
-        <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
-        <p className="my-3 text-xs text-muted-foreground">
-          {formatDisplayDate(data.date)}
+        <Badge className="uppercase">{data.category}</Badge>
+        <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">
+          {data.title}
+        </h1>
+        <p className="text-lg  text-slate-400 max-w-3xl leading-relaxed">
+          {data.description}
         </p>
+
+        <div className="flex items-center border-y border-white/10 py-6 justify-center my-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs md:text-sm font-medium text-slate-400">
+            <div className="flex items-center gap-2">
+              <MdOutlineCalendarToday className="text-base size-5" />
+              <span>
+                Published on:{" "}
+                <span className="text-slate-300">
+                  {formatDisplayDate(data.date)}
+                </span>
+              </span>
+            </div>
+            <span className="hidden md:block w-1 h-1 rounded-full bg-white/20"></span>
+            <div className="flex items-center gap-2">
+              <MdOutlineEditCalendar className="text-base size-5" />
+              <span>
+                Last Modified:{" "}
+                <span className="text-slate-300">
+                  {formatDisplayDate(data.dateModified || data.date)}
+                </span>
+              </span>
+            </div>
+            <span className="hidden md:block w-1 h-1 rounded-full bg-white/20"></span>
+            <div className="flex items-center gap-2">
+              <MdOutlineSchedule className="text-base size-5" />
+              <span>
+                Reading Time:{" "}
+                <span className="text-slate-300">
+                  {data.readingMinutes} min read
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
         <Image
           src={data.image}
           alt={data.title}
@@ -201,6 +209,13 @@ export default async function Page(props: { params: Params }) {
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
       </article>
+      <ShareArticle
+        url={canonicalUrl}
+        title={data.title}
+        hashtags={data.keywords}
+      />
+      <BlogPostNavigation previous={data.previous} next={data.next} />
+      <RegisterCopyButtoon />
     </div>
   );
 }

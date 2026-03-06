@@ -19,12 +19,13 @@ export default function MDXImageZoom(props: any) {
         >
           <Image
             {...props}
-            alt={props.alt ?? ""}
+            alt={props.alt ?? "Blog Image"}
             sizes="(min-width: 1024px) 1024px, 100vw"
             loading={"lazy"}
             width={1200}
             height={630}
             placeholder="empty"
+            title={props.alt || "Blog Image"}
           />
         </button>
       </DialogTrigger>

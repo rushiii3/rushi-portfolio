@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
+import readingTime from "reading-time";
 
 const rootDirectory = path.join(process.cwd(), "/content/blogs");
 const slugPattern = /^[a-z0-9-]+$/;
@@ -34,11 +35,19 @@ interface BlogMetadata {
   image: string;
   title: string;
   category: string;
+  dateModified: string;
   keywords: string[];
   faqSchema?: BlogFAQItem[];
   content?: string;
+  wordCount: number;
+  readingMinutes: number;
 }
 
+
+interface BlogNavigation {
+  previous: Pick<BlogMetadata, "slug" | "title" | "date"> | null;
+  next: Pick<BlogMetadata, "slug" | "title" | "date"> | null;
+}
 function parseFaqSchema(value: unknown): BlogFAQItem[] {
   if (!Array.isArray(value)) {
     return [];
@@ -59,9 +68,7 @@ function parseFaqSchema(value: unknown): BlogFAQItem[] {
     .filter((item) => item.question.length > 0 && item.answer.length > 0);
 }
 
-async function getBlogMetadata(
-  filepath: string,
-): Promise<BlogMetadata | null> {
+async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
   try {
     const slug = filepath.replace(/\.mdx$/, "");
     const filePath = path.join(rootDirectory, filepath);
@@ -81,10 +88,32 @@ async function getBlogMetadata(
       category: data.category ?? "",
       keywords: data.keywords ?? [],
       faqSchema: parseFaqSchema(data.faqSchema),
+      dateModified: data.dateModified ?? "",
+      wordCount: data.wordCount ?? 0,
+      readingMinutes: data.readingMinutes ?? 0,
     };
   } catch (error) {
     console.error("Error fetching blog metadata", sanitizeError(error));
     return null;
+  }
+}
+
+async function getAllBlogMetadata(): Promise<BlogMetadata[]> {
+  try {
+    const files = await fs.readdir(rootDirectory);
+
+    const blogs = (await Promise.all(files.map(getBlogMetadata))).filter(
+      (blog): blog is BlogMetadata => blog !== null,
+    );
+
+    blogs.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+
+    return blogs;
+  } catch (error) {
+    console.error("Error loading blog metadata", sanitizeError(error));
+    return [];
   }
 }
 
@@ -133,9 +162,44 @@ export async function getAllBlogs(
   }
 }
 
+function stripNonReadableContent(content: string): string {
+  return content
+    .replace(/```[\s\S]*?```/g, "") // remove fenced code blocks
+    .replace(/`[^`]*`/g, "") // remove inline code
+    .replace(/<[^>]+>/g, "") // remove HTML tags
+    .replace(/\!\[.*?\]\(.*?\)/g, "") // remove markdown images
+    .replace(/#+\s/g, ""); // remove heading markdown
+}
+
+function resolveBlogNavigation(
+  blogs: BlogMetadata[],
+  slug: string,
+): BlogNavigation {
+  const index = blogs.findIndex((blog) => blog.slug === slug);
+
+  if (index === -1) {
+    return { previous: null, next: null };
+  }
+
+  const previous = blogs[index + 1] ?? null;
+  const next = blogs[index - 1] ?? null;
+  return {
+    previous: previous ? {
+      title: previous.title,
+      slug: previous.slug,
+      date: previous.date,
+    } : null,
+    next: next ? {
+      title: next.title,
+      slug: next.slug,
+      date: next.date,
+    } : null,
+  };
+}
+
 export async function getBlogBySlug(
   slug: string,
-): Promise<BlogMetadata | null> {
+): Promise<(BlogMetadata & BlogNavigation) | null> {
   try {
     if (!isValidSlug(slug)) {
       return null;
@@ -152,10 +216,18 @@ export async function getBlogBySlug(
     if (!data.title || !data.category) {
       return null;
     }
+    const cleaned = stripNonReadableContent(content);
+    const stats = readingTime(cleaned);
 
+    const wordCount = stats.words;
+    const readingMinutes = Math.ceil(stats.minutes);
+
+    const blogs = await getAllBlogMetadata();
+    const navigation = resolveBlogNavigation(blogs, slug);
     return {
       slug,
       date: data.date ?? "",
+      dateModified: data.dateModified ?? "",
       description: data.description ?? "",
       image: data.image ?? "",
       title: data.title ?? "",
@@ -163,6 +235,10 @@ export async function getBlogBySlug(
       keywords: data.keywords ?? [],
       faqSchema: parseFaqSchema(data.faqSchema),
       content,
+      wordCount,
+      readingMinutes,
+      previous: navigation.previous,
+      next: navigation.next,
     };
   } catch (error) {
     console.error(`Error fetching blog ${slug}`, sanitizeError(error));

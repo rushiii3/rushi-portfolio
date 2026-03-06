@@ -6,21 +6,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Search, X, XIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { blogCategories } from "@/content/info";
 
-const BlogTab = () => {
+const BlogTab = ({tab}:{tab:string}) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const blogCategories = [
-    "All",
-    "Cybersecurity Fundamentals",
-    "Web Security",
-    "Penetration Testing",
-    "Vulnerability Research",
-    "Application Security",
-    "Security Tools",
-  ];
   const [isVisible, setisVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get("search") || "",
@@ -35,9 +27,7 @@ const BlogTab = () => {
       } else {
         params.delete("search");
       }
-
-      params.set("page", "1");
-
+      console.log("pamuu");
       startTransition(() => {
         router.replace(`?${params.toString()}`, { scroll: false });
       });
@@ -47,17 +37,16 @@ const BlogTab = () => {
   }, [searchTerm]);
 
   function handleCategory(term: string) {
-    const params = new URLSearchParams(searchParams);
     if (term) {
-      if (term === "All") {
-        params.delete("category");
-      } else {
-        params.set("category", term);
+      const category = blogCategories.find((category) => category.name === term);
+      if (category) {
+        if(category.slug === "all"){
+          router.push("/blog");
+        }else{
+          router.push(`/blog/category/${category.slug}`);
+        }
       }
-    } else {
-      params.delete("category");
     }
-    router.replace(`?${params.toString()}`, { scroll: false });
   }
 
   return (
@@ -68,14 +57,14 @@ const BlogTab = () => {
           {!isVisible && (
             <motion.div
               key="tabs"
-              initial={{ opacity: 0, y: 20 }}
+              // initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.3 }}
             >
               <Tabs
-                items={blogCategories}
-                category={searchParams.get("category")?.toString() || "All"}
+                items={blogCategories.map((category) => category.name)}
+                category={tab}
                 handleClick={handleCategory}
               />
             </motion.div>
@@ -93,10 +82,10 @@ const BlogTab = () => {
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="relative w-full max-w-full">
+              <div className="relative max-w-4xl">
                 <Input
                   placeholder="Filter..."
-                  className="max-w-full"
+                  className="w-full"
                   value={searchTerm} // Controlled input
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />

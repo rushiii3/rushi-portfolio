@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import {
   Card,
   CardDescription,
@@ -7,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-// import Image from "next/image";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
 interface RootObject {
@@ -30,10 +28,11 @@ const BlogCard = ({ article }: BlogCardProps) => {
           <Image
             src={article.image}
             alt={article.title}
-            width={960}
-            height={480}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 480px"
+            fill
+            quality={85}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            title={article.title}
           />
         </div>
         <div className="flex flex-row gap-2 justify-between items-center w-full px-6">
@@ -46,7 +45,15 @@ const BlogCard = ({ article }: BlogCardProps) => {
           <CardDescription>{article.description}</CardDescription>
         </CardHeader>
         <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full px-6">
-          <p className="text-sm font-medium">{article.date}</p>
+          <p className="text-sm font-medium">
+            {article.date
+              ? new Date(article.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : ""}
+          </p>
         </div>
       </Card>
     </Link>

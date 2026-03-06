@@ -95,7 +95,7 @@ export const Tabs = ({
   );
 };
 
-export const FadeInDiv = ({
+const FadeInDiv = ({
   className,
   tabs,
 }: {

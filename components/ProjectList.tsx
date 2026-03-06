@@ -17,7 +17,7 @@ const ProjectList = ({ projects }: { projects: RootObject[] }) => {
   return (
     <StaggeredList
       items={projects}
-      className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10"
+      // className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10"
       renderItem={(project) => <Projectcard project={project} />}
     />
   );

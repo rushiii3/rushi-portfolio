@@ -1,7 +1,5 @@
 // `BlogList.tsx` (Client Component)
 "use client"; // Mark this as a Client Component
-
-import React from "react";
 import BlogCard from "./blog-card";
 import StaggeredList from "./Stagger";
 
@@ -17,7 +15,6 @@ const BlogList = ({ articles }: { articles: RootObject[] }) => {
   return (
     <StaggeredList
       items={articles}
-      className="grid grid-cols-1 md:grid-cols-2 mt-10 w-full gap-5"
       renderItem={(article) => <BlogCard article={article} />}
     />
   );

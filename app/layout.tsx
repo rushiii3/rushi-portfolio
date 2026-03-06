@@ -1,15 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Space_Grotesk,
-  Merriweather,
-  Fira_Code,
-} from "next/font/google";
+import { Space_Grotesk, Merriweather, Fira_Code } from "next/font/google";
 import "./globals.css";
-import CursorGlow from "@/components/cursor-glow";
 import Header from "@/components/Header";
 import FooterSection from "@/components/footer";
-import { LenisProvider, ThemeProvider } from "@/Provider";
-import NextTopLoader from "nextjs-toploader";
+import { CursorGlow, ThemeProvider, TopLoader } from "@/Provider";
 
 // const preconnectDomains = [
 //   "https://images.unsplash.com",
@@ -45,14 +39,13 @@ export const metadata: Metadata = {
   title: "Hrushikesh Shinde | Cybersecurity Specialist from India 🇮🇳",
   description:
     "Hi, I'm Hrushikesh Shinde — a Cybersecurity Specialist from Mumbai, India 🇮🇳. I specialize in Vulnerability Assessment and Penetration Testing (VAPT), web/mobile application security, and digital forensics. Passionate about securing digital assets and enhancing cyber resilience with a security-first approach.",
-  robots: {
-    index: true,
-    follow: true,
-    "max-image-preview": "large",
-    "max-snippet": -1,
-    "max-video-preview": -1,
-    googleBot: "index, follow",
-  },
+robots: {
+  index: true,
+  follow: true,
+  "max-image-preview": "large",
+  "max-snippet": -1,
+  "max-video-preview": -1,
+},
   applicationName: "Hrushikesh Shinde",
   appleWebApp: {
     title: "Hrushikesh Shinde",
@@ -105,7 +98,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
@@ -120,33 +112,15 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased scrollbar`}
       >
-        <NextTopLoader
-          color="rgba(32,194,14,0.8)"
-          initialPosition={0.08}
-          crawlSpeed={200}
-          height={3}
-          crawl={false}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-          zIndex={1600}
-          showAtBottom={false}
-
-        />
-        <LenisProvider>
-          <Header />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-          >
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
-              {children}
-            </main>
-          </ThemeProvider>
-
-          <FooterSection />
-          <CursorGlow />
-        </LenisProvider>
+        <Header />
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
+            {children}
+          </main>
+        </ThemeProvider>
+        <FooterSection />
+        <CursorGlow />
+        <TopLoader />
       </body>
     </html>
   );

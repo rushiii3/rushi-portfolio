@@ -9,7 +9,7 @@ const Blogs = async () => {
     return <p>No blogs found.</p>;
   }
   return (
-    <section className="pt-12 lg:pt-16">
+    <section className="pt-12 lg:pt-16 w-full">
       <div className="w-full">
         <div className="text-left">
           <SectionTitle

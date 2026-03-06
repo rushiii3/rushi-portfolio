@@ -193,3 +193,77 @@ export const skillsData = {
     },
   },
 };
+
+type BlogCategory = {
+  name: string;
+  slug: string;
+  description: string;
+  intro: string;
+};
+
+export const blogCategories: BlogCategory[] = [
+  {
+    name: "All",
+    slug: "all",
+    description:
+      "All blog posts",
+    intro:
+      "All blog posts",
+  },
+  {
+    name: "Cybersecurity Fundamentals",
+    slug: "cybersecurity-fundamentals",
+    description:
+      "Core cybersecurity concepts including threat modeling, risk assessment, attack surfaces, and foundational principles essential for security engineers and developers.",
+    intro:
+      "This section covers the fundamental principles of cybersecurity, including threat modeling, risk management, attack vectors, and defensive security strategies that form the foundation of modern security practices.",
+  },
+  {
+    name: "Web Security",
+    slug: "web-security",
+    description:
+      "Advanced web application security guides covering OWASP Top 10, authentication flaws, session management risks, input validation issues, and mitigation techniques.",
+    intro:
+      "Explore real-world web security vulnerabilities, including OWASP Top 10 risks, authentication bypasses, session hijacking, XSS, CSRF, and secure implementation practices for modern web applications.",
+  },
+  {
+    name: "Penetration Testing",
+    slug: "penetration-testing",
+    description:
+      "Practical penetration testing methodologies, reconnaissance strategies, exploitation techniques, and professional security reporting practices.",
+    intro:
+      "Dive into hands-on penetration testing workflows, from reconnaissance and enumeration to exploitation and reporting, following structured offensive security methodologies.",
+  },
+  {
+    name: "Security Writeups",
+    slug: "security-writeups",
+    description:
+      "Detailed security writeups covering CTF challenges, real-world vulnerability discoveries, bug bounty findings, and step-by-step exploit walkthroughs.",
+    intro:
+      "In-depth security writeups documenting real-world vulnerabilities, CTF challenges, bug bounty reports, and technical exploit chains with structured methodology and remediation insights.",
+  },
+  {
+    name: "Vulnerability Research",
+    slug: "vulnerability-research",
+    description:
+      "Technical vulnerability analysis, exploit development fundamentals, root cause investigation, and responsible disclosure processes.",
+    intro:
+      "Deep technical research into software vulnerabilities, exploit chains, root cause analysis, and the structured disclosure lifecycle for responsible security research.",
+  },
+  {
+    name: "Application Security",
+    slug: "application-security",
+    description:
+      "Secure coding standards, DevSecOps integration, SAST/DAST workflows, and threat modeling for reducing application-level risk.",
+    intro:
+      "Application security strategies focused on secure coding, automated security testing, DevSecOps pipelines, and proactive risk reduction across the SDLC.",
+  },
+  {
+    name: "Security Tools",
+    slug: "security-tools",
+    description:
+      "Hands-on tutorials and deep technical breakdowns of tools like Burp Suite, Nmap, Metasploit, and modern security testing utilities.",
+    intro:
+      "Technical guides and practical breakdowns of offensive and defensive security tools including Burp Suite, Nmap, Metasploit, and industry-standard assessment utilities.",
+  },
+];

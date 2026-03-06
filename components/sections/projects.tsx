@@ -1,8 +1,7 @@
-import React from "react";
 import { getAllProjects } from "@/lib/projects";
-import ProjectGrid from "../ProjectGrid";
 import ProjectTabsWrapper from "../ProjectTabsWrapper";
 import SectionTitle from "../SectionTitle";
+import ProjectList from "../ProjectList";
 
 const Projects = async ({
   limit,
@@ -30,7 +29,7 @@ const Projects = async ({
         <ProjectTabsWrapper items={items} currentCategory={projectCategory} />
 
         {displayData.length > 0 ? (
-          <ProjectGrid projects={displayData} />
+          <ProjectList projects={displayData} />
         ) : (
           <p className="w-full text-base font-normal leading-7 text-center text-neutral-200 mt-10">
             No projects found in this category.

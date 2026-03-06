@@ -4,9 +4,15 @@ import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypePrettyCode from "rehype-pretty-code";
 import MDXImage from "./mdx-image";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "./mdx-faq-item";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./mdx-faq-item";
+import { transformerCopyButton } from "@/transformer/copy-button";
 
 function isExternal(href: string) {
   return /^(https?:)?\/\//.test(href);
@@ -56,6 +62,27 @@ export default function MDXContent(
             },
           },
         ],
+        [
+          rehypePrettyCode,
+          {
+            keepBackground: true,
+            theme: "github-dark-default",
+            defaultLang: "plaintext",
+            tokensMap: {
+              fn: "entity.name.function",
+            },
+            grid: true,
+            filterMetaString: (meta: string) =>
+              meta.replace(/filename="[^"]*"/, ""),
+            transformers: [
+              transformerCopyButton({
+                jsx: true,
+                visibility: "hover",
+                feedbackDuration: 2_500,
+              }),
+            ],
+          },
+        ],
       ] as any,
     },
   };
@@ -68,7 +95,8 @@ export default function MDXContent(
     AccordionTrigger,
     AccordionContent,
     img: (props: any) => <MDXImage {...props} />,
+    // code: (props: any) => <pre {...props} className="not-prose" />,
   };
 
-  return <MDXRemote {...props} components={components} />;
+  return <MDXRemote options={options} {...props} components={components} />;
 }

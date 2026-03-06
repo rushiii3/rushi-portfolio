@@ -1,0 +1,509 @@
+---
+title: "ReconSpider: HTB Web Enumeration Tool Guide (2026)"
+description: "Learn how to install and use ReconSpider for web enumeration on HackTheBox. Covers setup, JSON output analysis, and practical recon workflow for pentesters."
+date: "2026-02-19"
+dateModified: "2026-03-04"
+category: "Security Tools"
+slug: "reconspider-htb-web-enumeration-tool"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1772791836/Blogs/reconspider_u1rdfy.webp"
+keywords:
+  [
+    "ReconSpider",
+    "ReconSpider HTB",
+    "ReconSpider HackTheBox",
+    "web enumeration tool HTB",
+    "how to use ReconSpider",
+    "ReconSpider installation",
+    "web reconnaissance HTB",
+    "HackTheBox recon tools",
+    "web enumeration penetration testing",
+    "ReconSpider result.json",
+    "ethical hacking reconnaissance",
+    "web recon automation 2026",
+    "ReconSpider tutorial",
+    "HTB web enumeration guide",
+  ]
+faqSchema:
+  - question: "What is ReconSpider?"
+    answer: "ReconSpider is a web enumeration and reconnaissance tool built for HackTheBox. It crawls a target domain and outputs structured JSON data covering emails, links, external files, JavaScript files, images, form fields, and HTML comments — all in a single run."
+  - question: "Is ReconSpider free?"
+    answer: "Yes. ReconSpider is available for free. The official version is distributed through HackTheBox Academy and a community mirror is hosted on GitHub at github.com/HowdoComputer/ReconSpider-HTB."
+  - question: "Does ReconSpider work on Kali Linux?"
+    answer: "Yes. ReconSpider runs on any system with Python 3.7 or higher and Scrapy installed. Kali Linux, Parrot OS, and Ubuntu are all supported."
+  - question: "What makes ReconSpider useful for HTB challenges?"
+    answer: "ReconSpider extracts HTML comments from target web pages — a data point most other recon tools ignore. HTB challenges frequently hide credentials, hints, and developer notes inside HTML comments, making this extraction capability directly useful for finding flags."
+  - question: "Does ReconSpider replace Nmap or Gobuster?"
+    answer: "No. ReconSpider focuses on web-layer content extraction — emails, links, files, and comments from a live website. Nmap handles network and port scanning, Gobuster handles directory brute-forcing. Each operates at a different layer and they are best used together."
+  - question: "Is it legal to run ReconSpider on any website?"
+    answer: "No. ReconSpider must only be used on systems you own or are explicitly authorized to test. For practice, use it on HackTheBox machines, CTF platforms, or your own lab environments. Unauthorized use is illegal regardless of intent."
+---
+
+## TL;DR
+
+ReconSpider is a Python-based web enumeration tool built by HackTheBox that crawls a target domain and extracts structured reconnaissance data into a `result.json` file. **Its standout capability is HTML comment extraction — a recon signal most tools skip entirely, and one that frequently surfaces hidden credentials and developer notes in HTB challenges.** Setup takes under five minutes with Python and Scrapy as the only dependencies.
+
+---
+
+## What Is ReconSpider?
+
+ReconSpider is a web reconnaissance automation tool built by Hack The Box for use in authorized security assessments and HTB Academy labs. It crawls a target URL using Scrapy under the hood and outputs a structured JSON file containing every web-layer asset it discovers — emails, internal and external links, JavaScript files, PDFs, images, form fields, and HTML source comments.
+
+The key reason to add it to your workflow: most recon tools map ports or brute-force directories. ReconSpider maps the *content layer* — what the application is exposing through its own HTML and resources. HTML comment extraction in particular is underused by most practitioners, and HTB challenge designers know it.
+
+| | |
+|---|---|
+| **Type** | Web content enumeration and asset extraction |
+| **Built by** | Hack The Box |
+| **Best use** | First-pass web recon to map assets, links, and hidden content |
+| **Not for** | Port scanning, directory brute-forcing, vulnerability exploitation |
+| **Typical users** | HTB players, penetration testers, bug bounty researchers |
+
+---
+
+## Prerequisites
+
+Before downloading ReconSpider, confirm your environment meets two requirements.
+
+**Python 3.7 or higher:**
+
+```bash
+python3 --version
+# Must return Python 3.7.x or above
+```
+
+**Scrapy** (ReconSpider's crawling engine):
+
+```bash
+pip3 install scrapy
+```
+
+If Scrapy is already installed, skip directly to the download step. No other dependencies are required.
+
+---
+
+## Installation
+
+### Official HTB Download
+
+```bash
+# Step 1: Download the zip from HTB Academy
+wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
+
+# Step 2: Unzip
+unzip ReconSpider.zip
+
+```
+
+> **If the wget URL returns a 404 or times out**, use the community GitHub mirror instead:
+> [ReconSpider-HTB GitHub Repository](https://github.com/HowdoComputer/ReconSpider-HTB)
+> Download the repository as a ZIP, unzip it, and `cd` into the extracted folder. Continue from Step 4 below.
+
+---
+
+## Running ReconSpider
+
+### Basic usage
+
+```bash
+python3 ReconSpider.py http://testfire.net
+```
+
+Replace `http://testfire.net` with your authorized target. In this example, `http://testfire.net` is used only for testing and demonstration purposes, as it is a publicly available intentionally vulnerable website. ReconSpider will crawl the domain and save the results to `result.json` in the same directory.
+
+![ReconSpider crawl log](https://res.cloudinary.com/dmuhioahv/image/upload/v1772831709/Blogs/recon1_ehxlcn.webp)
+> **Screenshot context:** You should see Scrapy's crawl log output in the terminal — request counts, item counts, and a completion message. The crawl depth and speed depends on the target site's size.
+
+### Reading the output
+
+```bash
+cat result.json
+```
+
+![ReconSpider output 1](https://res.cloudinary.com/dmuhioahv/image/upload/v1772831710/Blogs/recon2_dr9mwd.webp)
+![ReconSpider output 2](https://res.cloudinary.com/dmuhioahv/image/upload/v1772831710/Blogs/recon3_r9ltsc.webp)
+![ReconSpider output 3](https://res.cloudinary.com/dmuhioahv/image/upload/v1772831710/Blogs/recon4_i59ucf.webp)
+> **Screenshot context:** The terminal displays a formatted JSON object. Each key contains an array of discovered items. A site with active content will show populated `emails`, `links`, `js_files`, and `comments` arrays.
+
+---
+
+## Understanding the result.json Output
+
+ReconSpider organizes all findings into a single JSON file with eight keys. Here is the full output structure from a real crawl:
+
+```json showLineNumbers
+{
+    "emails": [],
+    "links": [
+        "http://testfire.net/index.jsp?content=privacy.htm",
+        "https://github.com/AppSecDev/AltoroJ/",
+        "http://testfire.net/disclaimer.htm?url=http://www.microsoft.com",
+        "http://testfire.net/Privacypolicy.jsp?sec=Careers&template=US",
+        "http://testfire.net/index.jsp?content=security.htm",
+        "http://testfire.net/index.jsp?content=business_retirement.htm",
+        "http://testfire.net/swagger/index.html",
+        "http://testfire.net/default.jsp?content=security.htm",
+        "http://testfire.net/index.jsp?content=business_insurance.htm",
+        "http://testfire.net/index.jsp?content=pr/20061109.htm",
+        "http://testfire.net/index.jsp?content=inside_internships.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=Teller:ConsumaerBanking",
+        "http://testfire.net/index.jsp",
+        "http://testfire.net/index.jsp?content=inside_community.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=ExecutiveAssistant:Administration",
+        "http://testfire.net/survey_questions.jsp?step=email",
+        "http://testfire.net/inside_points_of_interest.htm",
+        "http://testfire.net/survey_questions.jsp",
+        "http://testfire.net/index.jsp?content=personal_savings.htm",
+        "http://testfire.net/index.jsp?content=inside_executives.htm",
+        "http://testfire.net/survey_questions.jsp?step=a",
+        "http://testfire.net/subscribe.jsp",
+        "http://testfire.net/index.jsp?content=personal_other.htm",
+        "http://testfire.net/disclaimer.htm?url=http://www.netscape.com",
+        "http://testfire.net/login.jsp",
+        "http://testfire.net/index.jsp?content=inside_investor.htm",
+        "http://testfire.net/index.jsp?content=business_deposit.htm",
+        "http://testfire.net/index.jsp?content=pr/20060928.htm",
+        "http://testfire.net/index.jsp?content=pr/20060817.htm",
+        "http://www.cert.org/",
+        "http://testfire.net/index.jsp?content=inside_trainee.htm",
+        "http://www.adobe.com/products/acrobat/readstep2.html",
+        "http://testfire.net/index.jsp?content=pr/20060720.htm",
+        "http://testfire.net/index.jsp?content=personal_checking.htm",
+        "http://testfire.net/index.jsp?content=security.htm#top",
+        "http://testfire.net/index.jsp?content=pr/20061005.htm",
+        "http://testfire.net/index.jsp?content=business_lending.htm",
+        "http://testfire.net/high_yield_investments.htm",
+        "http://testfire.net/index.jsp?content=business_cards.htm",
+        "http://testfire.net/index.jsp?content=business.htm",
+        "http://testfire.net/index.jsp?content=inside_about.htm",
+        "http://testfire.net/index.jsp?content=inside_volunteering.htm#gift",
+        "http://testfire.net/Documents/JohnSmith/VoluteeringInformation.pdf",
+        "http://testfire.net/pr/communityannualreport.pdf",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=LoyaltyMarketingProgramManager:Marketing",
+        "http://testfire.net/index.jsp?content=inside_contact.htm",
+        "http://testfire.net/my%20documents/JohnSmith/Bank%20Site%20Documents/grouplife.htm",
+        "http://testfire.net/admin/clients.xls",
+        "http://www.watchfire.com/statements/terms.aspx",
+        "http://www.newspapersyndications.tv",
+        "https://www.hcl-software.com/appscan/",
+        "http://testfire.net/index.jsp?content=personal_loans.htm",
+        "http://testfire.net/index.jsp?content=inside_press.htm",
+        "http://testfire.net/index.jsp?content=inside_contact.htm#ContactUs",
+        "http://testfire.net/index.jsp?content=pr/20060518.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=MortgageLendingAccountExecutive:Sales",
+        "http://testfire.net/survey_questions.jsp?step=d",
+        "http://testfire.net/index.jsp?content=personal_cards.htm",
+        "http://testfire.net/survey_questions.jsp?step=b",
+        "http://testfire.net/cgi.exe",
+        "http://testfire.net/index.jsp?content=pr/20060413.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=CustomerServiceRepresentative:CustomerService",
+        "http://testfire.net/feedback.jsp",
+        "http://testfire.net/index.jsp?content=pr/20060921.htm",
+        "http://testfire.net/index.jsp?content=inside_volunteering.htm",
+        "http://testfire.net/index.jsp?content=inside_benefits.htm",
+        "http://testfire.net/index.jsp?content=inside_volunteering.htm#time",
+        "http://testfire.net/index.jsp?content=personal_deposit.htm",
+        "http://testfire.net/security.htm",
+        "http://testfire.net/index.jsp?content=personal.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm&job=OperationalRiskManager:RiskManagement",
+        "http://testfire.net/default.jsp",
+        "http://testfire.net/index.jsp?content=personal_investments.htm",
+        "http://testfire.net/status_check.jsp",
+        "http://testfire.net/index.jsp?content=business_other.htm",
+        "http://testfire.net/index.jsp?content=inside_jobs.htm",
+        "http://testfire.net/survey_questions.jsp?step=c",
+        "http://testfire.net/index.jsp?content=inside.htm",
+        "http://testfire.net/index.jsp?content=inside_careers.htm"
+    ],
+    "external_files": [
+        "http://testfire.net/css",
+        "http://testfire.net/xls",
+        "http://testfire.net/pdf",
+        "http://testfire.net/pr/communityannualreport.pdf",
+        "http://testfire.net/swagger/css"
+    ],
+    "js_files": [
+        "http://testfire.net/swagger/swagger-ui-bundle.js",
+        "http://demo-analytics.testfire.net/urchin.js",
+        "http://testfire.net/swagger/swagger-ui-standalone-preset.js"
+    ],
+    "form_fields": [
+        "email_addr",
+        "cfile",
+        "btnSubmit",
+        "uid",
+        "submit",
+        "query",
+        "subject",
+        "comments",
+        "step",
+        "reset",
+        "name",
+        "passw",
+        "txtEmail",
+        "email"
+    ],
+    "images": [
+        "http://testfire.net/images/icon_top.gif",
+        "http://testfire.net/images/b_lending.jpg",
+        "http://testfire.net/images/cancel.gif",
+        "http://www.exampledomainnotinuse.org/mybeacon.gif",
+        "http://testfire.net/images/altoro.gif",
+        "http://testfire.net/images/b_main.jpg",
+        "http://testfire.net/images/inside7.jpg",
+        "http://testfire.net/images/p_other.jpg",
+        "http://testfire.net/images/p_cards.jpg",
+        "http://testfire.net/images/logo.gif",
+        "http://testfire.net/images/b_insurance.jpg",
+        "http://testfire.net/images/inside1.jpg",
+        "http://testfire.net/images/p_main.jpg",
+        "http://testfire.net/images/inside5.jpg",
+        "http://testfire.net/feedback.jsp",
+        "http://testfire.net/images/home1.jpg",
+        "http://testfire.net/images/inside3.jpg",
+        "http://testfire.net/images/adobe.gif",
+        "http://testfire.net/images/p_deposit.jpg",
+        "http://testfire.net/images/ok.gif",
+        "http://testfire.net/images/b_other.jpg",
+        "http://testfire.net/images/home2.jpg",
+        "http://testfire.net/images/inside4.jpg",
+        "http://testfire.net/images/pf_lock.gif",
+        "http://testfire.net/images/p_investments.jpg",
+        "http://testfire.net/images/spacer.gif",
+        "http://testfire.net/images/inside6.jpg",
+        "http://testfire.net/images/b_deposit.jpg",
+        "http://testfire.net/images/header_pic.jpg",
+        "http://testfire.net/images/home3.jpg",
+        "http://testfire.net/images/b_cards.jpg",
+        "http://testfire.net/images/p_loans.jpg",
+        "http://testfire.net/images/p_checking.jpg"
+    ],
+    "videos": [],
+    "audio": [],
+    "comments": [
+        "<!-- Keywords:Altoro Mutual, business succession, wealth management, international trade services, mergers, acquisitions -->",
+        "<!-- HTML for static distribution bundle build -->",
+        "<!-- Keywords:Altoro Mutual, student internships, student co-op -->",
+        "<!-- Keywords:Altoro Mutual -->",
+        "<!-- Keywords:Altoro Mutual, security, security, security, we provide security, secure online banking -->",
+        "<!-- Keywords:Altoro Mutual, disability insurance, insurince, life insurance -->",
+        "<!-- Keywords:Altoro Mutual, executives, board of directors -->",
+        "<!-- Keywords:Altoro Mutual, brokerage services, retirement, insurance, private banking, wealth and tax services -->",
+        "<!-- TOC END -->",
+        "<!-- Keywords:Altoro Mutual, job openings, benefits, student internships, management trainee programs -->",
+        "<!-- Keywords:Altoro Mutual, management trainess, Careers, advancement -->",
+        "<!-- Keywords:Altoro Mutual, Altoro Private Bank, Altoro Wealth and Tax -->",
+        "<!-- Keywords:Altoro Mutual, privacy, information collection, safeguards, data usage -->",
+        "<!-- Keywords:Altoro Mutual, stocks, stock quotes -->",
+        "<!-- Keywords:Altoro Mutual, employee volunteering -->",
+        "<!-- Keywords:Altoro Mutual, personal checking, checking platinum, checking gold, checking silver, checking bronze -->",
+        "<!-- Keywords:Altoro Mutual, online banking, banking, checking, savings, accounts -->",
+        "<!-- Keywords:Altoro Mutual, platinum card, gold card, silver card, bronze card, student credit -->",
+        "<!-- Keywords:Altoro Mutual, deposit products, personal deposits -->",
+        "<!-- Keywords:Altoro Mutual, press releases, media, news, events, public relations -->",
+        "<!-- Keywords:Altoro Mutual, benefits, child-care, flexible time, health club, company discounts, paid vacations -->",
+        "<!-- Keywords:Altoro Mutual, online banking, contact information, subscriptions -->",
+        "<!-- BEGIN FOOTER -->",
+        "<!--- Dave- Hard code this into the final script - Possible security problem.\n\t\t  Re-generated every Tuesday and old files are saved to .bak format at L:\\backup\\website\\oldfiles    --->",
+        "<!-- Keywords:Altoro Mutual, auto loans, boat loans, lines of credit, home equity, mortgage loans, student loans -->",
+        "<!-- Keywords:Altoro Mutual, careers, opportunities, jobs, management -->",
+        "<!-- BEGIN HEADER -->",
+        "<!-- END HEADER -->",
+        "<!-- Keywords:Altoro Mutual, deposit products, lending, credit cards, insurance, retirement -->",
+        "<!-- Keywords:Altoro Mutual, personal deposit, personal checking, personal loans, personal cards, personal investments -->",
+        "<!-- Keywords:Altoro Mutual, community events, volunteering -->",
+        "<!-- TOC BEGIN -->",
+        "<!-- Keywords:Altoro Mutual Press Release -->",
+        "<!-- END FOOTER -->",
+        "<!-- Keywords:Altoro Mutual, real estate loans, small business loands, small business loands, equipment leasing, credit line -->",
+        "<!-- To get the latest admin login, please contact SiteOps at 415-555-6159 -->",
+        "<!-- Keywords:Altoro Mutual, credit cards, platinum cards, premium credit -->"
+    ]
+}
+```
+
+Each key maps to a distinct category of discovered data:
+
+| JSON Key | What it contains | Why it matters in recon |
+|---|---|---|
+| `emails` | Email addresses found on the domain | Staff enumeration, phishing surface, username patterns |
+| `links` | Internal and external URLs | Maps application structure, reveals third-party dependencies |
+| `external_files` | PDFs, docs, and downloadable files | Often contain metadata, internal paths, or sensitive content |
+| `js_files` | JavaScript file URLs | Reveals API endpoints, secret keys, and client-side logic |
+| `form_fields` | Input field names from forms | Attack surface for injection, parameter discovery |
+| `images` | Image URLs | Occasionally contain embedded metadata (EXIF) |
+| `videos` | Video file URLs | Rarely populated but worth checking in media-heavy apps |
+| `audio` | Audio file URLs | Rarely populated |
+| `comments` | Raw HTML comment strings | **Highest signal for HTB** — developers leave credentials, debug notes, and versioning hints here |
+
+---
+
+## Why HTML Comments Are the Most Valuable Output
+
+The `comments` key is the reason ReconSpider earns a permanent place in any HTB web recon workflow.
+
+HTML comments (`<!-- ... -->`) are invisible to end users in the browser but present in raw page source. Developers routinely leave behind:
+
+- Commented-out login credentials from testing
+- Internal hostnames and file paths
+- Version strings that reveal vulnerable software
+- Debug notes that describe application behavior
+- Disabled features that hint at hidden functionality
+
+Most automated scanners and directory fuzzers never touch HTML comment content. ReconSpider extracts it in every crawl, structured and ready to grep.
+
+```bash
+# Filter just comments from result.json using Python
+python3 -c "import json; data=json.load(open('results.json')); [print(c) for c in data['comments']]"
+```
+
+Scan the output for anything that looks like a credential pattern, a hostname, a version number, or a path that doesn't appear in your visible sitemap.
+
+---
+
+## ReconSpider in a Pentest Workflow
+
+ReconSpider belongs at the start of web-layer recon, before active scanning or exploitation.
+
+**1. Confirm scope and authorization**
+
+**2. Run ReconSpider** → generates `result.json`
+
+**3. Triage `result.json`**
+- `emails` → build username list for brute-force
+- `js_files` → manually review for API keys and endpoints
+- `external_files` → download and extract metadata
+- `comments` → manually review for credentials and hints
+
+**4. Feed findings into next-layer tools**
+- Gobuster / ffuf → directory brute-force discovered paths
+- Nmap → port scan discovered subdomains
+- [Burp Suite](/blog/burp-suite-for-htb-ctf-players) → proxy and test discovered endpoints
+
+**5. Document all findings with timestamps**
+
+---
+
+## ReconSpider vs. Complementary Tools
+
+ReconSpider operates at the web content layer. Each tool below operates at a different layer — they are not substitutes.
+
+| Tool | Primary Strength | Recon Layer | Cost |
+|---|---|---|---|
+| **ReconSpider** | Web asset and comment extraction | Content layer | Free |
+| Nmap | Port and service discovery | Network layer | Free |
+| Gobuster / ffuf | Directory and file brute-forcing | URL layer | Free |
+| OWASP Amass | Subdomain and ASN enumeration | DNS layer | Free |
+| Sublist3r | Fast subdomain discovery | DNS layer | Free |
+
+Use all five in sequence. ReconSpider gives you the content map; the others give you the infrastructure map.
+
+---
+
+## Quick Reference Cheat Sheet
+
+```bash
+# Install Scrapy dependency
+pip3 install scrapy
+
+# Download ReconSpider (HTB Academy)
+wget -O ReconSpider.zip https://academy.hackthebox.com/storage/modules/144/ReconSpider.v1.2.zip
+unzip ReconSpider.zip && cd ReconSpider
+
+# Download ReconSpider (GitHub mirror, if Academy URL fails)
+# https://github.com/HowdoComputer/ReconSpider-HTB → download ZIP → unzip → cd into folder
+
+# Run against target
+python3 ReconSpider.py <target-domain>
+
+# View full output
+cat result.json
+
+# Extract only comments
+python3 -c "import json; data=json.load(open('results.json')); [print(c) for c in data['comments']]"
+
+# Extract only emails
+python3 -c "import json; data=json.load(open('results.json')); [print(e) for e in data['emails']]"
+
+# Extract only JS files
+python3 -c "import json; data=json.load(open('results.json')); [print(j) for j in data['js_files']]"
+
+# Pretty-print the entire result
+python3 -m json.tool results.json
+```
+
+---
+
+## Common Mistakes to Avoid
+
+**Running ReconSpider without reviewing `js_files` manually.** JavaScript files frequently
+contain hardcoded API keys, endpoint URLs, and authentication tokens that don't appear
+anywhere else in the application. Skipping JS review means leaving the most exploitable
+content layer untouched. Use [Burp Suite](/blog/burp-suite-for-htb-ctf-players) to
+proxy and inspect these endpoints directly after discovery.
+
+**Treating empty arrays as confirmed negatives.** If `form_fields` or `comments` returns an empty array, it means ReconSpider didn't find any on the pages it crawled — not that none exist. Scrapy's crawl depth is finite. Manually check pages that ReconSpider may not have reached.
+
+**Ignoring `external_files` because they look harmless.** PDFs and Word documents hosted on a target frequently contain author metadata, internal network paths, and revision history. Download and run `exiftool` against every file in this array before moving on.
+
+**Skipping the GitHub mirror when the Academy download fails.** The `academy.hackthebox.com` wget URL occasionally returns a 404 or times out outside of active lab sessions. The GitHub mirror at `github.com/HowdoComputer/ReconSpider-HTB` is functionally identical — don't abandon the tool because one download link failed.
+
+**Running ReconSpider against out-of-scope targets.** Scrapy will follow external links. Confirm your target scope before running and pass only in-scope domains. Crawling an unintended host — even accidentally — creates legal exposure.
+
+---
+
+## Frequently Asked Questions
+
+<Accordion type="single" collapsible className="w-full my-4">
+  <AccordionItem value="faq-1">
+    <AccordionTrigger className="text-base md:text-lg">What is ReconSpider?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      ReconSpider is a web enumeration and reconnaissance tool built for HackTheBox. It crawls a target domain and outputs structured JSON data covering emails, links, external files, JavaScript files, images, form fields, and HTML comments — all in a single run.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-2">
+    <AccordionTrigger className="text-base md:text-lg">Is ReconSpider free?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Yes. ReconSpider is available for free. The official version is distributed through HackTheBox Academy and a community mirror is hosted on GitHub at github.com/HowdoComputer/ReconSpider-HTB.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-3">
+    <AccordionTrigger className="text-base md:text-lg">What makes ReconSpider useful for HTB challenges?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      ReconSpider extracts HTML comments from target web pages — a data point most other recon tools ignore entirely. HTB challenges frequently hide credentials, hints, and developer notes inside HTML comments, making this extraction capability directly useful for finding flags.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-4">
+    <AccordionTrigger className="text-base md:text-lg">Does ReconSpider replace Nmap or Gobuster?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      No. ReconSpider focuses on web-layer content extraction — emails, links, files, and comments from a live website. Nmap handles network and port scanning, Gobuster handles directory brute-forcing. Each operates at a different layer and they are best used together in sequence.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-5">
+    <AccordionTrigger className="text-base md:text-lg">Does ReconSpider work on Kali Linux?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Yes. ReconSpider runs on any system with Python 3.7 or higher and Scrapy installed. Kali Linux, Parrot OS, and Ubuntu are all supported environments.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-6">
+    <AccordionTrigger className="text-base md:text-lg">Is it legal to run ReconSpider on any website?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      No. ReconSpider must only be used on systems you own or are explicitly authorized to test — such as HackTheBox machines, CTF platforms, or your own lab environments. Unauthorized use is illegal regardless of intent.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+
+---
+
+## Conclusion
+
+ReconSpider does one thing most recon tools skip: it reads what the application is openly exposing through its own content layer. Emails, JavaScript endpoints, external file references, and — most valuably — HTML comments all land in a structured JSON file after a single command. The workflow is: run ReconSpider first, triage `result.json` systematically, then feed discoveries into Nmap, Gobuster, and Burp Suite for the next recon layer. That sequencing keeps your coverage complete and your findings grounded in what the target is actually serving.
+
+---
+
+## Sources
+
+- [ReconSpider-HTB GitHub Repository](https://github.com/HowdoComputer/ReconSpider-HTB) — Community mirror of the ReconSpider tool with installation instructions
+- [HackTheBox Academy — Footprinting Module](https://academy.hackthebox.com/module/details/112) — Official HTB module where ReconSpider is introduced
+- [Scrapy Documentation](https://docs.scrapy.org/en/latest/) — Official docs for Scrapy, the Python crawling framework powering ReconSpider
+- [OWASP Web Security Testing Guide — Information Gathering](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/01-Information_Gathering/) — OWASP methodology for the recon phase ReconSpider supports
+- [Python Documentation](https://docs.python.org/3/) — Reference for Python 3.7+ environment requirements

@@ -1,20 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.3, // Delay between children animations
-    },
+const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };
+const variants = {
+  hidden: {
+    filter: "blur(10px)",
+    opacity: 0,
   },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
+  visible: {
+    filter: "blur(0)",
+    opacity: 1,
+    transition,
+  },
 };
 
 interface RootObject {
@@ -26,26 +24,38 @@ interface RootObject {
   category: string;
 }
 
-
 interface StaggeredListProps<T extends RootObject> {
   items: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
-  className?: string;
 }
 
-const StaggeredList = <T extends RootObject>({ items, renderItem, className }: StaggeredListProps<T>) => {
+const StaggeredList = <T extends RootObject>({
+  items,
+  renderItem,
+}: StaggeredListProps<T>) => {
   return (
     <motion.div
-      className={className}
-      variants={containerVariants}
+      transition={transition}
+      variants={variants}
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10"
     >
-      {items?.map((item, index) => (
-        <motion.div key={index} variants={itemVariants}>
-          {renderItem(item, index)}
-        </motion.div>
-      ))}
+      <AnimatePresence mode="popLayout">
+        {items.map((item, index) => (
+          <motion.div
+            key={item.slug}
+            layout
+            initial={variants.hidden}
+            animate={variants.visible}
+            exit={variants.hidden}
+            transition={transition}
+          >
+            {renderItem(item, index)}
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </motion.div>
   );
 };

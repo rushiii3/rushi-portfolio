@@ -24,6 +24,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   transpilePackages: ["next-mdx-remote"],
+    async redirects() {
+    return [
+      {
+        source: "/blog/reconspider-web-enumeration-guide",
+        destination: "/blog/reconspider-htb-web-enumeration-tool",
+        permanent: true, // 308 redirect (SEO friendly)
+      },
+    ];
+  },
   async headers() {
     return [
       {

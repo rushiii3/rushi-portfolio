@@ -5,7 +5,8 @@ import { getAllBlogs } from "@/lib/blogs";
 import { FolderArchiveIcon, SearchSlash } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { IoMdApps } from "react-icons/io";
+import IoMdApps from "@/components/icons/react-icons/icons/IoMdApps";
+
 import { buildBlogListSchema, buildCategorySchema } from "@/lib/schemaBuilder";
 
 const BLOGS_PER_PAGE = 10;
@@ -17,23 +18,23 @@ const getBlogs = cache(
       BLOGS_PER_PAGE,
       page,
       category && category.toLowerCase() !== "all" ? category : undefined,
-      search,
+      search
     );
     return data;
-  },
+  }
 );
 
 const PaginatedBlogList = async ({
   search,
   category,
   page,
-  slug,
-}: {
-  search: string;
-  category: string;
-  page: number;
-  slug?: string;
-}) => {
+  slug
+
+
+
+
+
+}: {search: string;category: string;page: number;slug?: string;}) => {
   const data = await getBlogs(page, category, search);
   if (data.blogs.length === 0 && !search) {
     return (
@@ -41,8 +42,8 @@ const PaginatedBlogList = async ({
         <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-primary/10 text-primary">
           <FolderArchiveIcon
             size={40}
-            className="text-primary/40 dark:text-primary/60"
-          />
+            className="text-primary/40 dark:text-primary/60" />
+          
         </div>
         <div className="max-w-md px-4">
           <h2 className="mb-3 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -60,17 +61,17 @@ const PaginatedBlogList = async ({
             </Link>
           </Button>
         </div>
-      </section>
-    );
+      </section>);
+
   }
   if (data.blogs.length === 0 && search)
-    return (
-      <div className="flex flex-col items-center text-center py-12 border border-primary/10 rounded-2xl shadow-sm mt-10">
+  return (
+    <div className="flex flex-col items-center text-center py-12 border border-primary/10 rounded-2xl shadow-sm mt-10">
         <div className="bg-primary/5 dark:bg-primary/10 rounded-full p-8 mb-6">
           <SearchSlash
-            size={40}
-            className="text-primary/40 dark:text-primary/60"
-          />
+          size={40}
+          className="text-primary/40 dark:text-primary/60" />
+        
         </div>
         <h1 className="text-3xl font-bold text-slate-100 mb-3">
           No results found
@@ -79,8 +80,8 @@ const PaginatedBlogList = async ({
           We couldn't find any articles matching "<strong>{search}</strong>".
           Check your spelling.
         </p>
-      </div>
-    );
+      </div>);
+
 
   const totalPages = Math.ceil(data.total / BLOGS_PER_PAGE);
   const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
@@ -90,7 +91,7 @@ const PaginatedBlogList = async ({
     blogName: "Hrushikesh Shinde",
     description: "Hrushikesh Shinde",
     posts: data.blogs,
-    authorUrl: `${baseUrl}/about`,
+    authorUrl: `${baseUrl}/about`
   });
 
 
@@ -99,27 +100,27 @@ const PaginatedBlogList = async ({
     categoryName: category,
     description: "Hrushikesh Shinde",
     posts: data.blogs,
-    authorUrl: `${baseUrl}/about`,
+    authorUrl: `${baseUrl}/about`
   });
 
   const schema = category === "all" ? blogListSchema : blogListByCategorySchema;
   const jsonLd = schema ? JSON.stringify(schema).replace(
     /</g,
-    "\\u003c",
+    "\\u003c"
   ) : null;
 
   return (
     <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLd }}
-        />
-      )}
+      {jsonLd &&
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd }} />
+
+      }
       <BlogList articles={data?.blogs} />{" "}
       <Paginated totalPages={totalPages} currentPage={page} />
-    </>
-  );
+    </>);
+
 };
 
 export default PaginatedBlogList;

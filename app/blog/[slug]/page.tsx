@@ -1,11 +1,7 @@
 import MDXContent from "@/components/mdx-content";
-import { Calendar, CalendarCheck } from "lucide-react";
-import {
-  MdOutlineEditCalendar,
-  MdOutlineCalendarToday,
-  MdOutlineSchedule,
-} from "react-icons/md";
-
+import MdOutlineEditCalendar from "@/components/icons/react-icons/icons/MdOutlineEditCalendar";
+import MdOutlineCalendarToday from "@/components/icons/react-icons/icons/MdOutlineCalendarToday";
+import MdOutlineSchedule from "@/components/icons/react-icons/icons/MdOutlineSchedule";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
@@ -17,7 +13,7 @@ import ShareArticle from "./_component/ShareArticle";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
 
-export const revalidate = 2400;
+export const dynamic = "force-static";
 const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
 
 // Cached data fetch (dedupes across metadata + page within a single request)
@@ -31,15 +27,15 @@ const getBlog = cache(async (slug: string) => {
 export async function generateStaticParams() {
   const { blogs } = await getAllBlogs(100);
   return blogs.map((blog) => ({
-    slug: blog.slug,
+    slug: blog.slug
   }));
 }
 
 // ✅ Correct type
-type Params = Promise<{ slug: string }>;
+type Params = Promise<{slug: string;}>;
 
 // ✅ 3. Metadata (no extra request thanks to cache)
-export async function generateMetadata({ params }: { params: Params }) {
+export async function generateMetadata({ params }: {params: Params;}) {
   const { slug } = await params;
   const data = await getBlog(slug);
 
@@ -52,7 +48,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
     title: {
       default: data.title,
-      template: `%s | Hrushikesh Shinde`,
+      template: `%s | Hrushikesh Shinde`
     },
 
     description: data.description,
@@ -63,11 +59,11 @@ export async function generateMetadata({ params }: { params: Params }) {
       follow: true,
       "max-image-preview": "large",
       "max-snippet": -1,
-      "max-video-preview": -1,
+      "max-video-preview": -1
     },
 
     alternates: {
-      canonical,
+      canonical
     },
 
     openGraph: {
@@ -80,13 +76,13 @@ export async function generateMetadata({ params }: { params: Params }) {
       modifiedTime: data.dateModified || data.date,
       authors: ["Hrushikesh Shinde"],
       images: [
-        {
-          url: data.image,
-          width: 1200,
-          height: 630,
-          alt: data.title,
-        },
-      ],
+      {
+        url: data.image,
+        width: 1200,
+        height: 630,
+        alt: data.title
+      }]
+
     },
 
     twitter: {
@@ -94,15 +90,15 @@ export async function generateMetadata({ params }: { params: Params }) {
       title: data.title,
       description: data.description,
       images: [data.image],
-      creator: "@yourhandle", // optional but recommended
+      creator: "@yourhandle" // optional but recommended
     },
 
-    category: data.category,
+    category: data.category
   };
 }
 
 // ✅ 4. Page
-export default async function Page(props: { params: Params }) {
+export default async function Page(props: {params: Params;}) {
   const { slug } = await props.params;
   const data = await getBlog(slug);
   const faqItems = data.faqSchema ?? [];
@@ -124,16 +120,16 @@ export default async function Page(props: { params: Params }) {
     logoUrl: logoUrl,
     authorUrl: authorUrl,
     category: data.category,
-    readingMinutes: data.readingMinutes,
+    readingMinutes: data.readingMinutes
   });
   const articleJsonLdString = JSON.stringify(articleJsonLd).replace(
     /</g,
-    "\\u003c",
+    "\\u003c"
   );
 
   const faqJsonLd = buildFAQSchema(faqItems);
   const faqJsonLdString =
-    JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") || "";
+  JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") || "";
 
   return (
     <div className="md:pt-32 pt-16 w-full">
@@ -141,17 +137,17 @@ export default async function Page(props: { params: Params }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: articleJsonLdString,
-          }}
-        />
-        {faqJsonLd ? (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: faqJsonLdString,
-            }}
-          />
-        ) : null}
+            __html: articleJsonLdString
+          }} />
+        
+        {faqJsonLd ?
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: faqJsonLdString
+          }} /> :
+
+        null}
         <Badge className="uppercase">{data.category}</Badge>
         <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">
           {data.title}
@@ -203,8 +199,8 @@ export default async function Page(props: { params: Params }) {
           quality={85}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
           className="w-full h-auto object-cover rounded-2xl"
-          title={data.title}
-        />
+          title={data.title} />
+        
         <div className="max-w-full mt-5 prose prose-invert prose-strong:text-white prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
@@ -212,10 +208,10 @@ export default async function Page(props: { params: Params }) {
       <ShareArticle
         url={canonicalUrl}
         title={data.title}
-        hashtags={data.keywords}
-      />
+        hashtags={data.keywords} />
+      
       <BlogPostNavigation previous={data.previous} next={data.next} />
       <RegisterCopyButtoon />
-    </div>
-  );
+    </div>);
+
 }

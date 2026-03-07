@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-import { FaXTwitter, FaLinkedin, FaReddit, FaWhatsapp } from "react-icons/fa6";
+import FaXTwitter from "@/components/icons/react-icons/icons/FaXTwitter";
+import FaLinkedin from "@/components/icons/react-icons/icons/FaLinkedin";
+import FaReddit from "@/components/icons/react-icons/icons/FaReddit";
+import FaWhatsapp from "@/components/icons/react-icons/icons/FaWhatsapp";
 
 import { Link2Icon, Share2Icon, Check } from "lucide-react";
 
@@ -93,7 +95,6 @@ export default function ShareArticle({
             variant="default"
             onClick={copyLink}
             aria-live="polite"
-
           >
             {copied ? (
               <>

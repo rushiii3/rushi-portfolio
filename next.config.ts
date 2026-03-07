@@ -4,16 +4,16 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const cspHeader = [
   "default-src 'self'",
-  // Keep dev usable and avoid breaking framework-managed inline bootstrapping.
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
-  "font-src 'self' data: https:",
+  "font-src 'self' https: data:",
   "connect-src 'self' https:",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
 ].join("; ");
 
 const nextConfig: NextConfig = {
@@ -24,7 +24,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   transpilePackages: ["next-mdx-remote"],
-    async redirects() {
+  turbopack: {
+    resolveAlias: {
+      "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+      "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+    },
+  },
+  async redirects() {
     return [
       {
         source: "/blog/reconspider-web-enumeration-guide",
@@ -41,6 +47,14 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: cspHeader,
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
           },
           {
             key: "X-Content-Type-Options",
@@ -89,16 +103,14 @@ const nextConfig: NextConfig = {
     turbopackMinify: true,
     optimizePackageImports: [
       "lodash-es", // ✅ Tree-shake
-      "date-fns", // ✅ Tree-shake
-      "@mui/material", // ✅ Tree-shake
-      "@mui/icons-material",
-      "react-icons",
-      "framer-motion", // ⚠️ Already somewhat optimized
+      "lucide-react",
+      "react-icons/*",
+      "framer-motion",
     ],
-    turbopackRemoveUnusedExports: true,
-    turbopackRemoveUnusedImports: true,
-    turbopackInferModuleSideEffects: true,
-    cssChunking: true,
+  },
+
+  compiler: {
+    removeConsole: true,
   },
   poweredByHeader: false,
 };

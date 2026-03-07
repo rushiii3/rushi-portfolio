@@ -84,6 +84,8 @@ robots: {
   publisher: "https://www.linkedin.com/in/hrushikesh-shinde/",
   verification: {
     google: `${process.env.NEXT_GOOGLE_CONSOLE}`,
+    yandex: `${process.env.NEXT_YANDEX_CONSOLE}`,
+    
   },
 };
 

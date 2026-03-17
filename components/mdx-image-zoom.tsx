@@ -26,6 +26,7 @@ export default function MDXImageZoom(props: any) {
             height={630}
             placeholder="empty"
             title={props.alt || "Blog Image"}
+            className="mt-0 mb-0"
           />
         </button>
       </DialogTrigger>

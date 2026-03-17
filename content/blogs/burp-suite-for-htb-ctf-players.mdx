@@ -1,11 +1,10 @@
 ---
-title: "Burp Suite for HTB & CTF Players (2026)"
-description: "Master Burp Suite's Proxy, Repeater, Intruder, Decoder, and Extensions for HackTheBox and CTF web challenges with this hands-on technical guide."
-date: "2026-02-28"
-dateModified: "2026-02-28"
+title: "Burp Suite for HTB & CTF Players: Complete Guide (2026)"
+description: "Master Burp Suite for HackTheBox and CTF web challenges. Covers Proxy, Repeater, Intruder, Decoder, Comparer, and essential BApp extensions with real workflows."
+date: "2026-03-05"
 category: "Security Tools"
 slug: "burp-suite-for-htb-ctf-players"
-image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1772793137/Blogs/burpsuite_belkpb.png"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1773777040/Blogs/burpsuite_belkpb.png"
 keywords:
   [
     "Burp Suite HTB",
@@ -20,18 +19,28 @@ keywords:
     "Turbo Intruder Burp Suite",
     "intercept HTTP requests",
     "ethical hacking tools 2026",
+    "Burp Suite Decoder",
+    "Burp Suite proxy setup",
   ]
 faqSchema:
   - question: "Is Burp Suite free?"
-    answer: "Burp Suite Community Edition is completely free and covers Proxy, Repeater, Intruder, Decoder, Comparer, and the BApp Store. Burp Suite Pro adds an active scanner and removes Intruder throttling, and requires a paid license."
+    answer: "Burp Suite Community Edition is completely free and covers Proxy, Repeater, Intruder, Decoder, Comparer, and the BApp Store. Burp Suite Pro adds an active scanner and removes Intruder throttling, and requires a paid license (~$449/year)."
   - question: "Is Burp Suite enough for HackTheBox web challenges?"
-    answer: "Yes. The Community Edition covers the vast majority of HTB web challenges. The main limitation is Intruder's throttled speed — Turbo Intruder (a free BApp extension) compensates for this."
+    answer: "Yes. The Community Edition covers the vast majority of HTB web challenges. The main limitation is Intruder's throttled speed — Turbo Intruder, a free BApp extension, compensates for this in speed-sensitive scenarios."
   - question: "What is the difference between Burp Repeater and Intruder?"
-    answer: "Repeater is for manual, one-at-a-time request modification and replay. Intruder automates repetitive modifications using payload lists — used for fuzzing, enumeration, and brute forcing."
+    answer: "Repeater is for manual, one-at-a-time request modification and replay. Intruder automates repetitive modifications using payload lists and is used for fuzzing, ID enumeration, and credential brute-forcing."
   - question: "Can Burp Suite intercept HTTPS traffic?"
-    answer: "Yes, after installing Burp's CA certificate into your browser's trust store. This allows Burp to perform a man-in-the-middle on TLS connections between your browser and the target."
+    answer: "Yes, after installing Burp's CA certificate into your browser's trust store. This allows Burp to perform a man-in-the-middle on TLS connections between your browser and the target without SSL errors."
+  - question: "What are the must-have Burp Suite extensions for CTFs?"
+    answer: "JWT Editor, Turbo Intruder, Param Miner, and Logger++ cover the vast majority of CTF scenarios. JWT Editor handles token manipulation, Turbo Intruder replaces throttled Intruder, Param Miner finds hidden parameters, and Logger++ adds regex filtering to HTTP History."
   - question: "Is it legal to use Burp Suite on any website?"
-    answer: "No. Burp Suite must only be used on systems you own or are explicitly authorized to test — such as HackTheBox machines, CTF platforms, or your own lab environments."
+    answer: "No. Burp Suite must only be used on systems you own or are explicitly authorized to test — such as HackTheBox machines, CTF platforms, or your own lab environments. Unauthorized interception of traffic is illegal."
+---
+
+## TL;DR
+
+Burp Suite is the industry-standard web proxy for manually testing web applications. **Mastering it separates players who guess their way through HTB web challenges from those who dismantle them methodically.** This guide covers every feature you'll actually use in CTF contexts — Proxy, Repeater, Intruder, Decoder, Comparer, and the BApp extensions that matter — with no enterprise fluff.
+
 ---
 
 ## Introduction
@@ -44,165 +53,211 @@ This guide is written specifically for HTB and CTF players. No fluff, no enterpr
 
 ## Installation & Initial Setup
 
-Burp Suite Community Edition is free and covers everything in this guide except the active Scanner. Download it from [portswigger.net/burp/communitydownload](https://portswigger.net/burp/communitydownload) .
+Burp Suite Community Edition is free and covers everything in this guide except the active Scanner. Download it from [portswigger.net](https://portswigger.net/burp/communitydownload).
+
+Open terminal, navigate to the download folder, and make the installer executable:
+
+```bash
+chmod +x burpsuite_community_linux_v*.sh
+```
+
+Run the installer:
+
+```bash
+./burpsuite_community_linux_v*.sh
+```
+
+Once installed, open Burp Suite. A popup will ask you to select a project type — choose **Temporary project** and click Next.
 
 ### Configuring Your Browser
 
-Burp listens on `127.0.0.1:8080` by default. You need to point your browser's traffic through it.
+Burp listens on `127.0.0.1:8080` by default. Route your browser traffic through it before doing anything else.
+
+This is a manual process and can be tedious when you have to switch between the challenge target and normal browsing.
 
 **Firefox (recommended):** Go to **Settings → Network Settings → Manual Proxy Configuration**. Set HTTP Proxy to `127.0.0.1`, port `8080`, and check "Also use this proxy for HTTPS."
 
-**FoxyProxy (better for CTFs):** Install the FoxyProxy browser extension. Create a Burp profile pointing to `127.0.0.1:8080` and toggle it on/off with one click — essential when you're switching between the challenge target and your normal browsing.
+![Manual proxy configuration](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772759/Blogs/burpsuite1_utzuur.png)
+> **Screenshot context:** The Firefox manual proxy configuration dialog should show HTTP Proxy set to `127.0.0.1`, port `8080`, and "Also use this proxy for HTTPS" checked.
+
+To overcome the manual process of switching between the challenge target and normal browsing, you can use **FoxyProxy**.
+
+**FoxyProxy (better for CTFs):** Install the [FoxyProxy](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/) browser extension. Create a Burp profile pointing to `127.0.0.1:8080` and toggle it on/off with one click — essential when switching between the challenge target and normal browsing.
+
+You can also use Chrome, Brave, or any browser of your choice, but you will need to install the CA certificate in that browser as well.
+
+![FoxyProxy configuration](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772759/Blogs/burpsuite2_xfhcmg.png)
+> **Screenshot context:** The FoxyProxy popup should show a saved Burp Suite profile pointing to `127.0.0.1:8080` with the toggle set to active. The proxy icon in the browser toolbar changes color to confirm traffic is routing through Burp.
 
 ### Installing the CA Certificate
 
-Without this step, Burp can't intercept HTTPS and you'll get SSL errors everywhere.
+Without this step, Burp cannot intercept HTTPS and every site throws SSL errors.
 
-1. With Burp running and your proxy configured, navigate to `http://burpsuite` in your browser.
+1. With Burp running and your proxy active, navigate to [http://burp/](http://burp/) in your browser.
 2. Click **"CA Certificate"** to download `cacert.der`.
 3. In Firefox: **Settings → Privacy & Security → Certificates → View Certificates → Authorities → Import**. Select `cacert.der` and check "Trust this CA to identify websites."
 
-![alt text](https://images.unsplash.com/photo-1615525137689-198778541af6?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
-> **Screenshot context:** Once installed, browsing any HTTPS site should show no certificate errors, and every request should appear in Burp's Proxy → HTTP History tab.
+![CA certificate import dialog](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772759/Blogs/burpsuite3_nqtv0q.png)
+> **Screenshot context:** The Firefox certificate import dialog should show `cacert.der` selected in the file picker and the "Trust this CA to identify websites" checkbox checked before clicking OK.
+
+![First HTTPS request captured](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772761/Blogs/burpsuite4_ly0qjb.png)
+> **Screenshot context:** Burp's Proxy → HTTP History tab should show at least one request logged after browsing any HTTPS site — confirming the CA cert is trusted and traffic is flowing through the proxy with no SSL errors in the browser.
+
+**Shortcut:** Burp Suite includes a built-in Chromium browser accessible from the top-right corner of the interface. It has the CA certificate pre-installed, so you can start intercepting HTTPS immediately without any certificate setup.
 
 ---
 
 ## Proxy & Intercept — Seeing Everything
 
-The Proxy is the foundation of Burp. Every HTTP/S request your browser makes flows through it, and you decide what to do with each one.
+The Proxy is the foundation of Burp. Every HTTP/S request your browser makes flows through it.
 
 ### HTTP History — Your Passive Recon Tab
 
-Before you modify anything, just browse the target application normally. Watch the **Proxy → HTTP History** tab fill up. This passive phase reveals:
+Browse the target application normally before touching anything. Watch **Proxy → HTTP History** fill up. This passive phase surfaces:
 
-- **All endpoints** the app touches, including background API calls your browser makes silently
-- **Parameters** being sent — query strings, POST bodies, JSON payloads, cookies
-- **Custom headers** like `X-Role`, `X-Admin`, or `Authorization` that hint at access control mechanisms
-- **Session tokens** and their format — are they opaque strings, Base64 blobs, or JWTs?
+- **All endpoints** the app touches, including silent background API calls
+- **Parameters** in query strings, POST bodies, JSON payloads, and cookies
+- **Custom headers** like `X-Role`, `X-Admin`, or `Authorization` that hint at access control logic
+- **Session token formats** — opaque strings, Base64 blobs, or JWTs
 
-Sort the history by **URL** to group similar endpoints, or by **Status Code** to quickly find 403s and 302 redirects worth investigating.
+Sort by **URL** to group endpoints, or by **Status Code** to immediately surface 403s and 302 redirects worth investigating.
+
+![HTTP History populated](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772759/Blogs/burpsuite5_nlgxyh.png)
+> **Screenshot context:** The HTTP History tab should show a populated list of requests with the Method, URL, Status, and Length columns visible. A mix of status codes — at least one 302 and one 200 — demonstrates how sorting by Status Code immediately surfaces redirect chains worth investigating.
 
 ### Intercept Mode — Stopping Requests Mid-Flight
 
-Click **"Intercept is on"** and Burp freezes every outgoing request before it reaches the server. You see the raw HTTP, edit anything you want, then click **"Forward"** to send it — or **"Drop"** to discard it.
+Click **"Intercept is on"** and Burp freezes every outgoing request before it reaches the server. Edit anything in the raw HTTP, then click **"Forward"** to send or **"Drop"** to discard.
 
-**When to use Intercept:**
-
-- Modifying a form submission before it leaves your browser (bypassing client-side validation)
+**Use Intercept for:**
+- Modifying a form submission before it leaves your browser
 - Changing a file upload's `Content-Type` or `filename` on the fly
-- Injecting a parameter or header into a one-time request that's hard to reproduce
+- Injecting a parameter or header into a one-time request
 
-**When NOT to use Intercept:**
+**Turn Intercept OFF for:**
+- General browsing while mapping the app — you'll be clicking Forward constantly and missing the bigger picture
 
-- General browsing while mapping the app — Intercept on means you're clicking Forward constantly. Turn it off and use HTTP History instead.
+For better testing, enable Response interception to capture and analyze server responses before they reach the browser. Go to **Proxy → Options** and check **"Intercept responses"**.
 
-### Bypassing Client-Side Validation — The Classic Use Case
+![Proxy settings](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772761/Blogs/burpsuite8_gzhc7y.png)
+> **Screenshot context:** The Proxy settings page showing the intercept rules and options available for controlling what Burp captures.
 
-This comes up constantly in HTB web challenges. A form has JavaScript that prevents submitting certain values — only certain file types, only numbers in a field, a `readonly` attribute on a hidden input.
+### Bypassing Client-Side Validation
 
-None of that matters once you're using Burp. Here's the workflow:
+This pattern appears in nearly every HTB web challenge. A form enforces restrictions via JavaScript — only certain file types, `readonly` fields, numeric-only inputs. None of it applies once you intercept the raw request.
 
-1. Fill in the form values that satisfy the JavaScript (so the form actually submits).
-2. Turn Intercept on just before clicking Submit.
-3. When the request appears in Burp, change the values to what you actually want — `role=admin`, `filename="shell.php"`, `price=0`.
-4. Forward the request. The server receives your modified version. The JavaScript never knew.
+1. Fill the form with values that satisfy the JavaScript validation.
+2. Enable Intercept just before clicking Submit.
+3. When the request appears in Burp, change what you actually want: `role=admin`, `filename="shell.php"`, `price=0`.
+4. Forward. The server receives your version. The JavaScript never ran on the server.
 
-![alt text](https://images.unsplash.com/photo-1615525137689-198778541af6?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
-> **Screenshot context:** In the Intercept tab, you'll see the raw POST body as plain text. Fields like `role=user` are right there, editable inline before forwarding.
+Using [demo.testfire.net](https://demo.testfire.net) for practice — it is intentionally vulnerable and designed for testing purposes.
 
-### Scope — Filtering Out the Noise
+![Intercept tab with paused POST request](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772760/Blogs/burpsuite6_uwnvzo.png)
+> **Screenshot context:** The Intercept tab should show a paused POST request with the raw body visible in the lower panel. A field like `price=100` clearly readable as plain editable text — showing that the value can be changed before clicking Forward.
 
-When a target app makes dozens of requests to CDNs, analytics services, and ad networks, your HTTP History becomes cluttered. Set a scope to filter it.
+### Scope — Filtering Noise
 
-Go to **Target → Scope → Add** and enter your target's host (e.g., `10.129.x.x` or `target.htb`). Then in **Proxy → Options**, enable **"And URL is in target scope"** for both requests and responses. Now History only shows what matters.
+Target apps make dozens of requests to CDNs and analytics. Go to **Target → Scope → Add**, enter your target host (`10.129.x.x` or `target.htb`), then click Yes for Proxy history logging. To filter during intercept mode so only in-scope requests are shown, enable **"And URL is in target scope"** in **Proxy → Options**.
+
+![Target scope configuration](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772760/Blogs/burpsuite7_ywbalz.png)
+> **Screenshot context:** The Target → Scope tab should show a host entry added — for example `10.129.x.x` or `target.htb` — in the Include in Scope table. This confirms HTTP History will only log requests to in-scope targets going forward.
+
+For a quicker method, go to the HTTP History tab, right-click any request from the target, and select **Add to Scope**.
+
+![Add to Scope via right-click](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772761/Blogs/burpsuite9_ofd0bb.png)
+> **Screenshot context:** The right-click context menu on a request in HTTP History should show the "Add to Scope" option. After adding, go to the History filter and enable **Show only in-scope items** to keep the view clean.
+
+If adding scope this way, also enable **"And URL is in target scope"** in **Proxy → Options**, and in the History tab go to Filter and enable **Show only in-scope items**.
 
 ---
 
 ## Repeater — Your Manual Testing Workspace
 
-Repeater is where you'll spend most of your time in web challenges. It lets you replay and modify any request as many times as you want without going back to the browser.
+Repeater is where you'll spend most of your active testing time. It replays and modifies any request without returning to the browser.
 
-### Sending a Request to Repeater
+### Sending to Repeater
 
-Right-click any request in HTTP History (or in the Intercept tab) and select **"Send to Repeater"** — or press `Ctrl+R`. You'll see a new numbered tab appear in the Repeater panel.
+Right-click any request in HTTP History → **"Send to Repeater"** or press `Ctrl+R`. A new numbered tab appears in Repeater.
 
-### The Repeater Interface
-
-The left panel shows your request. The right panel shows the server's response after you click **Send**. Both are raw HTTP — no abstractions.
-
-You can have multiple Repeater tabs open simultaneously, one per endpoint you're testing. Label them by right-clicking the tab.
+![Repeater split-panel layout](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772761/Blogs/burpsuite10_m4jnjz.png)
+> **Screenshot context:** The Repeater tab should show the split-panel layout — raw HTTP request on the left, server response on the right after clicking Send. The tab label at the top shows the request number, and the Send button is visible above the left panel.
 
 ### Common CTF Workflows in Repeater
 
-**IDOR (Insecure Direct Object Reference):**
-You find a request like `GET /api/user?id=14`. Send it to Repeater. Change `id=14` to `id=1`, `id=2`, `id=13` — you might hit another user's data, or the admin account. Watch the response body for differences in content or length.
+**IDOR enumeration:** Find `GET /api/user?id=14`. Send to Repeater. Change `id=14` to `id=1`, `id=2`, `id=13`. Watch response length for anomalies — a longer response on one ID means different data returned.
 
-**Bypassing Redirects:**
-A request returns `HTTP/1.1 302 Found` with a `Location: /login` header. The browser follows the redirect automatically. But in Repeater, you see the _full_ 302 response — and the body often contains admin panel content, flags, or debug information that the app intended to hide behind the redirect. Check the response body before it's dismissed.
+**Bypassing redirects:** A `302 Found` response with `Location: /login` gets followed automatically by the browser. In Repeater, you see the full 302 response body — which often contains the admin panel content or flag the redirect was hiding.
 
-**Header Injection:**
-Some challenges gate endpoints behind IP-based checks or role headers. Try adding:
+![302 response with visible body content](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772761/Blogs/burpsuite11_usvy6n.png)
+> **Screenshot context:** The Repeater response panel should show a `302 Found` status with a `Location` header pointing to `/bank/main.jsp`, a successful login redirecting to the main page.
+
+**Header injection:** Add these to any request in Repeater to test IP and role-based access controls:
 
 ```http
 X-Forwarded-For: 127.0.0.1
 X-Real-IP: 127.0.0.1
-X-Original-IP: 127.0.0.1
-X-Remote-Addr: 127.0.0.1
-```
-
-Or role-based headers:
-
-```http
 X-Role: admin
-X-User-Role: administrator
 X-Admin: true
 ```
 
-Repeater makes it fast to test each variation and compare responses.
+**Changing request methods:** Right-click in the request panel → **"Change request method"**. Burp converts between GET and POST automatically. Some endpoints behave differently by method — test GET, POST, PUT, PATCH, DELETE on the same URL.
 
-**Changing Request Methods:**
-Right-click in the request panel → **"Change request method"**. Burp automatically converts between GET and POST, adjusting Content-Type and moving parameters. Some endpoints behave differently depending on the HTTP method — try GET, POST, PUT, PATCH, DELETE on the same URL.
+![Change request method context menu](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772762/Blogs/burpsuite12_juq1mh.png)
+> **Screenshot context:** Right-clicking anywhere inside the Repeater request panel should show a context menu with "Change request method" as one of the options. This converts the request between GET and POST automatically, adjusting the Content-Type and parameter placement.
 
-### Reading Responses
+### What to Check in Every Response
 
-Don't just look at the response body. Check:
-
-- **Status code** — 200, 403, 500 all mean different things
-- **Content-Length** — a response of 0 bytes vs. 1,200 bytes is a meaningful difference even if you can't see the body
-- **Response headers** — `Set-Cookie`, `Location`, custom headers
-- The **"Render"** tab in the response panel to see HTML rendered visually (useful for finding flags embedded in pages)
+- **Status code** — 200 vs 403 vs 500 each tell a different story
+- **Content-Length** — a 0-byte vs 1,200-byte response is meaningful even without visible body differences
+- **Response headers** — `Set-Cookie`, `Location`, any custom headers
+- **Render tab** — HTML rendered visually, useful for flags embedded in page content
 
 ---
 
 ## Intruder — Automated Parameter Fuzzing
 
-Intruder automates repetitive request modification. Instead of manually changing a value 1000 times in Repeater, you define a payload position and let Intruder iterate through a list or number range automatically.
+Intruder iterates a payload list through a marked position in your request automatically. Instead of changing a value 500 times in Repeater, you define the position and let Intruder run.
 
-> **Heads up:** Burp Community throttles Intruder to a slow request rate. For intensive fuzzing in CTFs, consider pairing it with **ffuf** or **wfuzz** for speed. Intruder is still valuable for targeted, lower-volume attacks.
+> **Note:** Burp Community throttles Intruder. For high-volume fuzzing, use ffuf or wfuzz externally. Intruder remains valuable for targeted, lower-volume attacks.
 
 ### Setting Up an Attack
 
-1. Right-click a request in HTTP History → **"Send to Intruder"** (or `Ctrl+I`).
-2. Go to the **Positions** tab. Burp auto-highlights guessed injection points in orange. Clear them all with **"Clear §"** and manually highlight your target value, then click **"Add §"**.
-3. Go to the **Payloads** tab and configure your payload set.
+1. Right-click a request → **"Send to Intruder"** (`Ctrl+I`).
+2. **Positions tab:** Clear all auto-marked positions with **"Clear §"**. Highlight your target value manually, click **"Add §"**.
+3. **Payloads tab:** Configure your payload type and list.
+
+![Intruder Positions tab with payload marker](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772762/Blogs/burpsuite13_sdjkek.png)
+> **Screenshot context:** The Intruder → Positions tab should show the raw request with one payload marker highlighted in orange — for example `§14§` around a numeric ID parameter like `id=§14§`. The "Add §", "Clear §", and "Auto §" buttons should be visible on the right side of the panel.
+
+![Intruder Payloads tab configured](https://res.cloudinary.com/dmuhioahv/image/upload/v1773775459/Blogs/burpsuite14_dk1b1f.png)
+> **Screenshot context:** The Payloads tab should show "Numbers" selected as the payload type with the range configured from 1 to 500 and a step of 1. This is the standard setup for sequential ID enumeration against endpoints like `/api/user?id=§1§`.
 
 ### Attack Types
 
-**Sniper** (most common): One payload position, one list. Burp substitutes each payload into the position one at a time. Use this for IDOR enumeration, parameter fuzzing, username enumeration.
+**Sniper** — One position, one list. Each payload substitutes into the position one at a time. Use for IDOR enumeration, parameter fuzzing, username enumeration.
 
-**Cluster Bomb**: Multiple positions, multiple payload lists — tests every combination. Use this for credential stuffing (username list × password list).
+**Battering Ram** — One list, multiple positions. The same payload is inserted into all marked positions simultaneously. Use when the same value needs to appear in multiple places at once — for example when a username appears in both a cookie and a POST body parameter and both must match for the request to be valid.
 
-**Pitchfork**: Multiple positions, multiple lists, iterated in parallel (position 1 gets list 1 item 1, position 2 gets list 2 item 1, simultaneously). Use when username and a corresponding token must be tested together.
+**Cluster Bomb** — Multiple positions, multiple payload lists. Tests every combination of all lists. Use for credential stuffing: username list × password list.
 
-### Payload Types for CTF Scenarios
+**Pitchfork** — Multiple positions, multiple lists iterated in parallel. Position 1 gets list 1 item 1 while position 2 gets list 2 item 1 simultaneously. Use when a username and its corresponding token must be tested together.
 
-- **Numbers** — Sequential ID enumeration: set range 1–500, step 1.
-- **Simple list** — Load a wordlist. For directory fuzzing, use SecLists (`/usr/share/seclists/Discovery/Web-Content/common.txt`). For passwords, use `rockyou.txt`.
-- **Runtime file** — Reads from a file as the attack runs, useful for large wordlists.
+All four attack types compared by positions, lists, and primary use case:
+
+| Attack Type | Positions | Payload Lists | Best Use Case |
+|---|---|---|---|
+| **Sniper** | One | One | IDOR, parameter fuzzing, username enumeration |
+| **Battering Ram** | Multiple | One | Same value required in multiple fields simultaneously |
+| **Pitchfork** | Multiple | Multiple (parallel) | Username + paired token tested together |
+| **Cluster Bomb** | Multiple | Multiple (all combos) | Credential stuffing, username × password brute-force |
 
 ### Analyzing Results
 
-Once the attack runs, sort results by **Length** column. Responses that differ in length from the baseline are the interesting ones. A 403 that suddenly returns 200, or a response that's 500 bytes longer — that's your lead. Right-click any result and select **"Show response"** to inspect it inline.
+Sort the attack results window by **Length**. Responses that deviate from the baseline length are your targets — a 403 that becomes 200, or a response 500 bytes longer than the rest.
+
+![Intruder results sorted by Length](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772771/Blogs/burpsuite15_qznwkq.png)
+> **Screenshot context:** The Intruder attack results window should show all completed requests with the Length column sorted. One row should have a noticeably different length from the rest — this is the anomaly. Right-clicking that row shows the "Show response" option to inspect what the server returned for that specific payload.
 
 ---
 
@@ -210,130 +265,144 @@ Once the attack runs, sort results by **Length** column. Responses that differ i
 
 ### Decoder
 
-Decoder is Burp's encoding/decoding/hashing swiss army knife. In CTFs and HTB challenges, you'll constantly encounter encoded data in cookies, tokens, parameters, and response bodies.
-
-**How to use it:**
+Decoder handles encoding, decoding, and hashing for any value you paste into it. In HTB challenges, encoded data appears constantly in cookies, tokens, and response bodies.
 
 1. Navigate to the **Decoder** tab.
-2. Paste your encoded string in the top box.
-3. Click **"Decode as"** and select the encoding type. The decoded output appears below.
-4. You can chain multiple decode operations — decode Base64, then URL-decode the result.
+2. Paste the encoded string.
+3. Click **"Decode as"** and select the encoding type.
+4. Chain operations — decode Base64, then URL-decode the result in the same view.
 
-**Common encodings you'll encounter:**
+![Decoder with Base64 decoded](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772772/Blogs/burpsuite16_hnwtwh.png)
+> **Screenshot context:** The Decoder tab should show a Base64 string like `dXNlcjphZG1pbg==` pasted in the top input box, with "Decode as Base64" selected, and the decoded output `user:admin` displayed in the panel below — confirming the value contains structured credential data hidden behind encoding.
 
-| Encoding      | Example             | What it means                                        |
-| ------------- | ------------------- | ---------------------------------------------------- |
-| Base64        | `dXNlcjphZG1pbg==`  | `user:admin` — often credentials or structured data  |
-| URL encoding  | `admin%27+OR+1%3D1` | `admin' OR 1=1` — URL-encoded SQLi payload           |
-| HTML entities | `&lt;script&gt;`    | `<script>` — check for XSS reflected in encoded form |
-| Hex           | `48544237b7d`       | Convert to ASCII to reveal hidden strings            |
-| Gzip          | Binary blob         | Sometimes response bodies or cookies are compressed  |
+Common encodings in CTF and HTB challenges:
 
-**JWT tokens** deserve special mention. They appear as three Base64-encoded segments separated by dots: `header.payload.signature`. Paste the payload (middle segment) into Decoder and decode as Base64 to reveal the JSON claims — things like `{"role":"user","admin":false}` that you might be able to tamper with.
+| Encoding | Example | Decoded meaning |
+|---|---|---|
+| **Base64** | `dXNlcjphZG1pbg==` | `user:admin` — credentials or structured data |
+| URL encoding | `admin%27+OR+1%3D1` | `admin' OR 1=1` — SQLi payload |
+| HTML entities | `&lt;script&gt;` | `<script>` — reflected XSS in encoded form |
+| Hex | `48544237b7d` | ASCII string — convert to reveal hidden values |
+| Gzip | Binary blob | Compressed response body or cookie |
 
-**Encoding for injection:** Decoder works both ways. If you need to send a URL-encoded payload or Base64-encode a modified JWT payload before sending it in Repeater, Decoder handles that with the **"Encode as"** option.
+**JWT tokens** appear as three Base64-encoded segments separated by dots: `header.payload.signature`. Paste the middle segment into Decoder, decode as Base64, and read the JSON claims — `{"role":"user","admin":false}` — which may be tamperable.
+
+![JWT payload decoded in Decoder](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772772/Blogs/burpsuite17_jcan0q.png)
+> **Screenshot context:** The Decoder tab should show the middle segment of a JWT token pasted in the input — the payload section between the two dots. Decoded as Base64, the output panel should display a readable JSON object containing claims like `"role": "user"` or `"admin": false`, showing the data that can be tampered with before re-encoding.
 
 ### Comparer
 
-Comparer does a byte-level or word-level diff between two responses. This is invaluable when:
+Comparer runs a byte-level or word-level diff between two items. Use it when:
 
-- You're testing authentication and want to see exactly what's different between a valid login and an invalid one
-- You've made a modification and want to compare the before/after responses precisely
-- Intruder returned two similar-length responses that you suspect differ in small but meaningful ways
+- Testing authentication to find the exact difference between a valid and invalid login response
+- Comparing before/after responses after a parameter change
+- Intruder returned two similar-length responses you suspect differ in small ways
 
-**How to use it:**
+Right-click any request or response in History, Repeater, or Intruder → **"Send to Comparer"**. Send a second item. Open **Comparer**, select both, click **"Words"** or **"Bytes"**.
 
-Right-click any request or response in HTTP History, Repeater, or Intruder → **"Send to Comparer"**. Send a second item to compare. Open the **Comparer** tab, select your two items, and click **"Words"** or **"Bytes"**. Differences are highlighted in color — green for additions, red for removals.
+![Comparer word-level diff](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772774/Blogs/burpsuite18_a6i65y.png)
+> **Screenshot context:** The Comparer tab should show two responses loaded side by side with a word-level diff active. Green highlights mark content present in one response but not the other — for example `"role": "admin"` appearing in the modified response where the original had `"role": "user"`. This visual diff pinpoints the exact access control difference between the two responses.
 
 ---
 
 ## Extensions & BApp Store — Supercharging Burp for CTFs
 
-Burp's extension ecosystem is one of its biggest advantages. Extensions are installed via **Extender → BApp Store**.
+Install extensions via **Extender → BApp Store**. Community-compatible extensions are marked in the store.
 
-> **Note:** Some extensions require Burp Pro. Community-compatible extensions are marked in the store.
+### Essential Extensions for CTF Work
 
-### Essential CTF Extensions
+**JWT Editor** is the most important extension for modern web CTFs. It automatically detects JWTs in requests and adds a dedicated tab to decode, modify, and re-sign them. Supports the `alg: none` attack, custom key signing, and embedded JWK injection. Available free in Community.
 
-**JWT Editor**
-The most important extension for modern web CTFs. Automatically detects JWTs in requests, lets you decode/modify the header and payload with a UI, re-sign tokens with a custom key, or attempt the `alg: none` attack (removing the signature entirely). Available in Community.
+![JWT Editor tab in Repeater](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772780/Blogs/burpsuite20_a1eofk.png)
+> **Screenshot context:** A Repeater tab containing a request with a JWT in the Authorization or Cookie header should show a "JSON Web Token" sub-tab at the bottom of the request panel. Clicking it reveals the decoded header and payload as editable JSON fields, with an "Attack" dropdown button that exposes options including the `alg: none` bypass.
 
-**Param Miner**
-Discovers hidden parameters that the application accepts but doesn't advertise in its visible requests. It fuzzes headers and body parameters in the background using a smart wordlist. Often reveals `debug=true`, `admin=1`, or undocumented API parameters that open up new attack surfaces.
+**Param Miner** discovers hidden parameters the application accepts but never advertises. It fuzzes headers and body parameters in the background using a built-in wordlist, often surfacing `debug=true`, `admin=1`, or undocumented API parameters.
 
-**Turbo Intruder**
-A Python-scriptable, high-speed replacement for Burp's throttled Community Intruder. Sends thousands of requests per second using HTTP pipelining and async techniques. Critical for race condition attacks and for CTFs where Community Intruder is too slow.
+**Turbo Intruder** is a Python-scriptable, high-speed replacement for throttled Community Intruder. It sends thousands of requests per second using HTTP pipelining. Essential for race condition attacks and any fuzzing scenario where Intruder's Community throttle is the bottleneck.
 
-Usage: Send a request to Turbo Intruder via right-click. You'll get a Python script editor where you define your payload logic. The default template covers most wordlist fuzzing scenarios.
+![Turbo Intruder Python script editor](https://res.cloudinary.com/dmuhioahv/image/upload/v1773772782/Blogs/burpsuite21_zhnhei.png)
+> **Screenshot context:** The Turbo Intruder window should show a Python script editor with the default template loaded — the `def queueRequests(target, wordlists)` function visible with a `queue()` call inside it. This is the entry point where payload logic is defined before clicking "Attack" to start the high-speed run.
 
-**Logger++**
-Extends Burp's HTTP History with advanced filtering, regex search, and log export. When you're deep in a complex challenge with hundreds of requests, Logger++ lets you write filters like `Response.Body CONTAINS "flag"` to automatically highlight matching responses.
+**Logger++** adds regex filtering, column customization, and log export to HTTP History. Write filters like `Response.Body CONTAINS "flag"` to auto-highlight matching responses across hundreds of requests.
 
-**Retire.js**
-Passively detects outdated JavaScript libraries with known CVEs in the target application's responses. Useful for CTFs that involve exploiting client-side library vulnerabilities.
+**Retire.js** passively detects outdated JavaScript libraries with known CVEs in target responses. Runs silently in the background and flags vulnerable library versions in the HTTP History annotations.
 
-**Hackvertor**
-An in-request encoding/transformation tool. You can wrap payload values in Hackvertor tags directly in Repeater and it transforms them on the fly before sending. Useful for complex multi-encoded payloads where you'd otherwise need to manually encode in Decoder before each send.
+**Hackvertor** applies encoding transformations inline inside Repeater requests using tag syntax. Wrap a payload in `<@base64>payload<@/base64>` and it encodes on the fly before sending — useful for multi-encoded payloads.
 
-### Installing Python Extensions Manually
+### Installing Extensions
 
-Some CTF-specific tools aren't in the BApp Store. For Jython-based (Python) extensions:
+To browse and download extensions directly: [BApp Store](https://portswigger.net/bappstore)
 
-1. Download **Jython standalone JAR** from jython.org.
-2. In Burp: **Extender → Options → Python Environment** → point to the Jython JAR.
-3. Now load `.py` extension files via **Extender → Extensions → Add → Extension type: Python**.
+After downloading, go to **Extensions → Add → Extension type: [Extension Type]** and select the downloaded file.
+
+For extensions written in Python or Ruby, Burp Suite runs on Java and requires Jython or JRuby to execute them. Configure this before installing:
+
+1. Download the [Jython standalone JAR](https://www.jython.org/download.html) or the [JRuby JAR][def].
+2. In Burp Suite, open **Settings → Extensions**.
+3. Under **Python Environment** or **Ruby Environment**, click **Select file** and choose the downloaded JAR.
+4. Go to **Extensions → BApp Store**, refresh the list, and install your desired extension.
+
+To install a custom extension file manually:
+
+1. Go to **Extensions → Installed** and click **Add**.
+2. In **Extension Details**, select the extension type (Java, Python, or Ruby).
+3. Click **Select file** and choose the extension file.
+4. *(Optional)* Configure **Standard output** and **Standard error** to log messages.
+5. Click **Next** to load the extension.
+6. Review messages in the **Output** and **Errors** tabs, then click **Close**.
 
 ---
 
 ## Workflow Cheat Sheet for HTB Web Challenges
 
-```
-1. Configure proxy + CA cert
-   └─ FoxyProxy for quick toggling
+**1. Configure proxy + CA cert**
+- FoxyProxy profile pointing to 127.0.0.1:8080
+- CA cert imported into Firefox trust store
 
-2. Passive recon
-   └─ Browse normally, observe HTTP History
-   └─ Set scope to filter noise
-   └─ Note: endpoints, parameters, headers, cookies, token formats
+**2. Passive recon**
+- Browse normally, watch HTTP History fill
+- Set scope to filter CDN and analytics noise
+- Identify: endpoints, parameters, headers, cookies, token formats
 
-3. Map the app
-   └─ Spider via Target → Site Map
-   └─ Look for /admin, /api/*, /debug, hidden paths
+**3. Map the app**
+- Spider via Target → Site Map
+- Look for `/admin`, `/api/*`, `/debug`, hidden paths
 
-4. Identify attack surface
-   └─ Parameters that look like IDs → IDOR candidate
-   └─ Redirect chains → check 302 response bodies
-   └─ File uploads → bypass Content-Type/extension checks
-   └─ Encoded cookies/tokens → Decode and analyze
+**4. Identify attack surface**
+- Numeric parameters → IDOR candidate
+- 302 redirect chains → check response bodies in Repeater
+- File uploads → intercept and change `Content-Type` / `filename`
+- Encoded cookies or tokens → Decoder
 
-5. Manual testing in Repeater
-   └─ Change methods, parameters, headers
-   └─ Add X-Forwarded-For, X-Role, X-Admin headers
-   └─ Modify JWT claims, re-sign with JWT Editor
+**5. Manual testing in Repeater**
+- Change methods, parameters, header values
+- Add `X-Forwarded-For`, `X-Role`, `X-Admin` headers
+- Modify JWT claims, re-sign with JWT Editor
 
-6. Automate with Intruder / Turbo Intruder
-   └─ Enumerate IDs, fuzz parameters
-   └─ Sort by Length to find anomalies
+**6. Automate with Intruder / Turbo Intruder**
+- Enumerate numeric IDs
+- Fuzz parameters with wordlists
+- Sort results by Length to find anomalies
 
-7. Decode with Decoder
-   └─ Base64, URL, HTML, JWT payload
-   └─ Re-encode modified values for injection
+**7. Decode in Decoder**
+- Base64, URL encoding, HTML entities, JWT payload segment
+- Re-encode modified values before injecting in Repeater
 
-8. Compare with Comparer
-   └─ Diff responses to isolate meaningful differences
-```
+**8. Diff in Comparer**
+- Compare valid vs invalid responses
+- Isolate the exact bytes that change between access levels
 
 ---
 
 ## Key Mindset for CTF Web Challenges
 
-**The server is the authority, not the browser.** JavaScript, HTML attributes, and CSS are all suggestions that your browser follows. Burp ignores them entirely and talks directly to the server. Every client-side restriction is a bypass waiting to happen.
+**The server is the authority, not the browser.** JavaScript, HTML attributes, and CSS are suggestions your browser follows. Burp ignores them and communicates with the server directly. Every client-side restriction is a bypass waiting to happen.
 
-**Read responses fully.** The flag or the clue is often in a response header, a comment in the HTML, or the body of a redirect that your browser never displayed. Burp shows you everything.
+**Read full responses.** The flag or the clue is often in a response header, an HTML comment, or the body of a redirect your browser never rendered. Burp shows you everything — use the Render tab, check headers, read the raw body.
 
-**Encoding isn't encryption.** If you see a cookie that looks like `dXNlcjoxMjM=` — decode it. If you see a JWT — decode the payload. If you see a hex string — convert it. Challenge authors hide data in encoded formats expecting players to miss it.
+**Encoding is not encryption.** A cookie that looks like `dXNlcjoxMjM=` decodes to `user:123`. A JWT payload decodes to readable JSON. Challenge authors hide data in encoded formats expecting players to skip them. Don't.
 
-**Anomalies are leads.** A response that's 200 bytes longer than others. A 200 OK where everything else is 403. A Set-Cookie header that appears only on one specific path. These are not accidents — they're the puzzle.
+**Anomalies are leads.** A response 200 bytes longer than the rest. A 200 OK in a sea of 403s. A `Set-Cookie` that appears only on one specific path. These are intentional signals from the challenge designer — not noise.
 
 ---
 
@@ -342,35 +411,60 @@ Some CTF-specific tools aren't in the BApp Store. For Jython-based (Python) exte
 <Accordion type="single" collapsible className="w-full my-4">
   <AccordionItem value="faq-1">
     <AccordionTrigger className="text-base md:text-lg">Is Burp Suite free?</AccordionTrigger>
-    <AccordionContent className="text-base leading-7">Burp Suite Community Edition is completely free and includes Proxy, Repeater, Intruder (throttled), Decoder, Comparer, and the BApp Store. Burp Suite Professional adds the active scanner and removes Intruder speed limits.</AccordionContent>
+    <AccordionContent className="text-base leading-7">
+      Burp Suite Community Edition is completely free and covers Proxy, Repeater, Intruder, Decoder, Comparer, and the BApp Store. Burp Suite Pro adds an active scanner and removes Intruder throttling, and requires a paid license at approximately $449 per year.
+    </AccordionContent>
   </AccordionItem>
-
   <AccordionItem value="faq-2">
     <AccordionTrigger className="text-base md:text-lg">Is Burp Suite enough for HackTheBox web challenges?</AccordionTrigger>
-    <AccordionContent className="text-base leading-7">Yes. The Community Edition is sufficient for most HTB and CTF web challenges. For high-speed fuzzing, Turbo Intruder can be used as a free extension.</AccordionContent>
+    <AccordionContent className="text-base leading-7">
+      Yes. Community Edition covers the vast majority of HTB web challenges. The main limitation is Intruder's throttled request rate — installing Turbo Intruder from the BApp Store resolves this for speed-sensitive fuzzing scenarios.
+    </AccordionContent>
   </AccordionItem>
-
   <AccordionItem value="faq-3">
-    <AccordionTrigger className="text-base md:text-lg">What is the difference between Repeater and Intruder?</AccordionTrigger>
-    <AccordionContent className="text-base leading-7">Repeater is for manual request modification and replay. Intruder is used for automated attacks such as fuzzing, enumeration, and brute-force testing with payload lists.</AccordionContent>
+    <AccordionTrigger className="text-base md:text-lg">What is the difference between Burp Repeater and Intruder?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Repeater is for manual, one-at-a-time request modification and replay — you change a value, click Send, read the response, repeat. Intruder automates this using payload lists, substituting each payload into a marked position and running the full list without manual input.
+    </AccordionContent>
   </AccordionItem>
-
   <AccordionItem value="faq-4">
     <AccordionTrigger className="text-base md:text-lg">Can Burp Suite intercept HTTPS traffic?</AccordionTrigger>
-    <AccordionContent className="text-base leading-7">Yes. After installing Burp’s CA certificate in your browser, Burp can perform a man-in-the-middle on TLS connections and display decrypted HTTPS traffic.</AccordionContent> 
+    <AccordionContent className="text-base leading-7">
+      Yes, after installing Burp's CA certificate into your browser's trust store. This lets Burp perform a man-in-the-middle on TLS connections between your browser and the target, decrypting and re-encrypting traffic transparently so you see the plaintext HTTP.
+    </AccordionContent>
   </AccordionItem>
-
   <AccordionItem value="faq-5">
+    <AccordionTrigger className="text-base md:text-lg">What are the must-have Burp Suite extensions for CTFs?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      JWT Editor, Turbo Intruder, Param Miner, and Logger++ cover most CTF scenarios. JWT Editor handles token manipulation and the alg:none attack, Turbo Intruder replaces throttled Intruder, Param Miner finds hidden parameters, and Logger++ adds regex filtering to HTTP History.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-6">
     <AccordionTrigger className="text-base md:text-lg">Is it legal to use Burp Suite on any website?</AccordionTrigger>
-    <AccordionContent className="text-base leading-7">No. Use Burp Suite only on systems you own or are explicitly authorized to test, such as HackTheBox machines, CTF platforms, or your own lab.</AccordionContent>
+    <AccordionContent className="text-base leading-7">
+      No. Burp Suite must only be used on systems you own or are explicitly authorized to test — HackTheBox machines, CTF platforms, or your own lab environments. Intercepting traffic without authorization is illegal regardless of intent.
+    </AccordionContent>
   </AccordionItem>
 </Accordion>
----
-
-## What's Next
-
-Once you're comfortable with Burp Suite, the natural next step is extending your proxy toolkit to **OWASP ZAP** — which fills in some of Burp Community's gaps, particularly around unrestricted fuzzing speed and AJAX spidering for JavaScript-heavy apps. Our follow-up post, _HTB Skills Assessment: Using Web Proxies_, covers both tools together in a full challenge walkthrough.
 
 ---
 
-_All techniques described are for use in authorized environments — HTB machines, CTF challenges, and your own test labs. Never proxy traffic you don't have permission to intercept._
+## Conclusion
+
+Burp Suite is not a tool you learn once — it's a workflow you build over dozens of challenges. The proxy intercepts everything; Repeater lets you pull anything apart manually; Intruder automates the tedious parts; Decoder strips away obfuscation; Comparer shows you exactly what changed. Stack JWT Editor and Turbo Intruder on top and the Community Edition covers every web challenge HTB puts in front of you.
+
+---
+
+*All techniques described are for use in authorized environments — HTB machines, CTF challenges, and your own test labs. Never proxy traffic you do not have permission to intercept.*
+
+---
+
+## Sources
+
+- [Burp Suite Official Documentation](https://portswigger.net/burp/documentation) — PortSwigger's complete reference for all Burp Suite features and configuration
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security) — Free labs covering every vulnerability class testable with Burp Suite
+- [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) — Industry standard methodology that maps directly to Burp Suite's toolset
+- [JWT Editor BApp](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd) — Official BApp Store listing with installation and usage notes
+- [Turbo Intruder GitHub](https://github.com/PortSwigger/turbo-intruder) — Source and documentation for the high-speed Intruder replacement
+
+[def]: https://www.jruby.org/download

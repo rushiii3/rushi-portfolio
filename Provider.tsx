@@ -17,4 +17,9 @@ export const CursorGlow = dynamic(() => import("@/components/cursor-glow"), {
 export const TopLoader = dynamic(() => import("@/components/TopLoader"), {
   ssr: false,
 });
+
+export const CookieConsent = dynamic(() => import("@/components/CookieConsent"), {
+  ssr: false,
+  loading: () => null,
+});
 // export const Lenis = dynamic(() => import("@/components/Lenis"), { ssr: false });

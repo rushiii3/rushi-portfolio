@@ -3,7 +3,8 @@ import { Space_Grotesk, Merriweather, Fira_Code } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import FooterSection from "@/components/footer";
-import { CursorGlow, ThemeProvider, TopLoader } from "@/Provider";
+import { CursorGlow, ThemeProvider, TopLoader, CookieConsent } from "@/Provider";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 // const preconnectDomains = [
 //   "https://images.unsplash.com",
@@ -39,13 +40,13 @@ export const metadata: Metadata = {
   title: "Hrushikesh Shinde | Cybersecurity Specialist from India 🇮🇳",
   description:
     "Hi, I'm Hrushikesh Shinde — a Cybersecurity Specialist from Mumbai, India 🇮🇳. I specialize in Vulnerability Assessment and Penetration Testing (VAPT), web/mobile application security, and digital forensics. Passionate about securing digital assets and enhancing cyber resilience with a security-first approach.",
-robots: {
-  index: true,
-  follow: true,
-  "max-image-preview": "large",
-  "max-snippet": -1,
-  "max-video-preview": -1,
-},
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  },
   applicationName: "Hrushikesh Shinde",
   appleWebApp: {
     title: "Hrushikesh Shinde",
@@ -85,7 +86,6 @@ robots: {
   verification: {
     google: `${process.env.NEXT_GOOGLE_CONSOLE}`,
     yandex: `${process.env.NEXT_YANDEX_CONSOLE}`,
-    
   },
 };
 
@@ -101,8 +101,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html
+      data-scroll-behavior="smooth"
+      lang="en"
+      suppressHydrationWarning={true}
+    >
       <head>
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID!} />
+
         {/* {preconnectDomains.map((domain) => (
           <link key={domain} rel="preconnect" href={domain} />
         ))}
@@ -123,6 +129,7 @@ export default function RootLayout({
         <FooterSection />
         <CursorGlow />
         <TopLoader />
+        <CookieConsent />
       </body>
     </html>
   );

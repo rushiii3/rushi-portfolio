@@ -83,28 +83,22 @@ const Hero1 = () => {
             </motion.div>
           </motion.div>
           <motion.div
-            className="order-1 lg:order-2 lg:col-span-1 aspect-square"
+            className="order-1 lg:order-2 lg:col-span-1"
             transition={transition}
             initial={variants.hidden}
             animate={variants.visible}
           >
-            <Image
-              src={personalInfo.image}
-              height={400}
-              width={300}
-              alt={"Profile Image"}
-              className="rounded-md md:h-96 h-full w-full object-cover "
-              quality={100}
-              priority
-              sizes="(max-width: 320px) 100vw,
-         (max-width: 480px) 90vw,
-         (max-width: 640px) 80vw,
-         (max-width: 768px) 70vw,
-         (max-width: 1024px) 60vw,
-         (max-width: 1100px) 50vw,
-         (max-width: 1200px) 40vw,
-         10vw"
-            />
+            <div className="relative aspect-square md:aspect-2/3">
+              <Image
+                src={personalInfo.image}
+                fill
+                alt={"Hrushikesh Shinde"}
+                quality={85}
+                priority
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+                className="w-full h-auto object-cover rounded-2xl"
+              />
+            </div>
           </motion.div>
         </div>
       </div>

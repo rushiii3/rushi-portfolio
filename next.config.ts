@@ -4,11 +4,21 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const cspHeader = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
-  "font-src 'self' https: data:",
-  "connect-src 'self' https:",
+
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com${isDev ? " 'unsafe-eval'" : ""}`,
+
+  // FIXED
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.googletagmanager.com",
+
+  "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https:",
+
+  // FIXED (fonts)
+  "font-src 'self' https://fonts.gstatic.com data:",
+
+  "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https:",
+
+  "frame-src 'self' https://www.googletagmanager.com",
+
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -24,12 +34,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   transpilePackages: ["next-mdx-remote"],
-  turbopack: {
-    resolveAlias: {
-      "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
-      "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
-    },
-  },
+  // turbopack: {
+  //   resolveAlias: {
+  //     "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+  //     "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+  //   },
+  // },
   async redirects() {
     return [
       {
@@ -93,6 +103,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      
     ],
   },
 

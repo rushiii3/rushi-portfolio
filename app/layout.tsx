@@ -37,9 +37,9 @@ const fontMono = Fira_Code({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
 
-  title: "Hrushikesh Shinde | Cybersecurity Specialist from India 🇮🇳",
+  title: "Hrushikesh Shinde | Application Security & VAPT Specialist",
   description:
-    "Hi, I'm Hrushikesh Shinde — a Cybersecurity Specialist from Mumbai, India 🇮🇳. I specialize in Vulnerability Assessment and Penetration Testing (VAPT), web/mobile application security, and digital forensics. Passionate about securing digital assets and enhancing cyber resilience with a security-first approach.",
+    "Associate Information Security Consultant specializing in Application Security, VAPT, OWASP Top 10, and web app security testing in Mumbai, India.",
   robots: {
     index: true,
     follow: true,

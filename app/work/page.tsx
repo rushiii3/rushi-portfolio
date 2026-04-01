@@ -1,5 +1,17 @@
 import Projects from "@/components/sections/projects";
-import React from "react";
+import {Metadata} from 'next'
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
+  title: "Work & Projects | Hrushikesh Shinde",
+  description:
+    "Explore hands-on experience in Application Security, VAPT, penetration testing, OWASP vulnerabilities, and real-world security assessments.",
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_URL}/work`,
+    languages: {
+      "en-IN": "/work",
+    },
+  },
+};
 
 const Page = async (props: {
   searchParams?: Promise<{

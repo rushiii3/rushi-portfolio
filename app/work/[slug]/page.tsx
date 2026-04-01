@@ -1,19 +1,95 @@
 import MDXContent from "@/components/mdx-content";
-import React from "react";
 import Link from "next/link";
-import { ArrowLeftIcon, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import BsGithub from "@/components/icons/react-icons/icons/BsGithub";
-
-import { getProjectBySlug } from "@/lib/projects";
+import { getAllProjects, getProjectBySlug } from "@/lib/projects";
+import { cache } from "react";
+export const dynamic = "force-static";
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
 
 type Params = {
   params: Promise<{
     slug: string;
   }>;
 };
+
+export async function generateStaticParams() {
+  const projects = await getAllProjects(100);
+  return projects.map((project) => ({
+    slug: project.slug
+  }));
+}
+
+const getProject = cache(async (slug: string) => {
+  const data = await getProjectBySlug(slug);
+  if (!data) return notFound();
+  return data;
+});
+
+
+export async function generateMetadata(props: Params) {
+  const { slug } = await props.params;
+  const data = await getProject(slug);
+
+  if (!data) return {};
+
+  const canonical = siteUrl ? `${siteUrl}/work/${slug}` : undefined;
+
+  return {
+    metadataBase: new URL(siteUrl),
+
+    title: {
+      default: data.title,
+      template: `%s | Hrushikesh Shinde`
+    },
+
+    description: data.description,
+
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    },
+
+    alternates: {
+      canonical
+    },
+
+    openGraph: {
+      type: "website",
+      url: canonical,
+      title: data.title,
+      description: data.description,
+      siteName: "Hrushikesh Shinde",
+      publishedTime: data.date,
+      modifiedTime: data.date || data.date,
+      authors: ["Hrushikesh Shinde"],
+      images: [
+      {
+        url: data.image,
+        width: 1200,
+        height: 630,
+        alt: data.title
+      }]
+
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: data.title,
+      description: data.description,
+      images: [data.image],
+      creator: "@yourhandle" // optional but recommended
+    },
+  };
+}
+
+
 const Page = async (props: Params) => {
   const { slug } = await props.params;
   const data = await getProjectBySlug(slug);
@@ -23,13 +99,6 @@ const Page = async (props: Params) => {
 
   return (
     <div className="md:pt-32 pt-16 w-full">
-      <Link
-        href="/work"
-        className="mb-8 inline-flex items-center gap-2 text-sm font-light text-muted-foreground hover:text-foreground border border-transparent hover:border-white/10 p-2 rounded-2xl transition-all">
-        
-        <ArrowLeftIcon className="h-5 w-5" />
-        <span>Back to projects</span>
-      </Link>
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
       <p className="my-3 text-xs text-muted-foreground">{data.date}</p>
       <div className="flex flex-row flex-wrap gap-2 my-3 justify-start w-full">

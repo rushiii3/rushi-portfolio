@@ -66,6 +66,7 @@ const BlogTab = ({tab}:{tab:string}) => {
                 items={blogCategories.map((category) => category.name)}
                 category={tab}
                 handleClick={handleCategory}
+                layoutId="blogCategory"
               />
             </motion.div>
           )}

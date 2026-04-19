@@ -4,10 +4,12 @@ const Tabs = ({
   items,
   category,
   handleClick,
+  layoutId
 }: {
   items: string[];
   category: string;
   handleClick: (category: string) => void;
+  layoutId: string;
 }) => {
   return (
     <div
@@ -25,15 +27,15 @@ const Tabs = ({
           <AnimatePresence>
             {category === tab && (
               <motion.div
-                layoutId="clickedbutton"
+                layoutId={layoutId}
                 transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-                className="absolute inset-0 bg-background dark:bg-foreground rounded-full"
+                className="absolute inset-0 bg-black dark:bg-white rounded-full"
               />
             )}
           </AnimatePresence>
           <span
             className={`relative block text-sm font-bold text-nowrap ${
-              category === tab ? "dark:text-background" : "dark:text-foreground"
+              category === tab ? "dark:text-black text-white" : "dark:text-white text-black"
             } `}
           >
             {tab}

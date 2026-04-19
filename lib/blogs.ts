@@ -164,11 +164,34 @@ export async function getAllBlogs(
 
 function stripNonReadableContent(content: string): string {
   return content
-    .replace(/```[\s\S]*?```/g, "") // remove fenced code blocks
-    .replace(/`[^`]*`/g, "") // remove inline code
-    .replace(/<[^>]+>/g, "") // remove HTML tags
-    .replace(/\!\[.*?\]\(.*?\)/g, "") // remove markdown images
-    .replace(/#+\s/g, ""); // remove heading markdown
+    // remove frontmatter
+    .replace(/^---[\s\S]*?---/, "")
+
+    // remove fenced code blocks
+    .replace(/```[\s\S]*?```/g, "")
+
+    // remove inline code
+    .replace(/`[^`]*`/g, "")
+
+    // remove tables
+    .replace(/^\|.*\|$/gm, "")
+    .replace(/^\|[-:\s|]+\|$/gm, "")
+
+    // remove MDX/HTML blocks (including content)
+    .replace(/<[^\/>]+>[\s\S]*?<\/[^>]+>/g, "")
+
+    // remove self-closing tags
+    .replace(/<[^>]+\/>/g, "")
+
+    // remove images
+    .replace(/\!\[.*?\]\(.*?\)/g, "")
+
+    // remove headings
+    .replace(/^#+\s.*$/gm, "")
+
+    // collapse whitespace
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function resolveBlogNavigation(

@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };

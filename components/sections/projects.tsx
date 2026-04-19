@@ -19,7 +19,7 @@ const Projects = async ({
   );
 
   return (
-    <section className="py-12 lg:py-16 w-full text-white">
+    <section className="py-12 lg:py-16 w-full dark:text-white text-neutral-800">
       <div className="text-left w-full">
         <SectionTitle
           title="Work & Projects"

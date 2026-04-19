@@ -33,6 +33,7 @@ const ProjectTabsWrapper = ({
         items={items}
         category={currentCategory}
         handleClick={handleCategoryChange}
+        layoutId="projectCategory"
       />
     </div>
   );

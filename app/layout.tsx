@@ -136,7 +136,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="dark:bg-black bg-transparent">
+          <div className="">
             <Header />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">

@@ -17,7 +17,7 @@ const AboutMe = () => {
 
           <Motion
             type="p"
-            className="w-full text-base font-normal leading-7 text-justify text-neutral-200"
+            className="w-full text-base font-normal leading-7 text-justify dark:text-neutral-200 text-neutral-800"
           >
             {personalInfo.description}
           </Motion>

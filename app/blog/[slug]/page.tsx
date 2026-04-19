@@ -12,6 +12,7 @@ import { BlogPostNavigation } from "./_component/BlogPostNavigation";
 import ShareArticle from "./_component/ShareArticle";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
+import { InternalLinkingSection } from "./_component/InternalLinkingSection";
 
 export const dynamic = "force-static";
 const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
@@ -101,6 +102,7 @@ export async function generateMetadata({ params }: {params: Params;}) {
 export default async function Page(props: {params: Params;}) {
   const { slug } = await props.params;
   const data = await getBlog(slug);
+  const { blogs } = await getAllBlogs(undefined, 1, data?.category);
   const faqItems = data.faqSchema ?? [];
   const canonicalUrl = `${siteUrl}/blog/${slug}`;
   const logoUrl = `${siteUrl}/icon1.png`;
@@ -130,9 +132,12 @@ export default async function Page(props: {params: Params;}) {
   const faqJsonLd = buildFAQSchema(faqItems);
   const faqJsonLdString =
   JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") || "";
+  const relatedPosts = blogs
+    .filter((blog) => blog.slug !== data.slug)
+    .slice(0, 2);
 
   return (
-    <div className="md:pt-32 pt-16 w-full">
+    <div className="md:pt-32 pt-16 w-full dark:text-white text-black">
       <article>
         <script
           type="application/ld+json"
@@ -149,40 +154,40 @@ export default async function Page(props: {params: Params;}) {
 
         null}
         <Badge className="uppercase">{data.category}</Badge>
-        <h1 className="text-3xl md:text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">
+        <h1 className="text-3xl md:text-4xl lg:text-6xl font-black  leading-tight tracking-tight">
           {data.title}
         </h1>
-        <p className="text-lg  text-slate-400 max-w-3xl leading-relaxed">
+        <p className="text-lg  text-slate-700 dark:text-slate-400 max-w-3xl leading-relaxed">
           {data.description}
         </p>
 
-        <div className="flex items-center border-y border-white/10 py-6 justify-center my-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs md:text-sm font-medium text-slate-400">
+        <div className="flex items-center border-y dark:border-white/10 border-black/10 py-6 justify-center my-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs md:text-sm font-medium  dark:text-slate-400 text-slate-600">
             <div className="flex items-center gap-2">
               <MdOutlineCalendarToday className="text-base size-5" />
               <span>
                 Published on:{" "}
-                <span className="text-slate-300">
+                <span className="dark:text-slate-300 text-slate-500">
                   {formatDisplayDate(data.date)}
                 </span>
               </span>
             </div>
-            <span className="hidden md:block w-1 h-1 rounded-full bg-white/20"></span>
+            <span className="hidden md:block w-1 h-1 rounded-full dark:bg-white/20 bg-black/20"></span>
             <div className="flex items-center gap-2">
               <MdOutlineEditCalendar className="text-base size-5" />
               <span>
                 Last Modified:{" "}
-                <span className="text-slate-300">
+                <span className="dark:text-slate-300 text-slate-500">
                   {formatDisplayDate(data.dateModified || data.date)}
                 </span>
               </span>
             </div>
-            <span className="hidden md:block w-1 h-1 rounded-full bg-white/20"></span>
+            <span className="hidden md:block w-1 h-1 rounded-full dark:bg-white/20 bg-black/20"></span>
             <div className="flex items-center gap-2">
               <MdOutlineSchedule className="text-base size-5" />
               <span>
                 Reading Time:{" "}
-                <span className="text-slate-300">
+                <span className="dark:text-slate-300 text-slate-500">
                   {data.readingMinutes} min read
                 </span>
               </span>
@@ -201,10 +206,14 @@ export default async function Page(props: {params: Params;}) {
           className="w-full h-auto object-cover rounded-2xl"
           title={data.title} />
         
-        <div className="max-w-full mt-5 prose prose-invert prose-strong:text-white prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
+        <div className="max-w-full mt-5 prose dark:prose-invert prose-strong:text-black dark:prose-strong:text-white  prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
       </article>
+      {/* <InternalLinkingSection
+        category={data.category}
+        relatedPosts={relatedPosts}
+      /> */}
       <ShareArticle
         url={canonicalUrl}
         title={data.title}

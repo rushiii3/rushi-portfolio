@@ -1,8 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
-import React from "react";
-import { Tabs } from "../ui/tabs";
+import React, { useState } from "react";
 import { skillsData } from "@/content/info";
+import SectionTitle from "../SectionTitle";
+import Tabs from "../Tabs";
 const transition = { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.5 };
 const variants = {
   hidden: {
@@ -44,7 +45,7 @@ const SkillCategory = ({
           return (
             <h4
               key={`${label}-${index}`}
-              className="flex items-center text-xs gap-1 border-[0.5px] border-white px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
+              className="flex items-center text-xs gap-1 border-[0.5px] dark:border-white border-black px-3 py-1 dark:text-foreground dark:bg-background rounded-lg"
             >
               {Icon ? (
                 <span>
@@ -61,7 +62,7 @@ const SkillCategory = ({
 };
 
 const SkillContent = ({ title, data }: { title: string; data: SkillGroupData }) => (
-  <div className="w-full  relative h-full overflow-hidden rounded-2xl p-10 text-xl md:text-4xl font-bold text-white  border-[0.5px] border-white">
+  <div className="w-full  relative h-full overflow-hidden rounded-2xl p-10 text-xl md:text-4xl font-bold dark:text-white text-black  border-[0.5px] dark:border-white border-black">
     <h2 className="text-2xl font-bold mb-4">{title} Skills</h2>
     <div className="flex flex-col gap-2">
       {Object.entries(data).map(([category, items]) => (
@@ -102,6 +103,10 @@ const tabs = [
 ];
 
 const Skills = () => {
+  const [category, setCategory] = useState(tabs[0].title);
+  function handleCategory(term: string) {
+    setCategory(term);
+  }
   return (
     <section className="py-12 lg:py-16 w-full">
       <motion.div
@@ -111,20 +116,14 @@ const Skills = () => {
         transition={{ staggerChildren: 0.04 }}
         viewport={{ once: true }}
       >
-        <motion.h2
-          transition={transition}
-          variants={variants}
-          className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8"
-        >
-          Skills & Expertise
-        </motion.h2>
+        <SectionTitle title="Skills & Expertise" className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8" />
+        <Tabs items={tabs.map((tab) => tab.title)} category={category} handleClick={handleCategory}  layoutId="skillCategory"/>
         <motion.div
           transition={transition}
           variants={variants}
-          className="relative [perspective:1000px] flex flex-col max-w-full mx-auto w-full  items-start justify-start"
+          className="relative flex flex-col max-w-full mx-auto w-full  items-start justify-start mt-2"
         >
-          {/* h-[50rem] x  */}
-          <Tabs tabs={tabs} />
+          {tabs.find((tab) => tab.title === category)?.content}
         </motion.div>
       </motion.div>
     </section>

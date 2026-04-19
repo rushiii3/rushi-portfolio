@@ -1,10 +1,11 @@
 ---
 title: "CIA Triad, Authentication & Authorization in Cybersecurity (2026)"
 description: "Understand the CIA Triad (Confidentiality, Integrity, Availability), non-repudiation, identification, authentication factors, MFA, and authorization — the core security control framework."
-date: "2026-03-28"
+date: "2026-04-19"
+dateModified: "2026-04-19"
 category: "Cybersecurity Fundamentals"
 slug: "cia-triad-authentication-authorization"
-image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1776600425/Blogs/CIA_Triad_Authentication_Authorization_thgeax.png"
 keywords:
   [
     "CIA triad cybersecurity",
@@ -63,8 +64,7 @@ The three CIA Triad components compared by definition, primary threats, and key 
 | **Integrity** | Data accuracy and trustworthiness maintained | Tampering, unauthorized modification, software errors | Hashing, digital signatures, certificates, change control |
 | **Availability** | Authorized users can access resources when needed | DoS/DDoS, hardware failure, natural disasters | Redundancy, fault tolerance, patching, backups |
 
-> 🖼️ **Diagram 1 — The CIA Triad**
-> _Editor: An equilateral triangle. Top vertex (blue): "Confidentiality" with "Keep it private" beneath. Bottom-left vertex (green): "Integrity" with "Keep it accurate" beneath. Bottom-right vertex (orange): "Availability" with "Keep it accessible" beneath. Each side of the triangle has a bidirectional arrow. Center of the triangle reads "Information Security" in bold. Clean minimal flat design, no shadows._
+![The CIA Triad](https://res.cloudinary.com/dmuhioahv/image/upload/v1776596504/Blogs/The_CIA_Triad_npewyc.jpg)
 > **Image context:** The triangle shows that Confidentiality, Integrity, and Availability are interdependent — a breach of any one vertex weakens the entire structure, and every security control maps to at least one of the three sides.
 
 ---
@@ -154,8 +154,7 @@ IDENTIFICATION → AUTHENTICATION → AUTHORIZATION
 
 **Authorization** determines what the authenticated entity is permitted to access or do. Like a security guard checking a guest list or a ticket check at a cinema — your identity (ticket) grants access to a specific, defined scope (your assigned seat at this showing). Authorization is implemented through access control lists, role assignments, and permission matrices.
 
-> 🖼️ **Diagram 2 — Identification → Authentication → Authorization**
-> _Editor: Three boxes connected by right-pointing arrows in a horizontal line. Box 1 (grey): "Identification" bold, subtitle "Who are you?", example below "Username / Email". Box 2 (orange): "Authentication" bold, subtitle "Prove it.", example below "Password + MFA". Box 3 (green): "Authorization" bold, subtitle "What can you do?", example below "Role-based permissions". Below the entire flow, a note in smaller text: "Each step is required — skipping one breaks the chain". Arrows between boxes are thick and clearly directional._
+![Identification → Authentication → Authorization](https://res.cloudinary.com/dmuhioahv/image/upload/v1776597383/Blogs/Identification_Authentication_Authorization_yda1ft.jpg)
 > **Image context:** The three-step flow makes clear that these are sequential, not interchangeable — identification without authentication proves nothing, and authentication without authorization leaves access undefined.
 
 ---
@@ -174,8 +173,7 @@ The five authentication factors with examples and primary use cases:
 | **Somewhere you are** | Location | Approved IP ranges, GPS coordinates | Medium — can be bypassed with VPN/proxy |
 | **Something you do** | Behavior | Keystroke patterns, signature dynamics | Medium — behavioral variation creates false negatives |
 
-> 🖼️ **Diagram 3 — Five Authentication Factors**
-> _Editor: Five horizontal rows, each a card. Row 1 (blue, brain icon): "Something You Know — Password, PIN". Row 2 (purple, card icon): "Something You Have — Smart Card, Token, Authenticator App". Row 3 (green, fingerprint icon): "Something You Are — Fingerprint, Retina, Face". Row 4 (orange, map pin icon): "Somewhere You Are — Approved IP, GPS Location". Row 5 (teal, keyboard icon): "Something You Do — Keystroke Pattern, Signature". Right side of each row: a small strength bar (1–5 filled circles) — Know=1, Have=3, Are=4, Where=2, Do=3. Label the strength column "Standalone Strength"._
+![Five Authentication Factors](https://res.cloudinary.com/dmuhioahv/image/upload/v1776597467/Blogs/Five_Authentication_Factors_kpm66e.jpg)
 > **Image context:** The five-row layout shows all authentication factor categories with their relative standalone strength, making it immediately clear why combining different factor types (MFA) dramatically raises security compared to any single factor alone.
 
 ### Passwords
@@ -222,8 +220,7 @@ A keystroke logger captures these timing measurements and feeds them into algori
 
 MFA requires validating two or more factors from different categories before granting access.
 
-> 🖼️ **Diagram 4 — MFA Factor Combinations**
-> _Editor: A table-style diagram with 5 rows and 3 columns. Header row: "Combination", "Factors Used", "Security Level". Rows: (1) Password + Hardware Token — Know + Have — High (green). (2) Password + Authenticator App — Know + Have — High (green). (3) Password + SMS Code — Know + Have — Medium (yellow, with note "SIM swap risk"). (4) Password + Fingerprint — Know + Are — Very High (dark green). (5) Smart Card + PIN — Have + Know — High (green). Security level shown as colored badge. Bottom note: "Two factors from same category ≠ MFA"._
+![MFA Factor Combinations](https://res.cloudinary.com/dmuhioahv/image/upload/v1776597604/Blogs/MFA_Factor_Combinations_jwrvla.jpg)
 > **Image context:** The table shows why factor combination matters — SMS-based MFA sits at Medium despite being "two factors" because of the SIM swap vulnerability, while hardware-based combinations reach High or Very High by combining genuinely different factor categories.
 
 **Critical rule:** the factors must be from different categories. Using two passwords (both "something you know") is not MFA — it provides no meaningful additional security. Using a password (something you know) combined with a hardware token code (something you have) is MFA — stealing the password alone is insufficient.
@@ -255,19 +252,6 @@ SMS-based MFA (receiving a code via text message) is the weakest MFA form — SI
 
 **Assuming non-repudiation from shared accounts.** Non-repudiation requires that actions can be attributed to a specific individual. Shared service accounts, shared administrative credentials, and generic login accounts make non-repudiation impossible — the action can be attributed to the account, but any of a dozen people might have used it. Individual accounts, individual credentials, and comprehensive audit logging are prerequisites for meaningful non-repudiation.
 
----
-
-{/* INTERNAL LINKING NOTES — not visible to readers, for editorial use only
-
-- Link backward from Part 1: Information Security Concepts (/blog/information-security-concepts)
-  → CIA triad operationalizes the prevention/detection/recovery goals
-- Link forward to Part 3: Cryptography Fundamentals (/blog/cryptography-fundamentals)
-  → encryption enforces confidentiality, hashing enforces integrity — directly from CIA triad
-- Link backward from future posts on zero trust architecture
-  → zero trust is the application of authentication/authorization principles at every layer
-- Link backward from future posts on PKI and digital certificates
-
-*/}
 
 ---
 

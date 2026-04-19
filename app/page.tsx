@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/dark-mode";
 import AboutMe from "@/components/sections/about-me";
 import Blogs from "@/components/sections/blog";
 import { Experience } from "@/components/sections/experience";
@@ -63,7 +62,6 @@ export default async function Home(props: {
     <div className="min-h-sdvh w-full flex flex-col justify-center items-start">
       
       <Hero1 />
-      <ModeToggle />
       <AboutMe />
       <Skills />
       <Experience />

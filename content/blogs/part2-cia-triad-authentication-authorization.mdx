@@ -1,0 +1,329 @@
+---
+title: "CIA Triad, Authentication & Authorization in Cybersecurity (2026)"
+description: "Understand the CIA Triad (Confidentiality, Integrity, Availability), non-repudiation, identification, authentication factors, MFA, and authorization — the core security control framework."
+date: "2026-03-28"
+category: "Cybersecurity Fundamentals"
+slug: "cia-triad-authentication-authorization"
+image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+keywords:
+  [
+    "CIA triad cybersecurity",
+    "confidentiality integrity availability",
+    "authentication factors explained",
+    "multi-factor authentication MFA",
+    "authorization vs authentication",
+    "non-repudiation cybersecurity",
+    "biometric authentication",
+    "geolocation authentication",
+    "keystroke authentication",
+    "cybersecurity fundamentals 2026",
+    "CIA triad for beginners",
+    "smart card token authentication",
+    "access control cybersecurity",
+    "information security principles",
+  ]
+faqSchema:
+  - question: "What is the CIA Triad in cybersecurity?"
+    answer: "The CIA Triad represents the three fundamental principles of information security: Confidentiality (keeping information private and protected from unauthorized access), Integrity (maintaining the accuracy and trustworthiness of data by preventing unauthorized modification), and Availability (ensuring authorized users can access systems and data when needed). Every security control maps to one or more of these three principles."
+  - question: "What is the difference between authentication and authorization?"
+    answer: "Authentication verifies who you are — it validates a user's identity through credentials such as passwords, biometrics, or tokens. Authorization determines what you are allowed to do — it controls which resources, data, and actions the authenticated user can access. Authentication must occur before authorization: you must first prove who you are before the system can determine what you are permitted to access."
+  - question: "What are the five authentication factors?"
+    answer: "The five authentication factors are: Something you know (passwords, PINs, security questions), Something you have (smart cards, tokens, authenticator apps), Something you are (biometrics — fingerprints, retina scans, facial recognition), Somewhere you are or are not (geolocation — approved IP address or GPS coordinates), and Something you do (behavioral biometrics — keystroke patterns, signature dynamics). Multi-factor authentication requires combining two or more different factors."
+  - question: "What is non-repudiation in cybersecurity?"
+    answer: "Non-repudiation ensures that the sender of a message or data cannot later deny having sent it. It provides verifiable proof linking a specific person or entity to a specific action, communication, or transaction. Digital signatures and timestamps are the primary technical mechanisms for non-repudiation, making it essential in legal, financial, and compliance contexts where accountability must be demonstrable."
+  - question: "What is multi-factor authentication (MFA) and why does it matter?"
+    answer: "Multi-factor authentication (MFA) requires validating two or more different authentication factors before granting access. It matters because stolen credentials alone are insufficient to compromise an account — the attacker also needs the second factor. MFA dramatically reduces the risk from phishing, credential stuffing, and password breaches, which are the most common account compromise vectors."
+  - question: "What threats does the CIA Triad address?"
+    answer: "Confidentiality addresses threats including unauthorized access, eavesdropping, and data breaches — protected through encryption, access controls, and steganography. Integrity addresses threats including data tampering, unauthorized modification, and software errors — protected through hashing, digital signatures, and change control. Availability addresses threats including DoS attacks, hardware failures, and natural disasters — protected through redundancy, fault tolerance, and regular patching."
+---
+
+## TL;DR
+
+**The CIA Triad — Confidentiality, Integrity, and Availability — is the foundational framework for every security control in existence.** Every firewall rule, encryption policy, backup procedure, and access control maps to one or more of these three principles. **Authentication verifies identity; authorization determines access; non-repudiation proves accountability.** Understanding how these concepts interact is essential for evaluating whether any security control is fit for purpose and whether a given defense addresses the actual threat it faces.
+
+---
+
+## Introduction
+
+The CIA Triad is not a compliance checkbox — it is the analytical framework that determines whether a security control addresses the actual threat it is deployed against. A control that protects confidentiality does nothing for availability. A control that ensures integrity does not prevent unauthorized access. Knowing which triad component a control addresses tells you exactly what it protects against and — critically — what it does not.
+
+This post covers the CIA Triad, non-repudiation, and the authentication and authorization mechanisms that implement these principles in practice.
+
+---
+
+## The CIA Triad
+
+The CIA Triad represents the three fundamental principles that define what "security" means for any asset — data, system, network, or physical resource.
+
+The three CIA Triad components compared by definition, primary threats, and key protection methods:
+
+| Principle | Definition | Primary Threats | Key Controls |
+|---|---|---|---|
+| **Confidentiality** | Information accessible only to authorized parties | Unauthorized access, eavesdropping, data breaches | Encryption, access controls, MFA, steganography |
+| **Integrity** | Data accuracy and trustworthiness maintained | Tampering, unauthorized modification, software errors | Hashing, digital signatures, certificates, change control |
+| **Availability** | Authorized users can access resources when needed | DoS/DDoS, hardware failure, natural disasters | Redundancy, fault tolerance, patching, backups |
+
+> 🖼️ **Diagram 1 — The CIA Triad**
+> _Editor: An equilateral triangle. Top vertex (blue): "Confidentiality" with "Keep it private" beneath. Bottom-left vertex (green): "Integrity" with "Keep it accurate" beneath. Bottom-right vertex (orange): "Availability" with "Keep it accessible" beneath. Each side of the triangle has a bidirectional arrow. Center of the triangle reads "Information Security" in bold. Clean minimal flat design, no shadows._
+> **Image context:** The triangle shows that Confidentiality, Integrity, and Availability are interdependent — a breach of any one vertex weakens the entire structure, and every security control maps to at least one of the three sides.
+
+---
+
+### Confidentiality
+
+Confidentiality is the principle of keeping information and communications private and protected from unauthorized access. It applies to data at rest (stored files, databases), data in transit (network traffic, email), and data in use (active processing).
+
+Examples of information requiring confidentiality: trade secrets, personnel and health records, tax documents, military intelligence, attorney-client communications, financial account data.
+
+**Methods to enforce confidentiality:**
+
+**Encryption** converts readable data into ciphertext accessible only with the correct decryption key. Without the key, intercepted data is computationally unreadable. Encryption protects confidentiality both in transit (TLS for network traffic) and at rest (full-disk encryption for stored data).
+
+**Access controls** enforce who can reach what data. Role-based access control (RBAC) assigns permissions based on job function rather than individual identity — a payroll employee can access salary data; a developer in a different department cannot. Authentication mechanisms — passwords, biometrics, MFA — enforce access controls at the entry point.
+
+**Steganography** hides the existence of information within ordinary-looking files rather than encrypting it. A secret message embedded in image pixel data is invisible to anyone who does not know to look for it. Unlike encryption, which signals that protected content exists, steganography provides plausible deniability that protected content exists at all.
+
+---
+
+### Integrity
+
+Integrity is the principle of maintaining the accuracy and trustworthiness of data by protecting it from unauthorized modification or errors. Both malicious tampering and accidental corruption violate integrity.
+
+A direct illustration: if student test scores on a school server are altered by an attacker — changing grades, modifying records — the integrity of the data is compromised. The data exists and is accessible (confidentiality is intact, availability is intact) but it cannot be trusted because it no longer accurately reflects reality.
+
+**Methods to enforce integrity:**
+
+**Hashing** generates a fixed-length fingerprint (hash value) of data. Any change to the data — even a single bit — produces a completely different hash. By storing the original hash and recomputing it later, the system can detect whether data has been modified. MD5 and SHA-256 are common hashing algorithms; SHA-256 is preferred for security use.
+
+**Digital signatures** combine hashing with asymmetric cryptography: the sender hashes the data and encrypts that hash with their private key. The recipient decrypts the hash with the sender's public key and recomputes the hash themselves. If they match, the data has not been altered and the sender is authenticated. Digital signatures enforce both integrity and non-repudiation simultaneously.
+
+**Certificates** are digital documents that validate the identity of websites, systems, or individuals using a trusted third-party (Certificate Authority). HTTPS certificates validate that a website is who it claims to be, preventing MITM attacks that could modify data in transit.
+
+**Change control** is an administrative process for tracking, reviewing, and approving changes to systems and data. It ensures that modifications are authorized, tested, and documented — preventing both accidental damage and unauthorized tampering through process rather than cryptography.
+
+---
+
+### Availability
+
+Availability is the principle of ensuring that authorized users can access systems, data, and resources when needed, without interruption. A system that is secure but unavailable fails its users as completely as one that has been breached.
+
+A high-stakes example: if the Federal Aviation Administration's air traffic control system becomes unavailable, radar data becomes inaccessible to controllers. The confidentiality and integrity of the data may be intact — but the failure to deliver it when needed could cause cascading consequences.
+
+**Methods to enforce availability:**
+
+**Redundancy** deploys multiple systems, network paths, or data copies so that the failure of any single component does not cause service interruption. RAID storage, load-balanced server clusters, and geographically distributed datacenters are redundancy implementations.
+
+**Fault tolerance** designs systems to continue operating correctly in the presence of failures — hardware components that fail gracefully, automatic failover to backup systems, self-healing network paths. The goal is continuity of service regardless of individual component failures.
+
+**Patching** maintains availability by fixing software vulnerabilities that attackers could exploit to crash services. Unpatched systems are both a confidentiality/integrity risk (exploitation) and an availability risk (denial of service via vulnerability exploitation).
+
+---
+
+## Non-Repudiation
+
+Non-repudiation ensures that the sender of a message or data cannot later deny having sent it. It creates a verifiable record linking specific actions to specific identities.
+
+Non-repudiation matters in any context where accountability must be demonstrable: financial transactions, legal communications, healthcare records, regulatory compliance. "I never sent that email" is not a viable defense when a valid digital signature on the message proves otherwise.
+
+**Technical mechanisms for non-repudiation:**
+
+**Digital signatures** are the primary tool. When a user signs a document or message with their private key, that signature can only have been created by someone possessing that specific private key. Because private keys are kept secret and uniquely associated with an identity, the signature is non-repudiable proof of authorship.
+
+**Timestamps** from trusted time sources establish when a document or transaction occurred. Combined with a digital signature, a timestamp proves both who created something and when — critical for legal proceedings and audit trails.
+
+**Threats to non-repudiation** include phishing attacks that steal private keys, weak or compromised digital signatures, and shared credentials that prevent pinning actions to specific individuals. Non-repudiation fails completely if multiple users share a single account — the action can be attributed to the account but not to a specific person.
+
+---
+
+## Identification, Authentication, and Authorization
+
+These three concepts form a sequential access control process. Each is distinct and must occur in order.
+
+```
+IDENTIFICATION → AUTHENTICATION → AUTHORIZATION
+"Who are you?"    "Prove it."       "What can you do?"
+     ↓                 ↓                  ↓
+ Username         Password + MFA    Role-based permissions
+ Email address    Biometric scan    Resource access list
+ Employee ID      Smart card        Privilege level
+```
+
+**Identification** links a unique identifier to a person or entity. A username, email address, or employee ID number identifies who is attempting access. Identification alone proves nothing — anyone can claim to be user123. It is the input to the authentication process.
+
+**Authentication** validates that the entity claiming an identity actually controls that identity. Providing the correct password for user123 authenticates that the person attempting access controls the credentials associated with that account. Authentication concentrates on verifying the right credentials are presented, not on what the authenticated user is permitted to do.
+
+**Authorization** determines what the authenticated entity is permitted to access or do. Like a security guard checking a guest list or a ticket check at a cinema — your identity (ticket) grants access to a specific, defined scope (your assigned seat at this showing). Authorization is implemented through access control lists, role assignments, and permission matrices.
+
+> 🖼️ **Diagram 2 — Identification → Authentication → Authorization**
+> _Editor: Three boxes connected by right-pointing arrows in a horizontal line. Box 1 (grey): "Identification" bold, subtitle "Who are you?", example below "Username / Email". Box 2 (orange): "Authentication" bold, subtitle "Prove it.", example below "Password + MFA". Box 3 (green): "Authorization" bold, subtitle "What can you do?", example below "Role-based permissions". Below the entire flow, a note in smaller text: "Each step is required — skipping one breaks the chain". Arrows between boxes are thick and clearly directional._
+> **Image context:** The three-step flow makes clear that these are sequential, not interchangeable — identification without authentication proves nothing, and authentication without authorization leaves access undefined.
+
+---
+
+## Authentication Factors
+
+Authentication schemes are built on one or more of five distinct factor categories. **Combining factors from different categories is what makes MFA effective** — using two factors from the same category (two passwords, two smart cards) does not meaningfully improve security.
+
+The five authentication factors with examples and primary use cases:
+
+| Factor | Category | Examples | Strength |
+|---|---|---|---|
+| **Something you know** | Knowledge | Passwords, PINs, security questions | Low — can be stolen, guessed, phished |
+| **Something you have** | Possession | Smart cards, hardware tokens, authenticator apps | Medium — requires physical theft |
+| **Something you are** | Inherence | Fingerprints, retina scans, facial recognition | High — biologically unique, hard to replicate |
+| **Somewhere you are** | Location | Approved IP ranges, GPS coordinates | Medium — can be bypassed with VPN/proxy |
+| **Something you do** | Behavior | Keystroke patterns, signature dynamics | Medium — behavioral variation creates false negatives |
+
+> 🖼️ **Diagram 3 — Five Authentication Factors**
+> _Editor: Five horizontal rows, each a card. Row 1 (blue, brain icon): "Something You Know — Password, PIN". Row 2 (purple, card icon): "Something You Have — Smart Card, Token, Authenticator App". Row 3 (green, fingerprint icon): "Something You Are — Fingerprint, Retina, Face". Row 4 (orange, map pin icon): "Somewhere You Are — Approved IP, GPS Location". Row 5 (teal, keyboard icon): "Something You Do — Keystroke Pattern, Signature". Right side of each row: a small strength bar (1–5 filled circles) — Know=1, Have=3, Are=4, Where=2, Do=3. Label the strength column "Standalone Strength"._
+> **Image context:** The five-row layout shows all authentication factor categories with their relative standalone strength, making it immediately clear why combining different factor types (MFA) dramatically raises security compared to any single factor alone.
+
+### Passwords
+
+Passwords are the most widely deployed authentication mechanism and the weakest in isolation. Username and password combinations are compared against stored credentials — if they match, access is granted. The fundamental weakness: passwords can be guessed, phished, intercepted over unencrypted connections, or stolen from breached databases. Password managers and long, unique passphrases address the guessing and reuse vectors; MFA addresses the theft vector.
+
+### Tokens
+
+Tokens are objects that store authentication information — physical (smart cards, hardware keys) or virtual (time-based one-time passwords generated by authenticator apps). A hardware token that generates a 6-digit code every 30 seconds provides possession-based authentication: even if an attacker steals the password, they cannot authenticate without the physical device generating the current code.
+
+### Smart Cards
+
+Smart cards are plastic cards with embedded computer chips storing authentication data — PINs, certificates, and identity information. The US Department of Defense Common Access Card (CAC) is the most widely known implementation, used by military personnel, contractors, and government employees for both physical and digital access. Smart cards, CACs, and similar physical tokens fall under the **Personal Identity Verification (PIV)** standard for identity verification in government contexts.
+
+### Biometrics
+
+Biometrics authenticate using uniquely individual physical characteristics — attributes that cannot be forgotten (unlike passwords) or easily shared (unlike tokens).
+
+| Biometric Type | What It Scans | Primary Use Case |
+|---|---|---|
+| **Fingerprint** | Ridge and valley patterns on fingertip | Smartphones, building access, laptops |
+| Retinal | Blood vessel patterns at the back of the eye | High-security facility access |
+| Hand geometry | Size and shape of the hand | Time-and-attendance systems |
+| Facial recognition | Facial geometry and features | Device unlock, surveillance, border control |
+| Voice recognition | Unique vocal pattern characteristics | Phone-based authentication, call centers |
+
+Biometrics are high-assurance authentication but carry unique risks: biometric data cannot be changed if compromised. A stolen password can be reset. A compromised fingerprint template is compromised permanently.
+
+### Geolocation Authentication
+
+Geolocation adds a location constraint to authentication — verifying not just who the user is, but where they are attempting to access from. A corporate network may grant full access from approved office IP ranges, restricted access from home IP addresses, and deny access entirely from unexpected foreign IP addresses.
+
+Implementation methods: IP address lookup, GPS coordinates from mobile devices, Wi-Fi positioning, and RFID-based location tracking. Multi-site organizations use geolocation to enforce campus- or floor-level access restrictions — a user's credentials may authenticate successfully, but authorization is limited to the resources appropriate for their physical location.
+
+### Keystroke Authentication
+
+Keystroke authentication analyzes typing patterns rather than typed content — the timing and rhythm of keystrokes, dwell time on individual keys, and flight time between key presses. Every person types differently, and these patterns are measurably consistent enough to serve as a behavioral biometric.
+
+A keystroke logger captures these timing measurements and feeds them into algorithms that build a "primary keystroke pattern" for each user. Subsequent login attempts are compared against this baseline — significant deviations trigger additional authentication challenges. Keystroke authentication is typically used as a continuous or secondary authentication factor rather than a primary one.
+
+---
+
+## Multi-Factor Authentication (MFA)
+
+MFA requires validating two or more factors from different categories before granting access.
+
+> 🖼️ **Diagram 4 — MFA Factor Combinations**
+> _Editor: A table-style diagram with 5 rows and 3 columns. Header row: "Combination", "Factors Used", "Security Level". Rows: (1) Password + Hardware Token — Know + Have — High (green). (2) Password + Authenticator App — Know + Have — High (green). (3) Password + SMS Code — Know + Have — Medium (yellow, with note "SIM swap risk"). (4) Password + Fingerprint — Know + Are — Very High (dark green). (5) Smart Card + PIN — Have + Know — High (green). Security level shown as colored badge. Bottom note: "Two factors from same category ≠ MFA"._
+> **Image context:** The table shows why factor combination matters — SMS-based MFA sits at Medium despite being "two factors" because of the SIM swap vulnerability, while hardware-based combinations reach High or Very High by combining genuinely different factor categories.
+
+**Critical rule:** the factors must be from different categories. Using two passwords (both "something you know") is not MFA — it provides no meaningful additional security. Using a password (something you know) combined with a hardware token code (something you have) is MFA — stealing the password alone is insufficient.
+
+Common MFA combinations and their relative security:
+
+| MFA Combination | Factors Used | Security Level | Primary Vulnerability |
+|---|---|---|---|
+| **Password + Hardware Token** | Know + Have | High | Physical token theft |
+| Password + Authenticator App | Know + Have | High | SIM swap, phishing proxy |
+| Password + SMS Code | Know + Have | Medium | SIM swapping, SS7 attacks |
+| **Password + Fingerprint** | Know + Are | Very High | Biometric spoofing (difficult) |
+| Smart Card + PIN | Have + Know | High | Card theft + PIN observation |
+| Password + Geolocation | Know + Where | Medium | VPN bypass |
+
+SMS-based MFA (receiving a code via text message) is the weakest MFA form — SIM swapping allows attackers to redirect SMS messages to their own device. Authenticator apps (TOTP) and hardware tokens are significantly more resistant. FIDO2 hardware keys (YubiKey) are the strongest available consumer MFA implementation.
+
+**Chip debit cards** are a real-world MFA example many people use daily: the chip (something you have) combined with a PIN (something you know) makes the card alone insufficient for transaction authorization.
+
+---
+
+## Common Mistakes
+
+**Treating authentication as sufficient without authorization.** Authenticating a user proves who they are — it does not determine what they should access. Without proper authorization controls and least-privilege principles, an authenticated user may reach data and systems far beyond what their role requires. Many breaches involve valid credentials accessing systems the user had no legitimate reason to access.
+
+**Using the same factor type twice and calling it MFA.** A smart card plus a USB security key is two "something you have" factors — it is not MFA. MFA requires factors from different categories. Organizations implementing MFA solutions should verify that their implementation combines genuinely different factor categories, not just multiple instances of the same category.
+
+**Relying on availability through redundancy without testing failover.** Redundant systems that have never been tested may not actually fail over correctly when needed. Backup systems with untested restoration procedures may not restore correctly. Availability controls require regular testing — scheduled failover drills, documented recovery time objectives, and verified restoration from backup — not just the installation of redundant hardware.
+
+**Assuming non-repudiation from shared accounts.** Non-repudiation requires that actions can be attributed to a specific individual. Shared service accounts, shared administrative credentials, and generic login accounts make non-repudiation impossible — the action can be attributed to the account, but any of a dozen people might have used it. Individual accounts, individual credentials, and comprehensive audit logging are prerequisites for meaningful non-repudiation.
+
+---
+
+{/* INTERNAL LINKING NOTES — not visible to readers, for editorial use only
+
+- Link backward from Part 1: Information Security Concepts (/blog/information-security-concepts)
+  → CIA triad operationalizes the prevention/detection/recovery goals
+- Link forward to Part 3: Cryptography Fundamentals (/blog/cryptography-fundamentals)
+  → encryption enforces confidentiality, hashing enforces integrity — directly from CIA triad
+- Link backward from future posts on zero trust architecture
+  → zero trust is the application of authentication/authorization principles at every layer
+- Link backward from future posts on PKI and digital certificates
+
+*/}
+
+---
+
+## Frequently Asked Questions
+
+<Accordion type="single" collapsible className="w-full my-4">
+  <AccordionItem value="faq-1">
+    <AccordionTrigger className="text-base md:text-lg">What is the CIA Triad and why does it matter?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      The CIA Triad — Confidentiality, Integrity, and Availability — defines the three properties that must be protected for any asset to be considered secure. Confidentiality ensures only authorized parties access information. Integrity ensures data is accurate and unmodified. Availability ensures authorized users can access resources when needed. Every security control in existence maps to one or more of these three properties, making the triad the universal framework for evaluating whether a defense addresses the actual threat.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-2">
+    <AccordionTrigger className="text-base md:text-lg">What is the difference between authentication and authorization?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Authentication verifies identity — it answers "who are you?" by validating credentials such as passwords, biometrics, or tokens. Authorization determines access — it answers "what are you allowed to do?" by checking permissions, roles, and access control lists. Authentication must occur before authorization. Proving identity is the prerequisite for the system to determine what that identity is permitted to access.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-3">
+    <AccordionTrigger className="text-base md:text-lg">What are the five authentication factors?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      The five authentication factors are: Something you know (passwords, PINs), Something you have (smart cards, hardware tokens, authenticator apps), Something you are (biometrics — fingerprints, retina scans), Somewhere you are (geolocation — approved IP or GPS coordinates), and Something you do (behavioral biometrics — keystroke patterns). Multi-factor authentication combines two or more factors from different categories to significantly raise the bar for unauthorized access.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-4">
+    <AccordionTrigger className="text-base md:text-lg">Why is SMS-based MFA considered weaker than other MFA methods?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      SMS-based MFA is vulnerable to SIM swapping — an attack where the attacker convinces a mobile carrier to transfer the victim's phone number to a SIM card the attacker controls. Once successful, SMS codes intended for the victim are delivered to the attacker instead. SS7 protocol vulnerabilities also allow interception of SMS messages at the carrier level. Authenticator apps (TOTP) and hardware security keys are substantially more resistant because they do not rely on the phone number or carrier infrastructure.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-5">
+    <AccordionTrigger className="text-base md:text-lg">What is non-repudiation and when is it required?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Non-repudiation ensures that the sender of a message or data cannot later deny having sent it — it provides verifiable, cryptographic proof linking actions to identities. Digital signatures and timestamps are the primary mechanisms. Non-repudiation is required in any context where accountability must be legally or regulatorily demonstrable: financial transactions, legal document signing, healthcare records, audit trails, and any environment where disputes about who authorized what action may arise.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-6">
+    <AccordionTrigger className="text-base md:text-lg">What is the difference between biometrics and behavioral biometrics?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Biometrics authenticate using static physical characteristics — fingerprints, retina patterns, facial geometry — that are measured once and stored as a reference template. Behavioral biometrics authenticate using dynamic patterns generated by how a person interacts with a system — keystroke rhythm, mouse movement, gait analysis. Behavioral biometrics enable continuous authentication (verifying identity throughout a session, not just at login) but require careful tuning to balance security against false rejection rates for legitimate users.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+
+---
+
+## Conclusion
+
+The CIA Triad provides the analytical lens for evaluating every security control: does it protect confidentiality, integrity, or availability? Authentication, authorization, and non-repudiation operationalize those principles in access control systems. Understanding which factor category an authentication method falls into — and why combining different categories matters for MFA — determines whether access controls are genuinely secure or merely performative. Part 3 of this series covers the cryptographic mechanisms that make confidentiality and integrity technically enforceable: encryption, hashing, and steganography.
+
+---
+
+## Sources
+
+- [NIST SP 800-63B — Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html) — NIST's authoritative standard for authentication strength and assurance levels
+- [FIDO Alliance — Authentication Standards](https://fidoalliance.org/) — Organization defining phishing-resistant authentication standards including FIDO2 and WebAuthn
+- [NIST SP 800-53 — Security and Privacy Controls](https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final) — Comprehensive catalog of security controls including access control and identification categories
+- [OWASP — Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) — Practical implementation guidance for authentication systems
+- [CISA — More Than a Password (MFA Guidance)](https://www.cisa.gov/MFA) — Federal guidance on implementing multi-factor authentication effectively

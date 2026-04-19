@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Merriweather, Fira_Code } from "next/font/google";
+import { Space_Grotesk, Merriweather, Fira_Code, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import FooterSection from "@/components/footer";
-import { CursorGlow, ThemeProvider, TopLoader, CookieConsent } from "@/Provider";
+import {
+  CursorGlow,
+  ThemeProvider,
+  TopLoader,
+  CookieConsent,
+} from "@/Provider";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
 
 // const preconnectDomains = [
 //   "https://images.unsplash.com",
@@ -104,7 +113,7 @@ export default function RootLayout({
     <html
       data-scroll-behavior="smooth"
       lang="en"
-      suppressHydrationWarning={true}
+      suppressHydrationWarning={true} className={cn("font-sans", inter.variable)}
     >
       <head>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID!} />
@@ -117,19 +126,30 @@ export default function RootLayout({
         ))} */}
         <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
       </head>
+
       <body
-        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased scrollbar`}
+        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} scrollbar`}
       >
-        <Header />
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
-            {children}
-          </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="dark:bg-black bg-transparent">
+            <Header />
+
+            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
+              {children}
+            </main>
+          
+
+          <FooterSection />
+          <CursorGlow />
+          <TopLoader />
+          <CookieConsent />
+          </div>
         </ThemeProvider>
-        <FooterSection />
-        <CursorGlow />
-        <TopLoader />
-        <CookieConsent />
       </body>
     </html>
   );

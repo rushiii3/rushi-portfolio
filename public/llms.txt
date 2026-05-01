@@ -1,0 +1,44 @@
+# Hrushikesh Shinde — Cybersecurity Blog & Portfolio
+# Associate Information Security Consultant | Application Security & VAPT Specialist
+# Based in Mumbai, India
+
+> This site is the personal portfolio and cybersecurity blog of Hrushikesh Shinde,
+> an Associate Information Security Consultant specialising in Web Application Security,
+> VAPT, and OWASP Top 10 testing. Content is written from hands-on professional
+> experience in FinTech security testing and penetration testing.
+
+## Portfolio
+
+- [Homepage & About](https://hrushikesh-shinde-portfolio.vercel.app/): Full profile, work experience, skills, and projects
+- [Work & Projects](https://hrushikesh-shinde-portfolio.vercel.app/#work): SecureBlog, Cover Letter Customizer, Terabox Player, MeshFlix, and more
+
+## Blog — Cybersecurity Fundamentals
+
+- [CIA Triad, Authentication & Authorization in Cybersecurity (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/cia-triad-authentication-authorization): Covers CIA Triad, non-repudiation, 5 authentication factors, MFA types comparison, and authentication vs authorization difference
+- [Information Security Concepts: Risk, Vulnerabilities, Threats & Controls (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/information-security-concepts): Covers InfoSec goals, risk, vulnerability types, threat categories, attack types, and prevention/detection/correction controls
+- [Cybersecurity Threats Explained: Attackers, Malware, Social Engineering & Network Attacks](https://hrushikesh-shinde-portfolio.vercel.app/blog/identifying-security-threats): Covers threat actors, hacker types, malware, social engineering, and network attack techniques
+
+## Blog — Security Tools
+
+- [Burp Suite for HTB & CTF Players: Complete Guide (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/burp-suite-for-htb-ctf-players): Covers Proxy, Repeater, Intruder, Decoder, Comparer, and BApp extensions for HackTheBox and CTF web challenges
+- [ReconSpider: HTB Web Enumeration Tool Guide (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/reconspider-htb-web-enumeration-tool): Covers installation, JSON output analysis, HTML comment extraction, and recon workflow for pentesters
+
+## Blog — Web Security
+
+- [OWASP Top 10: Essential Web Security Risks Every Developer Should Know](https://hrushikesh-shinde-portfolio.vercel.app/blog/owasp-top-10): Covers all 10 OWASP risks including Broken Access Control, Injection, Cryptographic Failures, SSRF, and prevention methods
+
+## Blog — Vulnerability Research
+
+- [Zod .refine() DoS Vulnerability: How to Protect Your API](https://hrushikesh-shinde-portfolio.vercel.app/blog/zod-refine-dos-vulnerability): Explains how Zod's .refine() can cause denial-of-service when combined with expensive operations (database queries, API calls) that execute even when earlier validators (.min(), .max()) fail. Covers the root cause, a live Express.js example demonstrating the vulnerability, attack patterns (single-character and oversized inputs), and the safe pattern: perform structural validation first with .parse()/.safeParse(), then execute expensive operations on the validated result. Includes a security testing workflow and remediation checklist. Essential reading for Node.js/TypeScript developers using Zod in production.
+
+
+## Author
+
+- Name: Hrushikesh Shinde
+- Role: Associate Information Security Consultant at qSEAp Infotech Pvt. Ltd
+- Specialisation: Web Application VAPT, OWASP Top 10, FinTech Security Testing
+- Tools: Burp Suite, Nmap, SQLmap, AppScan 360, Kali Linux, Metasploit
+- Certifications in progress: HTB Certified Web Exploitation Specialist (CWES)
+- LinkedIn: https://www.linkedin.com/in/hrushikesh-shinde-developer/
+- GitHub: https://github.com/rushiii3
+- HackTheBox: https://profile.hackthebox.com/profile/019ccd33-4310-73b7-8223-264faac08c09

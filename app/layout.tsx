@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Merriweather, Fira_Code, Inter } from "next/font/google";
+import {
+  Space_Grotesk,
+  Merriweather,
+  Fira_Code,
+  Inter,
+} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import FooterSection from "@/components/footer";
@@ -12,9 +17,6 @@ import {
 import { GoogleTagManager } from "@next/third-parties/google";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-
 // const preconnectDomains = [
 //   "https://images.unsplash.com",
 //   "https://res.cloudinary.com",
@@ -24,7 +26,7 @@ const fontSans = Space_Grotesk({
   variable: "--font-grotesk-sans",
   subsets: ["latin"],
   display: "swap",
-  preload: true,
+  // preload: true,
   weight: ["400", "500", "700"], // Only these 3 weights
 });
 
@@ -110,26 +112,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      data-scroll-behavior="smooth"
-      lang="en"
-      suppressHydrationWarning={true} className={cn("font-sans", inter.variable)}
-    >
+    <html data-scroll-behavior="smooth" lang="en" suppressHydrationWarning>
       <head>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID!} />
-
-        {/* {preconnectDomains.map((domain) => (
-          <link key={domain} rel="preconnect" href={domain} />
-        ))}
-        {preconnectDomains.map((domain) => (
-          <link key={`dns-${domain}`} rel="dns-prefetch" href={domain} />
-        ))} */}
         <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
-      </head>
 
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} scrollbar`}
       >
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID!} />
+
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -142,12 +149,11 @@ export default function RootLayout({
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh">
               {children}
             </main>
-          
 
-          <FooterSection />
-          <CursorGlow />
-          <TopLoader />
-          <CookieConsent />
+            <FooterSection />
+            <CursorGlow />
+            <TopLoader />
+            <CookieConsent />
           </div>
         </ThemeProvider>
       </body>

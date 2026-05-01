@@ -9,12 +9,6 @@ import { Suspense } from "react";
 export default function BlogWrapper() {
   const segments = useSelectedLayoutSegments();
 
-  /**
-   * Examples:
-   * /blog                → []
-   * /blog/category/seo   → ["category", "seo"]
-   */
-
   const isCategory = segments[0] === "category";
   const slug = isCategory ? segments[1] : "all";
 

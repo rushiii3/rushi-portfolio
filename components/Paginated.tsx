@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -24,16 +23,16 @@ const Paginated = ({
   }
   function handlePageChange(page: number) {
     const params = new URLSearchParams(searchParams);
-  
+
     if (page === 1) {
       params.delete("page"); // Remove 'page' when it's 1
     } else if (page >= 1 && page <= totalPages) {
       params.set("page", page.toString());
     }
-  
+
     updateParams(params);
   }
-  
+
   return (
     <div className="flex justify-between items-center mt-12">
       <Pagination>
@@ -51,12 +50,15 @@ const Paginated = ({
           </PaginationItem>
           {Array.from({ length: totalPages }, (_, index) => index + 1).map(
             (value) => (
-              <PaginationItem key={value} onClick={() => handlePageChange(value)}>
+              <PaginationItem
+                key={value}
+                onClick={() => handlePageChange(value)}
+              >
                 <PaginationLink href="#" isActive={currentPage === value}>
                   {value}
                 </PaginationLink>
               </PaginationItem>
-            )
+            ),
           )}
           <PaginationItem className="ml-auto">
             <Button
@@ -66,7 +68,7 @@ const Paginated = ({
               onClick={() => handlePageChange(currentPage + 1)}
               className="cursor-pointer"
             >
-               Next <MoveRight />
+              Next <MoveRight />
             </Button>
           </PaginationItem>
         </PaginationContent>

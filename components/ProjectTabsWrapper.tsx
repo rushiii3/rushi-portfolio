@@ -1,5 +1,5 @@
 "use client";
-import React, { useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Tabs from "./Tabs";
 

@@ -12,7 +12,7 @@ import { BlogPostNavigation } from "./_component/BlogPostNavigation";
 import ShareArticle from "./_component/ShareArticle";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
-import { InternalLinkingSection } from "./_component/InternalLinkingSection";
+// import { InternalLinkingSection } from "./_component/InternalLinkingSection";
 
 export const dynamic = "force-static";
 const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
@@ -91,7 +91,6 @@ export async function generateMetadata({ params }: {params: Params;}) {
       title: data.title,
       description: data.description,
       images: [data.image],
-      creator: "@yourhandle" // optional but recommended
     },
 
     category: data.category

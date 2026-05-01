@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 
-const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };
-const variants = {
+// ✅ Moved outside — these are static, no reason to recreate per render
+const TRANSITION = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };
+const VARIANTS = {
   hidden: {
     clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
     filter: "blur(10px)",
@@ -11,9 +11,9 @@ const variants = {
   },
   visible: {
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-    filter: "blur(0)",
+    filter: "blur(0px)", // ✅ "blur(0)" → "blur(0px)": some browsers don't interpolate unitless blur correctly
     opacity: 1,
-    transition,
+    transition: TRANSITION,
   },
 };
 
@@ -24,21 +24,18 @@ const SectionTitle = ({
   title: string;
   className?: string;
 }) => {
-  // Use a state to track if we should animate.
-  // On mount, we check if this specific instance has already "appeared".
-  const [hasAppeared, setHasAppeared] = useState(false);
-
   return (
-    <motion.h2
-      className={className}
-      initial={hasAppeared ? "visible" : "hidden"}
-      whileInView="visible"
-      onViewportEnter={() => setHasAppeared(true)}
-      viewport={{ once: true }}
-      variants={variants}
-    >
-      {title}
-    </motion.h2>
+    <LazyMotion features={domAnimation} strict>
+      <m.h2
+        className={className}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }} // ✅ triggers slightly before fully in view
+        variants={VARIANTS}
+      >
+        {title}
+      </m.h2>
+    </LazyMotion>
   );
 };
 

@@ -1,10 +1,9 @@
 "use client";
-// import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 const DynamicNavbar = dynamic(() => import("./navbar"), {
-  ssr: false,
+  ssr: true,
 });
 const Header = () => {
   return (

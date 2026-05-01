@@ -1,7 +1,5 @@
 // `BlogList.tsx` (Client Component)
 "use client"; // Mark this as a Client Component
-
-import React from "react";
 import StaggeredList from "./Stagger";
 import Projectcard from "./project-card";
 

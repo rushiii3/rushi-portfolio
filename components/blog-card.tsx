@@ -8,7 +8,9 @@ import {
 import Link from "next/link";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
-interface RootObject {
+import { memo, useMemo } from "react";
+
+interface Article {
   slug: string;
   date: string;
   description: string;
@@ -17,12 +19,29 @@ interface RootObject {
   category: string;
 }
 
-type BlogCardProps = {
-  article: RootObject;
-};
-const BlogCard = ({ article }: BlogCardProps) => {
+// ✅ Formatter created once at module scope — not recreated per render
+const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const BlogCard = memo(function BlogCard({
+  article,
+  priority = false,
+}: {
+  article: Article;
+  priority?: boolean;
+}) {
+  // ✅ useMemo — only recomputes when article.date changes
+  const formattedDate = useMemo(
+    () => (article.date ? DATE_FORMATTER.format(new Date(article.date)) : ""),
+    [article.date],
+  );
+
+  console.log("priority", priority);
   return (
-    <Link href={`/blog/${article.slug}`}>
+    <Link href={`/blog/${article.slug}`} aria-label={article.title}>
       <Card className="group cursor-pointer pt-0 rounded-2xl bg-transparent gap-5 h-full">
         <div className="relative aspect-video rounded-2xl overflow-hidden">
           <Image
@@ -30,34 +49,41 @@ const BlogCard = ({ article }: BlogCardProps) => {
             alt={article.title}
             fill
             quality={85}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 512px"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-            title={article.title}
           />
         </div>
+
         <div className="flex flex-row gap-2 justify-between items-center w-full px-6">
-          <Badge className="uppercase">{article.category}</Badge>
+          {/* ✅ aria-label gives screen readers context for the badge */}
+          <Badge
+            className="uppercase"
+            aria-label={`Category: ${article.category}`}
+          >
+            {article.category}
+          </Badge>
         </div>
+
         <CardHeader>
           <CardTitle className="hover:underline transition-all">
             {article.title}
           </CardTitle>
           <CardDescription>{article.description}</CardDescription>
         </CardHeader>
-        <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full px-6">
-          <p className="text-sm font-medium">
-            {article.date
-              ? new Date(article.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
-              : ""}
-          </p>
+
+        <div className="mt-auto flex flex-row gap-2 justify-between items-center w-full px-6 pb-6">
+          {formattedDate && (
+            // ✅ <time> is the semantic element for dates
+            <time dateTime={article.date} className="text-sm font-medium">
+              {formattedDate}
+            </time>
+          )}
         </div>
       </Card>
     </Link>
   );
-};
+});
 
 export default BlogCard;

@@ -15,7 +15,7 @@ const BlogList = ({ articles }: { articles: RootObject[] }) => {
   return (
     <StaggeredList
       items={articles}
-      renderItem={(article) => <BlogCard article={article} />}
+      renderItem={(article, index) => <BlogCard article={article} priority={index < 2} />}
     />
   );
 };

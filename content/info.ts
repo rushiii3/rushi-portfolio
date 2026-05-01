@@ -32,7 +32,7 @@ export const socialLinks = [
 },
 {
   name: "Mail",
-  url: "mailto:shindehrushi99@gmail.com",
+  url: "mailto:hrushiop@gmail.com",
   icon: IoMdMail
 }];
 

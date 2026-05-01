@@ -56,7 +56,7 @@ export default function FooterSection() {
               <nav className="flex flex-col gap-2">
                 {
                   blogCategories.map((category) => (
-                    <Link key={category.slug} href={`/blog/category/${category.slug}`} className="text-sm font-medium hover:underline">
+                    <Link key={category.slug} href={category.slug === "all" ? `/blog/` : `/blog/category/${category.slug}`} className="text-sm font-medium hover:underline">
                       {category.name}
                     </Link>
                   ))

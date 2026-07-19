@@ -86,15 +86,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/blog/category/application-security",
-        headers: [
-          {
-            key: "X-Robots-Tag",
-            value: "noindex, follow",
-          },
-        ],
-      },
-      {
         source: "/blog/category/security-writeups",
         headers: [
           {

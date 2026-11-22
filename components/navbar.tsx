@@ -1,9 +1,9 @@
 "use client";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "motion/react";
 import { BookTextIcon, Briefcase, CircleUser, HomeIcon, SquareActivityIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, memo } from "react";
+import { memo, useSyncExternalStore } from "react";
 
 export const navItems = [
   { id: 1, label: "Home", icon: HomeIcon, href: "/" },
@@ -15,6 +15,20 @@ export const navItems = [
 
 const SPRING = { type: "spring", bounce: 0.15, duration: 0.45 } as const;
 const ENTRY_TRANSITION = { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] } as const;
+
+function subscribeDesktop(callback: () => void) {
+  const mq = window.matchMedia("(min-width: 768px)");
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getDesktopSnapshot() {
+  return window.matchMedia("(min-width: 768px)").matches;
+}
+
+function getServerSnapshot() {
+  return false;
+}
 
 const NavTab = memo(function NavTab({
   tab,
@@ -50,38 +64,24 @@ const NavTab = memo(function NavTab({
   );
 });
 
+const emptySubscribe = () => () => {};
+
 export default function Navbar() {
   const path = usePathname();
-
-  // ✅ Key fix: start as null (unknown), set after mount
-  // This way server and client both render nothing until hydration is done
-  const [mounted, setMounted] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    setIsDesktop(mq.matches);
-    setMounted(true);
-
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const isDesktop = useSyncExternalStore(subscribeDesktop, getDesktopSnapshot, getServerSnapshot);
 
   const activeTab =
     navItems
       .filter((tab) => path.startsWith(tab.href))
       .sort((a, b) => b.href.length - a.href.length)[0]?.id ?? 1;
 
-  // ✅ Don't render until mounted — avoids SSR/client mismatch entirely
-  // The navbar is already ssr:false via dynamic() in Header, so this is safe
   if (!mounted) return null;
 
   return (
     <LazyMotion features={domAnimation} strict>
       <m.div
         className="z-40 flex justify-center items-center space-x-1 rounded-xl p-2 border fixed left-1/2 -translate-x-1/2 bottom-3 md:relative md:left-0 md:translate-x-0 md:bottom-0 bg-white/40 dark:bg-[#0a0a0a]/40 backdrop-blur-md"
-        // ✅ Now safe to use isDesktop here since we only render after mount
         initial={{ y: isDesktop ? -100 : 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={ENTRY_TRANSITION}

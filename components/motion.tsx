@@ -1,6 +1,6 @@
 // components/motion.tsx
 "use client";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "motion/react";
 import { memo } from "react";
 
 const TRANSITION = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };
@@ -25,10 +25,22 @@ const defaultProps = {
   variants: REVEAL_VARIANTS,
 } as const;
 
-// ✅ Each is created once, typed correctly, zero runtime cost
+const RevealDiv = memo(function RevealDiv(p: React.ComponentProps<typeof m.div>) {
+  return <LazyMotion features={domAnimation} strict><m.div {...defaultProps} {...p} /></LazyMotion>;
+});
+const RevealSection = memo(function RevealSection(p: React.ComponentProps<typeof m.section>) {
+  return <LazyMotion features={domAnimation} strict><m.section {...defaultProps} {...p} /></LazyMotion>;
+});
+const RevealH2 = memo(function RevealH2(p: React.ComponentProps<typeof m.h2>) {
+  return <LazyMotion features={domAnimation} strict><m.h2 {...defaultProps} {...p} /></LazyMotion>;
+});
+const RevealP = memo(function RevealP(p: React.ComponentProps<typeof m.p>) {
+  return <LazyMotion features={domAnimation} strict><m.p {...defaultProps} {...p} /></LazyMotion>;
+});
+
 export const Reveal = {
-  Div:     memo((p: React.ComponentProps<typeof m.div>)     => <LazyMotion features={domAnimation} strict><m.div     {...defaultProps} {...p} /></LazyMotion>),
-  Section: memo((p: React.ComponentProps<typeof m.section>) => <LazyMotion features={domAnimation} strict><m.section {...defaultProps} {...p} /></LazyMotion>),
-  H2:      memo((p: React.ComponentProps<typeof m.h2>)      => <LazyMotion features={domAnimation} strict><m.h2      {...defaultProps} {...p} /></LazyMotion>),
-  P:       memo((p: React.ComponentProps<typeof m.p>)       => <LazyMotion features={domAnimation} strict><m.p       {...defaultProps} {...p} /></LazyMotion>),
+  Div: RevealDiv,
+  Section: RevealSection,
+  H2: RevealH2,
+  P: RevealP,
 };

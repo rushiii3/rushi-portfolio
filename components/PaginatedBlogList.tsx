@@ -50,7 +50,7 @@ const PaginatedBlogList = async ({
             No articles found in {category}
           </h2>
           <p className="mb-8 text-slate-600 dark:text-slate-400">
-            We haven't published any articles in this category yet. Check back
+            We haven&apos;t published any articles in this category yet. Check back
             soon for deep dives into breach mitigation, recovery strategies, and
             forensic analysis.
           </p>
@@ -77,7 +77,7 @@ const PaginatedBlogList = async ({
           No results found
         </h1>
         <p className="text-slate-600 dark:text-slate-400 max-w-lg mb-8 text-lg">
-          We couldn't find any articles matching "<strong>{search}</strong>".
+          We couldn&apos;t find any articles matching &ldquo;<strong>{search}</strong>&rdquo;.
           Check your spelling.
         </p>
       </div>

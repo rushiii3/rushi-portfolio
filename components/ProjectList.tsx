@@ -2,16 +2,9 @@
 "use client"; // Mark this as a Client Component
 import StaggeredList from "./Stagger";
 import Projectcard from "./project-card";
+import type { ProjectMetadata } from "@/lib/projects";
 
-interface RootObject {
-  slug: string;
-  date: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-}
-const ProjectList = ({ projects }: { projects: RootObject[] }) => {
+const ProjectList = ({ projects }: { projects: ProjectMetadata[] }) => {
   return (
     <StaggeredList
       items={projects}

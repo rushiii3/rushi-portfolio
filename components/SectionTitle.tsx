@@ -1,5 +1,5 @@
 "use client";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "motion/react";
 
 // ✅ Moved outside — these are static, no reason to recreate per render
 const TRANSITION = { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const };

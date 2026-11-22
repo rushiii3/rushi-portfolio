@@ -84,7 +84,10 @@ export async function GET(request: NextRequest): Promise<Response> {
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+        },
       },
     );
   } catch (error) {

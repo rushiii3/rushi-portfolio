@@ -33,7 +33,10 @@ export async function GET(
 
     return new Response(JSON.stringify(blog), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+      },
     });
   } catch (error) {
     console.error("Error fetching blog", sanitizeError(error));

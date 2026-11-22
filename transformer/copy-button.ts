@@ -195,27 +195,37 @@ function copyButtonStyle({
 }
 
 /**
- * Registers the copy button event listener
- * to be used in jsx environments.
+ * Registers a single delegated copy button event listener
+ * on document to handle all code block copy buttons efficiently.
  */
-export function registerCopyButton() {
-  if (typeof document === "undefined") return;
-  const copyButtonElements = document.querySelectorAll(
-    'button[data-name="rehype-pretty-copy-button"]',
-  );
-  copyButtonElements.forEach((element) => {
-    element.addEventListener("click", async (event) => {
-      event.preventDefault();
-      const target = event.currentTarget as HTMLButtonElement;
-      const source = target.getAttribute("data");
-      if (!source) return;
+export function registerCopyButton(): () => void {
+  if (typeof document === "undefined") return () => {};
+
+  const handleClick = async (event: MouseEvent) => {
+    const target = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>(
+      'button[data-name="rehype-pretty-copy-button"]',
+    );
+    if (!target) return;
+
+    event.preventDefault();
+    const source = target.getAttribute("data");
+    if (!source) return;
+
+    try {
       await navigator.clipboard.writeText(source);
-      const feedbackDuration = target.getAttribute("data-feedback-duration");
-      element.classList.add("rehype-pretty-copied");
+      const feedbackDuration = Number(target.getAttribute("data-feedback-duration") || 2_500);
+      target.classList.add("rehype-pretty-copied");
       setTimeout(
-        () => element.classList.remove("rehype-pretty-copied"),
-        Number(feedbackDuration || 2_500),
+        () => target.classList.remove("rehype-pretty-copied"),
+        feedbackDuration,
       );
-    });
-  });
+    } catch (err) {
+      console.error("Failed to copy code to clipboard", err);
+    }
+  };
+
+  document.addEventListener("click", handleClick);
+  return () => {
+    document.removeEventListener("click", handleClick);
+  };
 }

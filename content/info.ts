@@ -268,3 +268,11 @@ export const blogCategories: BlogCategory[] = [
   intro:
   "Technical guides and practical breakdowns of offensive and defensive security tools including Burp Suite, Nmap, Metasploit, and industry-standard assessment utilities."
 }];
+
+export const navPages = [
+  { id: 1, label: "Home", href: "/" },
+  { id: 2, label: "About", href: "/about" },
+  { id: 3, label: "Experience", href: "/experience" },
+  { id: 4, label: "Work", href: "/work" },
+  { id: 5, label: "Blog", href: "/blog" },
+] as const;

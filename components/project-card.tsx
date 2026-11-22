@@ -11,9 +11,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import BsGithub from "@/components/icons/react-icons/icons/BsGithub";
+import type { ProjectMetadata } from "@/lib/projects";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Projectcard = ({ project }: any) => {
+const Projectcard = ({ project }: { project: ProjectMetadata }) => {
   return (
     <Card className="w-full group border bg-transparent backdrop-blur border-white/10 rounded-2xl p-4 gap-4 h-full">
       <div className="relative rounded-2xl aspect-video overflow-hidden">
@@ -23,7 +23,7 @@ const Projectcard = ({ project }: any) => {
             alt={`project image for ${project.title}`}
             fill={true}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
-            className="aspect-video"
+            className="object-cover"
           />
         </Link>
       </div>

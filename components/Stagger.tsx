@@ -1,5 +1,5 @@
 "use client";
-import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "motion/react";
 import React, { memo } from "react";
 
 const TRANSITION = { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const };

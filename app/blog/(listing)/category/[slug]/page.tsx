@@ -13,6 +13,12 @@ function resolveCategory(slug: string) {
   return category;
 }
 
+export async function generateStaticParams() {
+  return blogCategories
+    .filter((category) => category.slug !== "all")
+    .map((category) => ({ slug: category.slug }));
+}
+
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ search?: string; page?: string }>;

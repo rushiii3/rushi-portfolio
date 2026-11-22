@@ -1,8 +1,6 @@
-"use client";
-import { blogCategories, socialLinks } from "@/content/info";
+import { blogCategories, navPages, socialLinks } from "@/content/info";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { navItems } from "./navbar";
+import BackToTop from "./BackToTop";
 
 
 export default function FooterSection() {
@@ -15,7 +13,7 @@ export default function FooterSection() {
               Focused on VAPT, web application security, and secure development.
             </p>
             <Link href={"https://cal.com/hrushi-shinde-goijwj"} target="_blank" rel="noopener noreferrer" className="text-lg font-medium border-b-2 border-zinc-900 pb-1 hover:text-zinc-500 hover:border-zinc-500 transition-all">
-              Let's talk →
+              Let&apos;s talk &rarr;
             </Link> 
             
           </div>
@@ -27,7 +25,7 @@ export default function FooterSection() {
               </p>
               <nav className="flex flex-col gap-2">
                 {
-                  navItems.map((item) => (
+                  navPages.map((item) => (
                     <Link key={item.id} href={item.href} className="text-sm font-medium hover:underline">
                       {item.label}
                     </Link>
@@ -68,17 +66,14 @@ export default function FooterSection() {
 
         <div className="relative w-full">
           <p className="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7">
-            Let's Connect
+            Let&apos;s Connect
           </p>
           <div className="flex justify-between items-end border-t backdrop-blur border-zinc-200 pt-8 pb-6 relative z-10">
             <span className="text-xs font-medium uppercase tracking-widest text-zinc-400">
               © 2026 Hrushikesh Shinde{" "}
             </span>
             <div className="flex gap-8">
-              <Button variant={"ghost"} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-
-                Back to top ↑
-              </Button>
+              <BackToTop />
             </div>
           </div>
         </div>

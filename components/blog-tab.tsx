@@ -2,7 +2,7 @@
 import { useState, useTransition, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Tabs from "./Tabs";
-import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "motion/react";
 import { Search, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";

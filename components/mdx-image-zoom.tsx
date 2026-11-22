@@ -38,6 +38,7 @@ export default function MDXImageZoom(props: any) {
           <Image
             placeholder="empty"
             {...props}
+            alt={props.alt || "Zoomed image"}
             fill
             sizes="(min-width: 1024px) 1024px, 100vw"
             loading="lazy"

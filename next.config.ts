@@ -94,6 +94,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/:all*(svg|jpg|jpeg|png|webp|avif|ico|woff|woff2)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
   images: {
@@ -122,10 +131,9 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
     turbopackMinify: true,
     optimizePackageImports: [
-      "lodash-es", // ✅ Tree-shake
       "lucide-react",
       "react-icons/*",
-      "framer-motion",
+      "motion",
     ],
   },
 

@@ -39,7 +39,6 @@ const BlogCard = memo(function BlogCard({
     [article.date],
   );
 
-  console.log("priority", priority);
   return (
     <Link href={`/blog/${article.slug}`} aria-label={article.title}>
       <Card className="group cursor-pointer pt-0 rounded-2xl bg-transparent gap-5 h-full">

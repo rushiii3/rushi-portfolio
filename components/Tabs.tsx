@@ -1,4 +1,4 @@
-import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "motion/react";
 import { memo, useCallback } from "react";
 
 interface TabsProps {

@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "motion/react";
 import React, { useState } from "react";
 import { skillsData } from "@/content/info";
 import SectionTitle from "../SectionTitle";
@@ -109,23 +109,25 @@ const Skills = () => {
   }
   return (
     <section className="py-12 lg:py-16 w-full">
-      <motion.div
-        className="w-full"
-        initial="hidden"
-        whileInView="visible"
-        transition={{ staggerChildren: 0.04 }}
-        viewport={{ once: true }}
-      >
-        <SectionTitle title="Skills & Expertise" className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8" />
-        <Tabs items={tabs.map((tab) => tab.title)} category={category} handleClick={handleCategory}  layoutId="skillCategory"/>
-        <motion.div
-          transition={transition}
-          variants={variants}
-          className="relative flex flex-col max-w-full mx-auto w-full  items-start justify-start mt-2"
+      <LazyMotion features={domAnimation} strict>
+        <m.div
+          className="w-full"
+          initial="hidden"
+          whileInView="visible"
+          transition={{ staggerChildren: 0.04 }}
+          viewport={{ once: true }}
         >
-          {tabs.find((tab) => tab.title === category)?.content}
-        </motion.div>
-      </motion.div>
+          <SectionTitle title="Skills & Expertise" className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8" />
+          <Tabs items={tabs.map((tab) => tab.title)} category={category} handleClick={handleCategory}  layoutId="skillCategory"/>
+          <m.div
+            transition={transition}
+            variants={variants}
+            className="relative flex flex-col max-w-full mx-auto w-full  items-start justify-start mt-2"
+          >
+            {tabs.find((tab) => tab.title === category)?.content}
+          </m.div>
+        </m.div>
+      </LazyMotion>
     </section>
   );
 };

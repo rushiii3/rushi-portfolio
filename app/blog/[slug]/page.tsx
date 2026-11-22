@@ -6,13 +6,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
 import { cache } from "react";
-import RegisterCopyButtoon from "./_component/RegisterCopyButtoon";
+import RegisterCopyButton from "./_component/RegisterCopyButton";
 import { buildBlogSchema, buildFAQSchema } from "@/lib/schemaBuilder";
 import { BlogPostNavigation } from "./_component/BlogPostNavigation";
 import ShareArticle from "./_component/ShareArticle";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
-// import { InternalLinkingSection } from "./_component/InternalLinkingSection";
 
 export const dynamic = "force-static";
 const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
@@ -209,17 +208,13 @@ export default async function Page(props: {params: Params;}) {
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
       </article>
-      {/* <InternalLinkingSection
-        category={data.category}
-        relatedPosts={relatedPosts}
-      /> */}
       <ShareArticle
         url={canonicalUrl}
         title={data.title}
         hashtags={data.keywords} />
       
       <BlogPostNavigation previous={data.previous} next={data.next} />
-      <RegisterCopyButtoon />
+      <RegisterCopyButton />
     </div>);
 
 }

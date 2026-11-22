@@ -45,18 +45,23 @@ export default function CookieConsent() {
         functionality_storage: "denied",
       });
 
-      setVisible(true);
+      const timer = setTimeout(() => {
+        setVisible(true);
+      }, 0);
+      return () => clearTimeout(timer);
     } else {
       const parsed = JSON.parse(storedConsent);
-      if (typeof(parsed.analytics)==='boolean' ) {
-        setAnalytics(parsed.analytics);
-      }
-      if (typeof(parsed.ads)==='boolean' ) {
-        setAds(parsed.ads);
-      }
-      if (typeof(parsed.functional)==='boolean' ) {
-        setFunctional(parsed.functional);
-      }
+      const timer = setTimeout(() => {
+        if (typeof parsed.analytics === "boolean") {
+          setAnalytics(parsed.analytics);
+        }
+        if (typeof parsed.ads === "boolean") {
+          setAds(parsed.ads);
+        }
+        if (typeof parsed.functional === "boolean") {
+          setFunctional(parsed.functional);
+        }
+      }, 0);
 
       window.gtag("consent", "update", {
         analytics_storage: parsed.analytics ? "granted" : "denied",
@@ -65,6 +70,7 @@ export default function CookieConsent() {
         ad_personalization: parsed.ads ? "granted" : "denied",
         functionality_storage: parsed.functional ? "granted" : "denied",
       });
+      return () => clearTimeout(timer);
     }
   }, []);
 

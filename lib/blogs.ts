@@ -48,6 +48,10 @@ interface BlogNavigation {
   previous: Pick<BlogMetadata, "slug" | "title" | "date"> | null;
   next: Pick<BlogMetadata, "slug" | "title" | "date"> | null;
 }
+
+let blogMetadataCache: BlogMetadata[] | null = null;
+const blogDetailCache = new Map<string, (BlogMetadata & BlogNavigation) | null>();
+
 function parseFaqSchema(value: unknown): BlogFAQItem[] {
   if (!Array.isArray(value)) {
     return [];
@@ -99,16 +103,25 @@ async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
 }
 
 async function getAllBlogMetadata(): Promise<BlogMetadata[]> {
+  if (process.env.NODE_ENV !== "development" && blogMetadataCache) {
+    return blogMetadataCache;
+  }
+
   try {
     const files = await fs.readdir(rootDirectory);
+    const mdxFiles = files.filter((f) => f.endsWith(".mdx"));
 
-    const blogs = (await Promise.all(files.map(getBlogMetadata))).filter(
+    const blogs = (await Promise.all(mdxFiles.map(getBlogMetadata))).filter(
       (blog): blog is BlogMetadata => blog !== null,
     );
 
     blogs.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
+
+    if (process.env.NODE_ENV !== "development") {
+      blogMetadataCache = blogs;
+    }
 
     return blogs;
   } catch (error) {
@@ -124,16 +137,7 @@ export async function getAllBlogs(
   searchQuery?: string,
 ) {
   try {
-    const files = await fs.readdir(rootDirectory);
-
-    let blogs = (await Promise.all(files.map(getBlogMetadata))).filter(
-      (blog): blog is BlogMetadata => blog !== null,
-    );
-
-    // Sort by date (latest first)
-    blogs.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    );
+    let blogs = await getAllBlogMetadata();
 
     if (category && category.toLowerCase() !== "all") {
       blogs = blogs.filter(
@@ -223,6 +227,10 @@ function resolveBlogNavigation(
 export async function getBlogBySlug(
   slug: string,
 ): Promise<(BlogMetadata & BlogNavigation) | null> {
+  if (process.env.NODE_ENV !== "development" && blogDetailCache.has(slug)) {
+    return blogDetailCache.get(slug)!;
+  }
+
   try {
     if (!isValidSlug(slug)) {
       return null;
@@ -247,7 +255,7 @@ export async function getBlogBySlug(
 
     const blogs = await getAllBlogMetadata();
     const navigation = resolveBlogNavigation(blogs, slug);
-    return {
+    const result = {
       slug,
       date: data.date ?? "",
       dateModified: data.dateModified ?? "",
@@ -263,6 +271,12 @@ export async function getBlogBySlug(
       previous: navigation.previous,
       next: navigation.next,
     };
+
+    if (process.env.NODE_ENV !== "development") {
+      blogDetailCache.set(slug, result);
+    }
+
+    return result;
   } catch (error) {
     console.error(`Error fetching blog ${slug}`, sanitizeError(error));
     return null;

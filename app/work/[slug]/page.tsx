@@ -137,7 +137,8 @@ const Page = async (props: Params) => {
           src={data.image}
           priority={true}
           fill={true}
-          // objectFit="cover"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+          className="object-cover"
         />
       </div>
       <div className="max-w-full mt-5 prose prose-invert prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl  prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">

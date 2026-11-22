@@ -22,7 +22,7 @@ function resolveSafeProjectPath(slug: string): string | null {
   return resolved.startsWith(rootWithSeparator) ? resolved : null;
 }
 
-interface ProjectMetadata {
+export interface ProjectMetadata {
   slug: string;
   date: string;
   stack: string[];
@@ -35,6 +35,9 @@ interface ProjectMetadata {
   category: string;
   content?: string;
 }
+
+let projectMetadataCache: ProjectMetadata[] | null = null;
+const projectDetailCache = new Map<string, ProjectMetadata | null>();
 
  async function getProjectMetadata(
   filepath: string,
@@ -72,16 +75,25 @@ export async function getAllProjects(
   category?: string,
 ): Promise<ProjectMetadata[]> {
   try {
-    const files = await fs.readdir(rootDirectory);
+    let projects: ProjectMetadata[];
+    if (process.env.NODE_ENV !== "development" && projectMetadataCache) {
+      projects = projectMetadataCache;
+    } else {
+      const files = await fs.readdir(rootDirectory);
+      const mdxFiles = files.filter((f) => f.endsWith(".mdx"));
 
-    let projects = (await Promise.all(files.map(getProjectMetadata))).filter(
-      (project): project is ProjectMetadata => project !== null,
-    );
+      projects = (await Promise.all(mdxFiles.map(getProjectMetadata))).filter(
+        (project): project is ProjectMetadata => project !== null,
+      );
 
-    // Sort by date (latest first)
-    projects.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    );
+      projects.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+
+      if (process.env.NODE_ENV !== "development") {
+        projectMetadataCache = projects;
+      }
+    }
 
     if (category) {
       projects = projects.filter(
@@ -99,6 +111,10 @@ export async function getAllProjects(
 export async function getProjectBySlug(
   slug: string,
 ): Promise<ProjectMetadata | null> {
+  if (process.env.NODE_ENV !== "development" && projectDetailCache.has(slug)) {
+    return projectDetailCache.get(slug)!;
+  }
+
   try {
     if (!isValidSlug(slug)) {
       return null;
@@ -116,7 +132,7 @@ export async function getProjectBySlug(
       return null;
     }
 
-    return {
+    const result = {
       slug,
       date: data.date ?? "",
       stack: data.stack ?? [],
@@ -129,6 +145,12 @@ export async function getProjectBySlug(
       category: data.category ?? "",
       content,
     };
+
+    if (process.env.NODE_ENV !== "development") {
+      projectDetailCache.set(slug, result);
+    }
+
+    return result;
   } catch (error) {
     console.error(`Error fetching project ${slug}`, sanitizeError(error));
     return null;

@@ -50,14 +50,21 @@ function SkillsSectionFallback() {
   );
 }
 
-export default async function Home(props: {
+async function ProjectsSection({
+  searchParamsPromise,
+}: {
+  searchParamsPromise?: Promise<{ projectCategory?: string }>;
+}) {
+  const searchParams = await searchParamsPromise;
+  const projectCategory = searchParams?.projectCategory || "All";
+  return <Projects limit={6} projectCategory={projectCategory} />;
+}
+
+export default function Home(props: {
   searchParams?: Promise<{
     projectCategory?: string;
   }>;
 }) {
-  const searchParams = await props.searchParams;
-  const projectCategory = searchParams?.projectCategory || "All";
-
   return (
     <div className="min-h-sdvh w-full flex flex-col justify-center items-start">
       
@@ -66,7 +73,7 @@ export default async function Home(props: {
       <Skills />
       <Experience />
       <Suspense fallback={<ProjectsSectionFallback />}>
-        <Projects limit={6} projectCategory={projectCategory} />
+        <ProjectsSection searchParamsPromise={props.searchParams} />
       </Suspense>
       <Suspense fallback={<BlogsSectionFallback />}>
         <Blogs />

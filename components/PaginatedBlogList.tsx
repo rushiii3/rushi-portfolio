@@ -100,6 +100,7 @@ const PaginatedBlogList = async ({
     description: "Hrushikesh Shinde",
     posts: data.blogs,
     authorUrl: `${baseUrl}/about`,
+    blogUrl: `${baseUrl}/blog`,
   });
 
   const schema = category === "all" ? blogListSchema : blogListByCategorySchema;

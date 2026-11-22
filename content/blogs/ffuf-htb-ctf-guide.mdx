@@ -1,0 +1,588 @@
+---
+title: "FFUF Commands I Use: Extension Fuzzing by Stack (ASP.NET, PHP, Java) for HTB & Pentests"
+description: "FFUF commands for PHP, ASP.NET, Java, Python and Next.js: one command per extension (.php, .aspx, .jsp, .bak) plus my single-level fuzz method."
+date: "2026-11-05"
+category: "Security Tools"
+slug: "ffuf-htb-ctf-guide"
+image: "https://res.cloudinary.com/dmuhioahv/image/upload/v1795293978/Blogs/Black_and_White_Professional_Fitness_Youtube_Thumbnail_lekcea.png"
+keywords:
+  [
+    "ffuf",
+    "ffuf commands",
+    "ffuf command for php",
+    "ffuf aspx",
+    "ffuf jsp",
+    "ffuf python",
+    "ffuf nextjs",
+    "ffuf react",
+    "ffuf api fuzzing",
+    "ffuf backup files",
+    "ffuf find uploaded files",
+    "ffuf upload directory",
+    "ffuf extension fuzzing",
+    "ffuf -e -ic",
+    "ffuf without recursion",
+    "ffuf admin panel",
+    "ffuf identify server language",
+    "ffuf spring boot",
+    "ffuf cgi-bin",
+    "ffuf HTB",
+    "ffuf cheat sheet",
+    "directory fuzzing",
+  ]
+faqSchema:
+  - question: "Is ffuf free?"
+    answer: "ffuf is free and open source software released under the MIT license. It has no paid tier, and the full feature set is available from the official GitHub repository."
+  - question: "What is the ffuf command for PHP?"
+    answer: "The ffuf command for PHP is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .php,.phps,.phtml,.html,.txt,.bak,.old,.zip,.sql,.conf,.log -fc 404. The -e flag tests each word bare and with every extension, -ic skips wordlist comments, and -fc 404 hides not-found responses. If the server returns 403 for everything, use -fc 404,403."
+  - question: "What is the ffuf command for ASP.NET (.aspx)?"
+    answer: "The ffuf command for ASP.NET is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .aspx,.asp,.ashx,.asmx,.axd,.config,.txt,.bak -fc 404. It covers pages, handlers, SOAP services, and built-in resources. On IIS a 403 on web.config is normal, while a 200 is a serious finding."
+  - question: "What is the ffuf command for Java (.jsp) applications?"
+    answer: "The ffuf command for Java applications is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .jsp,.jspx,.do,.action,.xml,.properties,.html,.txt,.bak,.zip,.war -fc 404. It finds JavaServer Pages, Struts and Spring actions, configuration files, and deployment archives on Tomcat, JBoss, and WebLogic."
+  - question: "How do I find backup, config, and database files with ffuf?"
+    answer: "Use the -e flag with backup, archive, and database extensions: ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .bak,.old,.orig,.zip,.tar.gz,.sql,.conf,.log -fc 404. For editor backups such as index.php~, append suffixes to files you have already found instead of fuzzing the whole wordlist."
+  - question: "How do I fuzz a Next.js or React app with ffuf?"
+    answer: "Modern apps have no file extensions, so skip -e and fuzz plain paths. Single-page apps return the same page with a 200 for every path, so take the baseline size with curl -s http://TARGET/zz-nonexistent | wc -c and filter it with -fs. Then fuzz the API with ffuf -u http://TARGET/api/FUZZ using an API endpoint wordlist, keeping status 405 in the match list because it still proves the route exists."
+  - question: "Is it legal to run ffuf on any target?"
+    answer: "No. Running ffuf against systems without explicit written authorization can violate computer misuse laws such as the CFAA in the United States. Use it only on targets you own, in HackTheBox and CTF environments, or within the scope of a signed engagement."
+  - question: "Why avoid the -recursion flag?"
+    answer: "Recursion descends into every directory it finds, including asset folders full of JavaScript and CSS, which floods the output with low-value results. Fuzzing one level at a time and adding only the interesting directories manually keeps the output readable and the request volume low."
+  - question: "How do I find an upload directory and the files inside it with ffuf?"
+    answer: "First fuzz the root for the directory name with ffuf -u http://TARGET/FUZZ -w common.txt -ic -c -fc 404, looking for names such as uploads, media, or files. Then fuzz inside that directory with extensions the upload form accepts: ffuf -u http://TARGET/uploads/FUZZ -w common.txt -ic -c -e .jpg,.png,.pdf,.php -fc 404. Build a targeted wordlist from the filename pattern the application uses when one is visible."
+---
+
+# FFUF Commands I Use: Extension Fuzzing by Stack (ASP.NET, PHP, Java)
+
+## TL;DR
+
+FFUF (Fuzz Faster U Fool) is a command-line web fuzzer that swaps the word `FUZZ` in a request for every entry in a wordlist and shows you which responses differ. **My method is simple: identify the language from the extension, run one single-level fuzz with the extensions for that stack, then add the interesting directories one by one instead of using recursion.** This post lists the basics, the flags I rely on, and the exact commands for every extension, grouped by ASP.NET, PHP, and Java.
+
+---
+
+## What Is FFUF?
+
+FFUF is an open source HTTP fuzzer written in Go by joohoi and released under the MIT license. It runs as one static binary and sends requests with 40 threads by default. You place `FUZZ` in the URL, a header, or a POST body, give it a wordlist, and filter the output until only real hits remain.
+
+I use it for directories, files, extensions, vhosts, and parameters. It does not scan for vulnerabilities. It shows me where to look, and I decide what is a finding.
+
+---
+
+## Install and Verify
+
+```bash
+sudo apt update && sudo apt install -y ffuf seclists
+ffuf -V
+```
+
+![ffuf version check](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329800/Blogs/ffuf_version_check_xspddb.png)
+> **Screenshot context:** The terminal prints one line starting with `ffuf version` followed by the version number, confirming the binary is installed and on the PATH.
+
+On a machine with Go, `go install github.com/ffuf/ffuf/v2@latest` also works. Wordlists: I use `/usr/share/wordlists/dirb/common.txt` for most first passes, and SecLists (`/usr/share/seclists`) when I need more.
+
+---
+
+## Test Targets I Practice On
+ 
+Every `TARGET` in the commands below is a placeholder. I don't run these against anything I'm not authorized to test. For practice, I use sites built for exactly this:
+ 
+- [pentest-ground.com](https://pentest-ground.com/) — a set of deliberately vulnerable web apps for practicing enumeration and exploitation
+- [testaspnet.vulnweb.com](http://testaspnet.vulnweb.com/) — Acunetix's intentionally vulnerable ASP.NET test site, useful for the ASP.NET commands in this post
+**Only scan a target if you're authorized to.** These two are published by their owners as open test targets, which is why they're safe to practice on without a separate agreement. That's different from a production site, a client's infrastructure, or anything on HackTheBox or a CTF, where authorization means your lab access, your engagement scope, or a signed agreement. Running ffuf against a site without that authorization can violate computer misuse laws such as the CFAA.
+ 
+---
+
+## Basic FFUF Flags
+
+These are the flags in every command below.
+
+| Flag | What it does | Example |
+|---|---|---|
+| **-u** | Target URL, with FUZZ where the wordlist goes | `-u http://TARGET/FUZZ` |
+| **-w** | Wordlist path, optionally `file:KEYWORD` | `-w common.txt` |
+| **-e** | Extensions appended to each word, comma-separated | `-e .php,.txt,.bak` |
+| **-ic** | Ignore comment lines and blank lines in the wordlist | `-ic` |
+| **-c** | Colorize output by status code | `-c` |
+| **-fc** | Filter out these status codes | `-fc 404` |
+| **-fs** | Filter out responses of this size in bytes | `-fs 1234` |
+| **-fw / -fl** | Filter by word count or line count | `-fw 20` |
+| **-mc** | Match only these status codes | `-mc 200,301` |
+| **-t** | Threads (default 40) | `-t 10` |
+| **-rate** | Requests per second limit | `-rate 50` |
+| **-H** | Add a header (used for vhost fuzzing) | `-H "Host: FUZZ.site.htb"` |
+| **-o / -of** | Save output to a file in a format | `-o out.json -of json` |
+
+A note on `-e`: it tests each word bare and with every extension. With `-e .php`, the word `admin` becomes `admin` and `admin.php`, so one pass finds directories and files together.
+
+### Change the filter to match the response
+
+The commands below use `-fc 404` because that is the common case. **Read the first few responses before trusting a filter.** If the server answers 403 every time, add 403: `-fc 404,403`. If it returns 200 for everything, switch to a size filter such as `-fs 1234`, using the size you see in the output. These commands are a starting point, so change them to fit your target.
+
+---
+
+## FFUF Without Recursion: My Single-Level Fuzzing Method
+
+I do not use `-recursion`. It walks into every directory it finds, including `/js`, `/css`, and `/images`, so the output fills with common files that tell me nothing. My routine is different:
+
+1. Run one single-level fuzz on the root.
+2. Read the results and pick the interesting items: admin-looking directories, backup files, config files, API paths.
+3. Run a new fuzz inside each interesting directory, one at a time.
+
+This takes a few more commands, but the output stays readable and I keep the request volume low. It has found me many endpoints, including admin panels, that a noisy recursive run would have buried.
+
+```bash
+# Pass 1: root
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+
+# Found /admin and /api? Pass 2: one at a time
+ffuf -u http://TARGET/admin/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+ffuf -u http://TARGET/api/FUZZ   -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+```
+
+---
+
+## Step 1: Find the Server Language With FFUF Extension Fuzzing
+
+Before choosing extensions, I find out which one the site actually uses. I fuzz the extension itself against a page that exists, like `index`:
+
+```bash
+ffuf -u http://TARGET/indexFUZZ -w /usr/share/seclists/Discovery/Web-Content/web-extensions.txt -ic -c -fc 404
+```
+
+A 200 on `index.php` means PHP, `index.aspx` means ASP.NET, `index.jsp` means Java. If `index` returns nothing, I repeat with `login`, `default`, or `home`. I cross-check with headers and cookies:
+
+```bash
+curl -sI http://TARGET/ | grep -iE "server|x-powered-by|x-aspnet|set-cookie"
+# PHPSESSID = PHP | ASP.NET_SessionId = ASP.NET | JSESSIONID = Java
+```
+
+![Extension detection](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329747/Blogs/Extension_detection_goawsw.png)
+> **Screenshot context:** The ffuf hit and the response headers agree on the language. That agreement confirms the stack before the per-extension commands begin.
+
+---
+
+## FFUF Commands I Use for Every File Extension
+
+Every command uses the same base: `-u http://TARGET/FUZZ`, `-w /usr/share/wordlists/dirb/common.txt`, `-ic -c`, and `-fc 404`. Replace TARGET, and adjust the filter as described above. Each stack has one combined command, then every extension on its own so you can apply a different filter to each one.
+
+### FFUF Command for ASP.NET Files (.aspx, .asp, .ashx, .asmx)
+
+Covers ASP.NET pages, handlers, SOAP services, and built-in resources.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .aspx,.asp,.ashx,.asmx,.axd,.config,.txt,.bak -fc 404
+```
+
+```bash
+# Still want to isolate one extension at a time? Swap the -e value:
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 -e .aspx    # ASP.NET Web Forms pages
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 -e .config  # web.config is normally 403; a 200 is a serious finding
+```
+
+What each extension in the combined command above covers: `.aspx` (Web Forms pages), `.asp` (classic ASP), `.ashx` (generic handlers), `.asmx` (SOAP web services, often with a `?wsdl` description), `.axd` (built-in resources such as `trace.axd`), `.config` (configuration), `.txt` (notes), `.bak` (backups).
+
+On IIS, a 403 on `web.config` is expected and a 200 is a serious finding. An `.asmx` hit often serves a service description at `?wsdl`.
+
+### FFUF Command for PHP Files (.php, .phps, .phtml)
+
+Covers PHP pages, alternate handlers, and source viewers.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .php,.phps,.phtml,.html,.txt,.bak,.old,.zip,.sql,.conf,.log -fc 404
+```
+
+```bash
+# Isolate just the source-disclosure risk extension
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 -e .phps
+```
+
+What each extension in the combined command covers: `.php` (pages), `.phps` (source viewer — check with `curl` if it hits), `.phtml`/`.php3`/`.php4`/`.php5` (alternate or legacy handlers), `.html` (static pages), `.txt` (notes), `.bak`/`.old` (backups), `.zip` (archives), `.sql` (database dumps), `.conf` (config), `.log` (logs).
+
+A `.phps` hit means the server may show readable source, so I check it with `curl -s http://TARGET/index.phps | head -40`.
+
+### FFUF Command for Java Apps (.jsp, .jspx, .do, .action)
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .jsp,.jspx,.do,.action,.xml,.properties,.html,.txt,.bak,.zip,.war -fc 404
+```
+
+What each extension in the combined command covers: `.jsp`/`.jspx` (server pages), `.do`/`.action` (Struts and Spring MVC actions), `.xml`/`.properties` (configuration), `.war` (deployment archives), `.html`/`.txt`/`.bak`/`.zip` (static pages, notes, backups, archives).
+
+### FFUF Command for Python Files (.py)
+
+Covers Python scripts and the data files that usually sit beside them.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .py,.json,.txt,.bak -fc 404
+```
+
+What each extension covers: `.py` (scripts), `.json` (data and config), `.txt` (notes, `requirements.txt`), `.bak` (backups).
+
+### FFUF Command for Ruby Files (.rb, .erb)
+
+Covers Ruby scripts and ERB templates, plus YAML config.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .rb,.erb,.yml,.txt,.bak -fc 404
+```
+
+What each extension covers: `.rb` (scripts), `.erb` (templates), `.yml` (config such as `database.yml`), `.txt` (notes), `.bak` (backups).
+
+### FFUF Command for Perl Files (.pl, .pm)
+
+Covers Perl scripts and modules.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .pl,.pm,.cgi,.txt,.bak -fc 404
+```
+
+What each extension covers: `.pl` (scripts), `.pm` (modules), `.cgi` (wrappers), `.txt` (notes), `.bak` (backups).
+
+### FFUF Command for CGI Scripts (.cgi and /cgi-bin/)
+
+CGI scripts normally live under `/cgi-bin/`, so I point the fuzz there instead of the root. I review every hit by hand because these scripts often take raw parameters.
+
+```bash
+# Combined
+ffuf -u http://TARGET/cgi-bin/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .cgi,.pl,.sh,.txt,.bak -fc 404
+```
+
+What each extension covers: `.cgi` (CGI scripts), `.pl` (Perl CGI), `.sh` (shell CGI), `.txt` (notes), `.bak` (backups).
+
+A 403 on `/cgi-bin/` itself still means the directory exists, so I fuzz inside it anyway.
+
+### FFUF Command for ColdFusion Files (.cfm, .cfc)
+
+Covers ColdFusion pages and components.
+
+```bash
+# Combined
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .cfm,.cfc,.cfml,.xml,.txt,.bak -fc 404
+```
+
+What each extension covers: `.cfm` (pages), `.cfc` (components), `.cfml` (markup pages), `.xml` (config), `.txt` (notes), `.bak` (backups).
+
+### FFUF Command for Next.js, React, and Modern Apps (No Extensions)
+
+Modern apps usually have no file extensions in their routes, so I fuzz plain paths and skip `-e`. The catch is that single-page apps return the same `index.html` with a 200 for every path, which makes `-fc 404` useless. I take the baseline size first and filter on it:
+
+```bash
+# Baseline: size of the fallback page for a path that cannot exist
+curl -s http://TARGET/zz-nonexistent-9f3a | wc -c
+# Use that number as BASELINE below
+```
+
+**Next.js.** Root routes, then API routes under `/api`. Next.js API routes answer 405 when the method is wrong, so I keep 405 in the match list because it still proves the route exists.
+
+```bash
+# Root routes
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fs BASELINE
+
+# API routes
+ffuf -u http://TARGET/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -ic -c -mc 200,201,204,301,302,307,401,403,405 -fs BASELINE
+
+# Same API wordlist with POST, to see which routes behave differently
+ffuf -u http://TARGET/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -X POST -ic -c -mc 200,201,204,400,401,403,405 -fs BASELINE
+```
+
+For Next.js, client route names are also listed inside the built bundles under `/_next/static/`, so I read those for hidden pages before guessing paths.
+
+**React, Vue, Angular (SPA frontends).** The routes live in the client, so fuzzing the frontend finds little. I fuzz the backend the SPA talks to, usually `/api`, `/v1`, or `/graphql`.
+
+```bash
+ffuf -u http://TARGET/api/FUZZ     -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -ic -c -fs BASELINE
+ffuf -u http://TARGET/api/v1/FUZZ  -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -ic -c -fs BASELINE
+ffuf -u http://TARGET/graphql/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fs BASELINE
+```
+
+**Node.js / Express APIs.** Unknown routes usually return a clean 404, so `-fc 404` works again here.
+
+```bash
+ffuf -u http://TARGET/FUZZ     -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+ffuf -u http://TARGET/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -ic -c -mc 200,201,204,301,302,401,403,405
+```
+
+**Django, Flask, FastAPI.** I fuzz the root and `/api`, then check the auto-generated docs paths by hand.
+
+```bash
+ffuf -u http://TARGET/FUZZ     -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+ffuf -u http://TARGET/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -ic -c -fc 404
+
+# Auto-generated docs worth a manual check
+curl -s -o /dev/null -w "%{http_code}\n" http://TARGET/docs
+curl -s -o /dev/null -w "%{http_code}\n" http://TARGET/openapi.json
+curl -s -o /dev/null -w "%{http_code}\n" http://TARGET/admin/
+```
+
+**Spring Boot.** Spring Boot apps often expose Actuator endpoints that leak environment details.
+
+```bash
+ffuf -u http://TARGET/actuator/FUZZ -w /usr/share/seclists/Discovery/Web-Content/spring-boot.txt -ic -c -fc 404
+ffuf -u http://TARGET/FUZZ          -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404
+```
+
+Wordlist paths inside SecLists can change between versions, so run `ls /usr/share/seclists/Discovery/Web-Content/api/` and adjust the filename if one is missing.
+
+![Modern app fuzz with baseline size filter](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329747/Blogs/Modern_app_fuzz_with_baseline_size_filter_wcw2xq.png)
+> **Screenshot context:** The baseline size from the fallback page is passed to `-fs`, which removes the identical responses that a single-page app returns for every path. Only real routes remain in the results.
+
+### FFUF Command for Backup, Config, Archive, and Database Files (.bak, .zip, .sql, .conf)
+
+I run this after the stack-specific pass. `-e` takes a comma-separated list, so every one of these extensions goes in a single run instead of one command each:
+
+```bash
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 \
+     -e .html,.htm,.shtml,.txt,.md,.json,.xml,.yml,.yaml,.conf,.ini,.cfg,.bak,.old,.orig,.save,.swp,.zip,.tar,.tar.gz,.tgz,.rar,.7z,.sql,.db,.sqlite,.mdb,.log,.csv,.pdf,.docx,.xlsx
+```
+
+That single command tests every word in the wordlist bare, and once with each of the 31 extensions above, so it covers static pages, data and config files, backups, archives, database files, logs, and documents in one pass. If the output gets noisy, split it by category instead of running one extension at a time:
+
+```bash
+# Config and data
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 \
+     -e .html,.htm,.shtml,.txt,.md,.json,.xml,.yml,.yaml,.conf,.ini,.cfg
+
+# Backups
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 \
+     -e .bak,.old,.orig,.save,.swp
+
+# Archives and databases
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 \
+     -e .zip,.tar,.tar.gz,.tgz,.rar,.7z,.sql,.db,.sqlite,.mdb
+
+# Logs and documents
+ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404 \
+     -e .log,.csv,.pdf,.docx,.xlsx
+```
+
+---
+
+## Following the Juicy Finds
+
+After the root pass, I pick the interesting results and fuzz inside each one. Same command, new path:
+
+```bash
+ffuf -u http://TARGET/admin/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .aspx,.config,.txt,.bak -fc 404
+```
+
+Admin panels, backup folders, API paths, and upload directories get their own pass. Asset folders like `/js`, `/css`, and `/images` get skipped. This is the whole reason I avoid `-recursion`.
+
+![Follow-up pass inside a discovered directory 1](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329746/Blogs/Follow-up_pass_inside_a_discovered_directory_2_tsbbgr.png)
+![Follow-up pass inside a discovered directory 2](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329747/Blogs/Follow-up_pass_inside_a_discovered_directory_1_ahmxwn.png)
+> **Screenshot context:** The second-level results show files that only exist inside the interesting directory. This is the step that surfaces admin pages and endpoints the root pass could not reach.
+
+---
+
+## FFUF Command for Finding Upload Directories and Uploaded Files
+
+Once I find an upload form, I want to know where the server actually stores what gets uploaded. This is a two-step fuzz: find the upload directory, then find the files sitting inside it.
+
+### Step 1: Find the upload directory
+
+```bash
+ffuf -u http://TARGET/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt -ic -c -fc 404
+```
+
+I look for names like `uploads`, `upload`, `files`, `media`, `images`, `attachments`, `documents`, `assets`, `user_uploads`, `userfiles`, or `tmp` in the results. If none show up in a general wordlist, I run a small targeted list of likely names:
+
+```bash
+printf 'uploads\nupload\nfiles\nfile\nmedia\nimages\nimg\nattachments\ndocuments\ndocs\nassets\nuserfiles\nuser_uploads\ndata\ntmp\ntemp\nstorage\ncontent\n' > upload-dirs.txt
+ffuf -u http://TARGET/FUZZ -w upload-dirs.txt -ic -c -fc 404
+```
+
+A 301 or 403 on a name like `/uploads` confirms the directory exists even when listing is blocked.
+
+### Step 2: Find files inside the upload directory
+
+Once I have the directory, I fuzz inside it for real files, trying the extensions that a normal upload form accepts:
+
+```bash
+ffuf -u http://TARGET/uploads/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.zip,.php,.phtml -fc 404
+```
+
+If the upload form itself names files predictably (a username, a timestamp, or an incrementing ID), I build a matching wordlist instead of guessing from a dictionary:
+
+```bash
+# Example: filenames based on a known username pattern
+printf 'admin\ntest\nuser\nbackup\nresume\nprofile\n' > upload-names.txt
+ffuf -u http://TARGET/uploads/FUZZ -w upload-names.txt -ic -c -e .jpg,.png,.pdf,.php -fc 404
+
+# Example: numeric or sequential filenames (common with auto-generated IDs)
+seq 1 500 > upload-ids.txt
+ffuf -u http://TARGET/uploads/FUZZ -w upload-ids.txt:FUZZ -ic -c -e .jpg,.png,.pdf -fc 404
+```
+
+### Step 3: Check if the upload directory allows execution
+
+If I previously uploaded a file with a web-executable extension (`.php`, `.aspx`, `.jsp`, within the scope of the engagement), I check whether the server executes it from the upload path rather than serving it as plain text:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://TARGET/uploads/test.php
+```
+
+A 200 with executed output (not raw PHP source) means the upload directory does not restrict script execution, which is a serious finding on its own.
+
+![Upload directory and file discovery 1](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329747/Blogs/Upload_directory_and_file_discovery_1_txrrsg.png)
+![Upload directory and file discovery 2](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329747/Blogs/Upload_directory_and_file_discovery_2_dxroyp.png)
+![Upload directory and file discovery 3](https://res.cloudinary.com/dmuhioahv/image/upload/v1795329746/Blogs/Upload_directory_and_file_discovery_3_tl3vhw.png)
+> **Screenshot context:** The first run confirms the upload directory exists, and the second finds files stored inside it. Together they show how the upload path and its contents are discovered with two short fuzzes rather than one broad guess.
+
+---
+
+## Other Fuzz Modes I Use
+
+**Virtual hosts.** On targets without DNS, I fuzz the Host header and filter the default page size.
+
+```bash
+ffuf -u http://TARGET/ -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -H "Host: FUZZ.domain.htb" -ic -c -fs 1234
+```
+
+**Parameters.** I fuzz the parameter name, filtering the baseline size.
+
+```bash
+ffuf -u http://TARGET/page.php?FUZZ=key -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -ic -c -fs 1234
+```
+
+Replace `1234` with the baseline size from your own target.
+
+---
+
+## FFUF vs. Alternatives
+
+The table compares ffuf with the other content discovery tools I see most often.
+
+| Tool | Primary Strength | Best Use Stage | Cost |
+|---|---|---|---|
+| **ffuf** | Fuzzing any request component with flexible filters | Directories, extensions, vhosts, parameters | Free |
+| Gobuster | Simple, fast directory, DNS, and vhost modes | Quick directory brute-forcing | Free |
+| feroxbuster | Automatic recursive content discovery | Deep directory enumeration | Free |
+| Burp Intruder | GUI-driven payload positions and analysis | Targeted manual fuzzing | Free tier throttled, Pro paid |
+
+---
+
+## Key Takeaways
+
+Identify the language first. A real 200 on `indexEXT` beats guessing, and it keeps the extension list short.
+
+One single-level fuzz plus manual follow-ups produces cleaner results than `-recursion`, because common asset files never flood the output.
+
+Always read the first responses and set the filter to match. A server that returns 403 or a fixed size for everything needs `-fc 404,403` or `-fs` before the output is useful.
+
+Backups, archives, configs, and database files are the extensions that most often turn into real findings, so I run them on every target.
+
+---
+
+## Common Mistakes to Avoid
+
+**Trusting `-fc 404` blindly.** Some servers return 403 or a custom 200 page for missing paths. Check a few responses by hand and adjust `-fc` or `-fs` before reading results.
+
+**Using `-recursion` on a first pass.** It walks into asset folders and buries the useful hits. Fuzz one level, then add the interesting directories manually.
+
+**Running every extension on every target.** The request count equals the wordlist size multiplied by one plus the number of extensions. Identify the language first and run the matching stack.
+
+**Skipping `-ic` on SecLists wordlists.** Many lists begin with `#` license lines that ffuf would otherwise request as paths. `-ic` skips them.
+
+**Reporting from ffuf output alone.** A hit is a lead. Confirm it with `curl`, record the request and response size, and save results with `-o` and `-of json`.
+
+---
+
+## Quick Reference: FFUF Commands by Stack
+
+Here's everything from above in one table, for quick copy-paste once you already know which stack you're on. Pair the `-e` string with `ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -fc 404`.
+
+| Stack | Detect With | `-e` Extensions |
+|---|---|---|
+| **PHP** | `PHPSESSID` cookie, `index.php` returns 200 | `.php,.phps,.phtml,.html,.txt,.bak,.old,.zip,.sql,.conf,.log` |
+| **ASP.NET / IIS** | `ASP.NET_SessionId`, `index.aspx` returns 200 | `.aspx,.asp,.ashx,.asmx,.axd,.config,.txt,.bak` |
+| **Java** | `JSESSIONID`, `index.jsp` returns 200 | `.jsp,.jspx,.do,.action,.xml,.properties,.txt,.bak,.zip,.war` |
+| Python | `.py` scripts, framework error pages | `.py,.json,.txt,.bak` |
+| Ruby | `.rb` or `.erb` routes, Rails error pages | `.rb,.erb,.yml,.txt,.bak` |
+| Perl / CGI | `/cgi-bin/` path | `.pl,.pm,.cgi,.sh,.txt,.bak` |
+| ColdFusion | `.cfm` pages | `.cfm,.cfc,.cfml,.xml,.txt,.bak` |
+| **Next.js / React / modern apps** | Same page for every path, no extensions | No `-e`, use `-fs` baseline filter |
+
+
+
+
+---
+
+
+
+## Frequently Asked Questions
+
+<Accordion type="single" collapsible className="w-full my-4">
+  <AccordionItem value="faq-1">
+    <AccordionTrigger className="text-base md:text-lg">Is ffuf free?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      ffuf is free and open source software released under the MIT license. It has no paid tier, and the full feature set is available from the official GitHub repository.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-2">
+    <AccordionTrigger className="text-base md:text-lg">What is the ffuf command for PHP?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      The ffuf command for PHP is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .php,.phps,.phtml,.html,.txt,.bak,.old,.zip,.sql,.conf,.log -fc 404. The -e flag tests each word bare and with every extension, -ic skips wordlist comments, and -fc 404 hides not-found responses. If the server returns 403 for everything, use -fc 404,403.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-3">
+    <AccordionTrigger className="text-base md:text-lg">What is the ffuf command for ASP.NET (.aspx)?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      The ffuf command for ASP.NET is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .aspx,.asp,.ashx,.asmx,.axd,.config,.txt,.bak -fc 404. It covers pages, handlers, SOAP services, and built-in resources. On IIS a 403 on web.config is normal, while a 200 is a serious finding.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-4">
+    <AccordionTrigger className="text-base md:text-lg">What is the ffuf command for Java (.jsp) applications?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      The ffuf command for Java applications is ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .jsp,.jspx,.do,.action,.xml,.properties,.html,.txt,.bak,.zip,.war -fc 404. It finds JavaServer Pages, Struts and Spring actions, configuration files, and deployment archives on Tomcat, JBoss, and WebLogic.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-5">
+    <AccordionTrigger className="text-base md:text-lg">How do I find backup, config, and database files with ffuf?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Use the -e flag with backup, archive, and database extensions: ffuf -u http://TARGET/FUZZ -w /usr/share/wordlists/dirb/common.txt -ic -c -e .bak,.old,.orig,.zip,.tar.gz,.sql,.conf,.log -fc 404. For editor backups such as index.php~, append suffixes to files you have already found instead of fuzzing the whole wordlist.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-6">
+    <AccordionTrigger className="text-base md:text-lg">How do I fuzz a Next.js or React app with ffuf?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Modern apps have no file extensions, so skip -e and fuzz plain paths. Single-page apps return the same page with a 200 for every path, so take the baseline size with curl -s http://TARGET/zz-nonexistent | wc -c and filter it with -fs. Then fuzz the API with ffuf -u http://TARGET/api/FUZZ using an API endpoint wordlist, keeping status 405 in the match list because it still proves the route exists.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-7">
+    <AccordionTrigger className="text-base md:text-lg">Is it legal to run ffuf on any target?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      No. Running ffuf against systems without explicit written authorization can violate computer misuse laws such as the CFAA in the United States. Use it only on targets you own, in HackTheBox and CTF environments, or within the scope of a signed engagement.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-8">
+    <AccordionTrigger className="text-base md:text-lg">Why avoid the -recursion flag?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      Recursion descends into every directory it finds, including asset folders full of JavaScript and CSS, which floods the output with low-value results. Fuzzing one level at a time and adding only the interesting directories manually keeps the output readable and the request volume low.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="faq-9">
+    <AccordionTrigger className="text-base md:text-lg">How do I find an upload directory and the files inside it with ffuf?</AccordionTrigger>
+    <AccordionContent className="text-base leading-7">
+      First fuzz the root for the directory name with ffuf -u http://TARGET/FUZZ -w common.txt -ic -c -fc 404, looking for names such as uploads, media, or files. Then fuzz inside that directory with extensions the upload form accepts: ffuf -u http://TARGET/uploads/FUZZ -w common.txt -ic -c -e .jpg,.png,.pdf,.php -fc 404. Build a targeted wordlist from the filename pattern the application uses when one is visible.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+
+---
+
+## Conclusion
+
+My FFUF routine comes down to four moves: identify the language from the extension, run one single-level fuzz with that stack's extensions, filter the output to match the target's responses, and follow the interesting directories one at a time. That is how I get from a bare root to admin panels and hidden endpoints without drowning in asset files. Copy the commands above, change the filters to fit your target, and use them only where you are authorized. The next step is replaying what you find through Burp Suite to test it by hand.
+
+---
+
+## Sources
+
+- [ffuf GitHub repository](https://github.com/ffuf/ffuf) — Official source, releases, and full flag documentation
+- [SecLists](https://github.com/danielmiessler/SecLists) — Standard wordlist collection for discovery and fuzzing
+- [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) — Methodology for content discovery and testing
+- [HackTheBox Academy](https://academy.hackthebox.com/) — Web fuzzing module and lab environments

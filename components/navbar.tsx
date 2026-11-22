@@ -4,7 +4,6 @@ import { BookTextIcon, Briefcase, CircleUser, HomeIcon, SquareActivityIcon } fro
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, memo } from "react";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 export const navItems = [
   { id: 1, label: "Home", icon: HomeIcon, href: "/" },
@@ -95,7 +94,6 @@ export default function Navbar() {
             )}
           </div>
         ))}
-        <AnimatedThemeToggler className="flex flex-row gap-2 items-center text-sm px-3 py-2" />
       </m.div>
     </LazyMotion>
   );

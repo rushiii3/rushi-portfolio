@@ -223,10 +223,10 @@ export default function CookieConsent() {
               <DialogClose asChild>
                 <Button variant="destructive" onClick={reject}>Deny</Button>
               </DialogClose>
-              <Button variant="outline" type="submit" onSubmit={allowSelected}>
+              <Button variant="outline" type="button" onClick={allowSelected}>
                 Allow Selected
               </Button>
-              <Button type="submit" onClick={accept}>
+              <Button type="button" onClick={accept}>
                 Allow All
               </Button>
             </DialogFooter>

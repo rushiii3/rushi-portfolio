@@ -3,7 +3,6 @@ import {
   Space_Grotesk,
   Merriweather,
   Fira_Code,
-  Inter,
 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -140,7 +139,6 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
           disableTransitionOnChange
         >
           <div className="">

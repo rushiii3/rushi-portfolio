@@ -171,34 +171,39 @@ export function buildBlogListSchema({
     image: string;
   }[];
 }): WithContext<WebPage> {
+  const cleanBlogUrl = blogUrl.replace(/\/$/, "");
+
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
 
-    "@id": blogUrl,
-    url: blogUrl,
+    "@id": cleanBlogUrl,
+    url: cleanBlogUrl,
     name: blogName,
     description,
 
     mainEntity: {
       "@type": "ItemList",
       itemListElement: posts.map(
-        (post, index): ListItem => ({
-          "@type": "ListItem",
-          position: index + 1,
+        (post, index): ListItem => {
+          const postUrl = `${cleanBlogUrl}/${post.slug}`;
+          return {
+            "@type": "ListItem",
+            position: index + 1,
 
-          url: `${blogUrl}/${post.slug}`,
+            url: postUrl,
 
-          item: {
-            "@type": "BlogPosting",
-            "@id": `${blogUrl}/${post.slug}#article`,
-            headline: post.title,
-            description: post.description,
-            datePublished: toSchemaDate(post.date),
-            author: buildAuthor(authorUrl),
-            image: buildImage(post.image),
-          },
-        }),
+            item: {
+              "@type": "BlogPosting",
+              "@id": `${postUrl}#article`,
+              headline: post.title,
+              description: post.description,
+              datePublished: toSchemaDate(post.date),
+              author: buildAuthor(authorUrl),
+              image: buildImage(post.image),
+            },
+          };
+        },
       ),
     },
   };
@@ -214,11 +219,13 @@ export function buildCategorySchema({
   description,
   posts,
   authorUrl,
+  blogUrl,
 }: {
   categoryName: string;
   categoryUrl: string;
   description: string;
   authorUrl: string;
+  blogUrl?: string;
   posts: {
     title: string;
     slug: string;
@@ -227,12 +234,17 @@ export function buildCategorySchema({
     image: string;
   }[];
 }): WithContext<CollectionPage> {
+  const cleanCategoryUrl = categoryUrl.replace(/\/$/, "");
+  const postBaseUrl = (
+    blogUrl || cleanCategoryUrl.replace(/\/category\/[^/]+$/, "")
+  ).replace(/\/$/, "");
+
   const schema: WithContext<CollectionPage> = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
 
-    "@id": categoryUrl,
-    url: categoryUrl,
+    "@id": cleanCategoryUrl,
+    url: cleanCategoryUrl,
     name: `${categoryName} Articles`,
     description,
   };
@@ -242,22 +254,25 @@ export function buildCategorySchema({
       "@type": "ItemList",
 
       itemListElement: posts.map(
-        (post, index): ListItem => ({
-          "@type": "ListItem",
-          position: index + 1,
+        (post, index): ListItem => {
+          const postUrl = `${postBaseUrl}/${post.slug}`;
+          return {
+            "@type": "ListItem",
+            position: index + 1,
 
-          url: `${categoryUrl}/${post.slug}`,
+            url: postUrl,
 
-          item: {
-            "@type": "BlogPosting",
-            "@id": `${categoryUrl}/${post.slug}#article`,
-            headline: post.title,
-            description: post.description,
-            datePublished: toSchemaDate(post.date),
-            author: buildAuthor(authorUrl),
-            image: buildImage(post.image),
-          },
-        }),
+            item: {
+              "@type": "BlogPosting",
+              "@id": `${postUrl}#article`,
+              headline: post.title,
+              description: post.description,
+              datePublished: toSchemaDate(post.date),
+              author: buildAuthor(authorUrl),
+              image: buildImage(post.image),
+            },
+          };
+        },
       ),
     };
   }

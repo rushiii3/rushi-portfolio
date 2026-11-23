@@ -43,3 +43,7 @@ next-env.d.ts
 .venv-skill
 
 /skills
+
+SEO_AUDIT.md
+/scripts
+.agents/

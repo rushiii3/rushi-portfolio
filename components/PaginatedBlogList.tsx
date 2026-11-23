@@ -7,7 +7,11 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import IoMdApps from "@/components/icons/react-icons/icons/IoMdApps";
 
-import { buildBlogListSchema, buildCategorySchema } from "@/lib/schemaBuilder";
+import {
+  buildBlogListSchema,
+  buildCategorySchema,
+  escapeJsonLd,
+} from "@/lib/schemaBuilder";
 
 const BLOGS_PER_PAGE = 10;
 
@@ -84,12 +88,13 @@ const PaginatedBlogList = async ({
     );
 
   const totalPages = Math.ceil(data.total / BLOGS_PER_PAGE);
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://hrushikeshshinde.tech";
 
   const blogListSchema = buildBlogListSchema({
     blogUrl: `${baseUrl}/blog`,
-    blogName: "Hrushikesh Shinde",
-    description: "Hrushikesh Shinde",
+    blogName: "Hrushikesh Shinde's Blog",
+    description:
+      "In-depth technical articles on web security, penetration testing, vulnerability research, application security, and security tool walkthroughs.",
     posts: data.blogs,
     authorUrl: `${baseUrl}/about`,
   });
@@ -97,16 +102,14 @@ const PaginatedBlogList = async ({
   const blogListByCategorySchema = buildCategorySchema({
     categoryUrl: `${baseUrl}/blog/category/${slug}`,
     categoryName: category,
-    description: "Hrushikesh Shinde",
+    description: `Curated technical articles and guides about ${category} by Hrushikesh Shinde.`,
     posts: data.blogs,
     authorUrl: `${baseUrl}/about`,
     blogUrl: `${baseUrl}/blog`,
   });
 
   const schema = category === "all" ? blogListSchema : blogListByCategorySchema;
-  const jsonLd = schema
-    ? JSON.stringify(schema).replace(/</g, "\\u003c")
-    : null;
+  const jsonLd = schema ? escapeJsonLd(schema) : null;
 
   return (
     <>

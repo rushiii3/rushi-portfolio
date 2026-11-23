@@ -7,16 +7,22 @@ import { notFound } from "next/navigation";
 import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
 import { cache } from "react";
 import RegisterCopyButton from "./_component/RegisterCopyButton";
-import { buildBlogSchema, buildFAQSchema } from "@/lib/schemaBuilder";
+import {
+  buildBlogSchema,
+  buildBreadcrumbSchema,
+  buildFAQSchema,
+  escapeJsonLd,
+} from "@/lib/schemaBuilder";
 import { BlogPostNavigation } from "./_component/BlogPostNavigation";
 import nextDynamic from "next/dynamic";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 const ShareArticle = nextDynamic(() => import("./_component/ShareArticle"));
 
 export const dynamic = "force-static";
-const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "https://hrushikeshshinde.tech";
 
 // Cached data fetch (dedupes across metadata + page within a single request)
 const getBlog = cache(async (slug: string) => {
@@ -43,16 +49,10 @@ export async function generateMetadata({ params }: {params: Params;}) {
 
   if (!data) return {};
 
-  const canonical = siteUrl ? `${siteUrl}/blog/${slug}` : undefined;
+  const canonical = `/blog/${slug}`;
 
   return {
-    metadataBase: new URL(siteUrl),
-
-    title: {
-      default: data.title,
-      template: `%s | Hrushikesh Shinde`
-    },
-
+    title: data.title,
     description: data.description,
     keywords: data.keywords,
 
@@ -108,7 +108,6 @@ export default async function Page(props: {params: Params;}) {
   const logoUrl = `${siteUrl}/icon1.png`;
   const authorUrl = `${siteUrl}/about`;
 
-  if (!siteUrl) return notFound();
   if (!data) return notFound();
   const articleJsonLd = buildBlogSchema({
     title: data.title,
@@ -124,14 +123,14 @@ export default async function Page(props: {params: Params;}) {
     category: data.category,
     readingMinutes: data.readingMinutes
   });
-  const articleJsonLdString = JSON.stringify(articleJsonLd).replace(
-    /</g,
-    "\\u003c"
-  );
 
   const faqJsonLd = buildFAQSchema(faqItems);
-  const faqJsonLdString =
-  JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") || "";
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: `${siteUrl}/` },
+    { name: "Blog", url: `${siteUrl}/blog` },
+    { name: data.title, url: canonicalUrl },
+  ]);
+
   const relatedPosts = blogs
     .filter((blog) => blog.slug !== data.slug)
     .slice(0, 2);
@@ -142,17 +141,32 @@ export default async function Page(props: {params: Params;}) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: articleJsonLdString
-          }} />
+            __html: escapeJsonLd(articleJsonLd),
+          }}
+        />
         
-        {faqJsonLd ?
+        {faqJsonLd ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: escapeJsonLd(faqJsonLd),
+            }}
+          />
+        ) : null}
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: faqJsonLdString
-          }} /> :
-
-        null}
+            __html: escapeJsonLd(breadcrumbJsonLd),
+          }}
+        />
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: data.title },
+          ]}
+        />
         <Badge className="uppercase">{data.category}</Badge>
         <h1 className="text-3xl md:text-4xl lg:text-6xl font-black  leading-tight tracking-tight">
           {data.title}

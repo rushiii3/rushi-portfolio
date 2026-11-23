@@ -3,8 +3,11 @@ import Blogs from "@/components/sections/blog";
 import { Experience } from "@/components/sections/experience";
 import { Hero1 } from "@/components/sections/hero";
 import Projects from "@/components/sections/projects";
+import { buildPersonSchema, buildWebSiteSchema, escapeJsonLd } from "@/lib/schemaBuilder";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "https://hrushikeshshinde.tech";
 
 const Skills = dynamic(() => import("@/components/sections/skills"), {
   loading: () => <SkillsSectionFallback />,
@@ -65,9 +68,19 @@ export default function Home(props: {
     projectCategory?: string;
   }>;
 }) {
+  const personSchema = buildPersonSchema(siteUrl);
+  const websiteSchema = buildWebSiteSchema(siteUrl);
+
   return (
     <div className="min-h-sdvh w-full flex flex-col justify-center items-start">
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: escapeJsonLd(personSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: escapeJsonLd(websiteSchema) }}
+      />
       <Hero1 />
       <AboutMe />
       <Skills />

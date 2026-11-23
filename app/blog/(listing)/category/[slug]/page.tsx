@@ -1,6 +1,7 @@
 import BlogShimmer from "@/components/BlogShimmer";
 import PaginatedBlogList from "@/components/PaginatedBlogList";
 import { blogCategories } from "@/content/info";
+import { getAllBlogs } from "@/lib/blogs";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -30,22 +31,20 @@ export async function generateMetadata(props: {
 
   const category = resolveCategory(slug);
   const { search, page } = searchParams;
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
-
-  // ✅ Don't index search results
-  if (search) {
-    return { robots: { index: false, follow: true } };
-  }
-
-  const params = new URLSearchParams();
-  if (page && page !== "1") params.set("page", page);
-
-  const canonicalUrl = `${baseUrl}/blog/category/${slug}${
-    params.toString() ? `?${params.toString()}` : ""
-  }`;
-
-  const pageTitle = `${category.name} | Hrushikesh Shinde`;
+  const canonicalUrl = `/blog/category/${slug}`;
+  const pageTitle = page && page !== "1" ? `${category.name} – Page ${page}` : category.name;
   const description = category.intro;
+
+  // ✅ Don't index search results or empty categories
+  const { total } = await getAllBlogs(1, 1, category.name);
+  if (search || total === 0) {
+    return {
+      title: pageTitle,
+      description,
+      alternates: { canonical: canonicalUrl },
+      robots: { index: false, follow: true },
+    };
+  }
 
   return {
     title: pageTitle,

@@ -7,37 +7,54 @@
 > VAPT, and OWASP Top 10 testing. Content is written from hands-on professional
 > experience in FinTech security testing and penetration testing.
 
-## Portfolio
+## Portfolio & Profile
 
-- [Homepage & About](https://hrushikesh-shinde-portfolio.vercel.app/): Full profile, work experience, skills, and projects
-- [Work & Projects](https://hrushikesh-shinde-portfolio.vercel.app/#work): SecureBlog, Cover Letter Customizer, Terabox Player, MeshFlix, and more
+- [Homepage](https://hrushikeshshinde.tech/): Overview, featured projects, latest articles, and technical skills
+- [About Me](https://hrushikeshshinde.tech/about): Background, security expertise, and technical proficiencies
+- [Experience](https://hrushikeshshinde.tech/experience): Professional career history at qSEAp Infotech and Hacktify Cyber Security
+- [Projects & Security Tools](https://hrushikeshshinde.tech/work): Security tools, full-stack applications, and open-source software
+- [Blog](https://hrushikeshshinde.tech/blog): Technical articles, exploitation guides, and vulnerability research
+- [RSS Feed](https://hrushikeshshinde.tech/rss.xml): RSS 2.0 XML subscription feed
+
+## Projects
+
+- [SecureBlog](https://hrushikeshshinde.tech/work/secure-blog): Cybersecurity blog engine built with Next.js, Supabase, and shadcn/ui featuring sanitized markdown rendering, infinite scroll, and robust security headers
+- [Cover Letter Customizer](https://hrushikeshshinde.tech/work/cover-letter-customizer): AI-assisted web tool built with Next.js to write, preview, and format professional cover letters with markdown syntax and one-click PDF export
+- [Terabox Player](https://hrushikeshshinde.tech/work/terabox-player): Ad-free mobile media player built with Expo and React Native to stream and download Terabox cloud videos with local SQLite history and dark mode
+- [MeshFlix](https://hrushikeshshinde.tech/work/meshflix): Fast, mobile-first streaming discovery app built with React Native, Expo, and TMDB API, featuring persistent state with MMKV and video playback
+- [OddNotEven Store](https://hrushikeshshinde.tech/work/oddnoteven-store): Custom Shopify e-commerce platform featuring tailored liquid sections, optimized responsive layouts, and enhanced checkout user experience
+- [UltimateHealth](https://hrushikeshshinde.tech/work/ultimate-health): Open-source health resource repository and article management platform featuring reliable wellness insights and doctor scheduling workflows
 
 ## Blog — Cybersecurity Fundamentals
 
-- [CIA Triad, Authentication & Authorization in Cybersecurity (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/cia-triad-authentication-authorization): Covers CIA Triad, non-repudiation, 5 authentication factors, MFA types comparison, and authentication vs authorization difference
-- [Information Security Concepts: Risk, Vulnerabilities, Threats & Controls (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/information-security-concepts): Covers InfoSec goals, risk, vulnerability types, threat categories, attack types, and prevention/detection/correction controls
-- [Cybersecurity Threats Explained: Attackers, Malware, Social Engineering & Network Attacks](https://hrushikesh-shinde-portfolio.vercel.app/blog/identifying-security-threats): Covers threat actors, hacker types, malware, social engineering, and network attack techniques
+- [CIA Triad, Authentication & Authorization Guide](https://hrushikeshshinde.tech/blog/cia-triad-authentication-authorization): Understand the CIA Triad, non-repudiation, authentication factors, MFA types, and authorization — the foundation of modern cybersecurity controls
+- [InfoSec Concepts: Risk, Vulnerabilities & Controls](https://hrushikeshshinde.tech/blog/information-security-concepts): Learn the foundational concepts of information security: core InfoSec goals, risk management, vulnerability types, threats, and security controls explained
+- [Cybersecurity Threats: Attackers, Malware & Exploits](https://hrushikeshshinde.tech/blog/identifying-security-threats): Learn the major cybersecurity threats including threat actors, social engineering, malware, network and wireless attacks. A complete beginner-friendly guide
+- [Cryptography Fundamentals: Encryption, Hashing & Ciphers](https://hrushikeshshinde.tech/blog/cryptography-fundamentals): A complete guide to cryptography: symmetric vs asymmetric encryption, hashing, digital signatures, ciphers, and how each primitive secures digital assets
 
-## Blog — Security Tools
+## Blog — Network & Infrastructure Security
 
-- [Burp Suite for HTB & CTF Players: Complete Guide (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/burp-suite-for-htb-ctf-players): Covers Proxy, Repeater, Intruder, Decoder, Comparer, and BApp extensions for HackTheBox and CTF web challenges
-- [ReconSpider: HTB Web Enumeration Tool Guide (2026)](https://hrushikesh-shinde-portfolio.vercel.app/blog/reconspider-htb-web-enumeration-tool): Covers installation, JSON output analysis, HTML comment extraction, and recon workflow for pentesters
+- [Network Devices & Security Components Explained (2026)](https://hrushikeshshinde.tech/blog/network-devices-security-components): A complete guide to network devices and security components: routers, switches, firewalls, proxies, load balancers, and traffic analysis architecture
+- [Secure Network Design: NAC, DMZ, Zoning & IPSec](https://hrushikeshshinde.tech/blog/secure-network-design): Learn how to design a secure network using Network Access Control (NAC), DMZ architecture, network zoning (guest, honeynet), and IPSec protocol suites
 
-## Blog — Web Security
+## Blog — Security Tools & CTF Walkthroughs
 
-- [OWASP Top 10: Essential Web Security Risks Every Developer Should Know](https://hrushikesh-shinde-portfolio.vercel.app/blog/owasp-top-10): Covers all 10 OWASP risks including Broken Access Control, Injection, Cryptographic Failures, SSRF, and prevention methods
+- [Burp Suite for HTB & CTF Players: Complete Guide (2026)](https://hrushikeshshinde.tech/blog/burp-suite-for-htb-ctf-players): Master Burp Suite for HackTheBox and CTF web challenges. Covers Proxy, Repeater, Intruder, Decoder, Comparer, and essential BApp extensions with real workflows
+- [FFUF Cheat Sheet: Extension Fuzzing for HTB & Pentests](https://hrushikeshshinde.tech/blog/ffuf-htb-ctf-guide): FFUF commands for PHP, ASP.NET, Java, Python and Next.js: one command per extension (.php, .aspx, .jsp, .bak) plus my single-level fuzz method
+- [ReconSpider: HTB Web Enumeration Tool Guide (2026)](https://hrushikeshshinde.tech/blog/reconspider-htb-web-enumeration-tool): Learn how to install and use ReconSpider for web enumeration on HackTheBox. Covers setup, JSON output analysis, and practical recon workflow for pentesters
 
-## Blog — Vulnerability Research
+## Blog — Web Security & Vulnerability Research
 
-- [Zod .refine() DoS Vulnerability: How to Protect Your API](https://hrushikesh-shinde-portfolio.vercel.app/blog/zod-refine-dos-vulnerability): Explains how Zod's .refine() can cause denial-of-service when combined with expensive operations (database queries, API calls) that execute even when earlier validators (.min(), .max()) fail. Covers the root cause, a live Express.js example demonstrating the vulnerability, attack patterns (single-character and oversized inputs), and the safe pattern: perform structural validation first with .parse()/.safeParse(), then execute expensive operations on the validated result. Includes a security testing workflow and remediation checklist. Essential reading for Node.js/TypeScript developers using Zod in production.
-
+- [OWASP Top 10: Essential Web Security Risks Guide](https://hrushikeshshinde.tech/blog/owasp-top-10): A comprehensive guide to understanding and preventing the top security threats in web applications, based on the OWASP Top 10
+- [Default Credentials Vulnerability: Risks & Prevention](https://hrushikeshshinde.tech/blog/default-credentials-vulnerability): Two real black-box findings show how default usernames, default passwords, and missing rate limiting combine into full account takeover
+- [Zod .refine() DoS Vulnerability: Root Cause & Fix](https://hrushikeshshinde.tech/blog/zod-refine-dos-vulnerability): Learn why Zod's .refine() can trigger denial of service in Node.js APIs when validation fails, featuring a reproducible PoC and safe architecture patterns
 
 ## Author
 
 - Name: Hrushikesh Shinde
 - Role: Associate Information Security Consultant at qSEAp Infotech Pvt. Ltd
 - Specialisation: Web Application VAPT, OWASP Top 10, FinTech Security Testing
-- Tools: Burp Suite, Nmap, SQLmap, AppScan 360, Kali Linux, Metasploit
+- Tools: Burp Suite, Nmap, SQLmap, AppScan 360, Kali Linux, Metasploit, ffuf
 - Certifications in progress: HTB Certified Web Exploitation Specialist (CWES)
 - LinkedIn: https://www.linkedin.com/in/hrushikesh-shinde-developer/
 - GitHub: https://github.com/rushiii3

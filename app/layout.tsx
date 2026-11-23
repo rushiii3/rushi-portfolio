@@ -45,9 +45,12 @@ const fontMono = Fira_Code({
   weight: ["400", "500", "700"], // Only these 3 weights
 });
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://hrushikeshshinde.tech"),
 
-  title: "Hrushikesh Shinde | Application Security & VAPT Specialist",
+  title: {
+    default: "Hrushikesh Shinde | Application Security & VAPT Specialist",
+    template: "%s | Hrushikesh Shinde",
+  },
   description:
     "Associate Information Security Consultant specializing in Application Security, VAPT, OWASP Top 10, and web app security testing in Mumbai, India.",
   robots: {
@@ -87,15 +90,15 @@ export const metadata: Metadata = {
     images: ["/og.webp"],
   },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_URL,
+    canonical: process.env.NEXT_PUBLIC_URL || "/",
     languages: {
       "en-IN": "/",
     },
   },
   publisher: "https://www.linkedin.com/in/hrushikesh-shinde/",
   verification: {
-    google: `${process.env.NEXT_GOOGLE_CONSOLE}`,
-    yandex: `${process.env.NEXT_YANDEX_CONSOLE}`,
+    ...(process.env.NEXT_GOOGLE_CONSOLE ? { google: process.env.NEXT_GOOGLE_CONSOLE } : {}),
+    ...(process.env.NEXT_YANDEX_CONSOLE ? { yandex: process.env.NEXT_YANDEX_CONSOLE } : {}),
   },
 };
 
@@ -139,6 +142,12 @@ export default function RootLayout({
               });
             `,
           }}
+        />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Hrushikesh Shinde — Blog RSS Feed"
+          href="/rss.xml"
         />
       </head>
       <body

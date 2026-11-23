@@ -8,6 +8,9 @@ import type {
   WebPage,
   Person,
   ImageObject,
+  BreadcrumbList,
+  SoftwareApplication,
+  WebSite,
 } from "schema-dts";
 
 /* ------------------------------------------------ */
@@ -278,4 +281,138 @@ export function buildCategorySchema({
   }
 
   return schema;
+}
+
+/* ------------------------------------------------ */
+/* JSON-LD String Escaper */
+/* ------------------------------------------------ */
+
+export function escapeJsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c");
+}
+
+/* ------------------------------------------------ */
+/* Person Schema */
+/* ------------------------------------------------ */
+
+export function buildPersonSchema(siteUrl: string): WithContext<Person> {
+  const cleanUrl = siteUrl.replace(/\/$/, "");
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${cleanUrl}/#person`,
+    name: "Hrushikesh Shinde",
+    givenName: "Hrushikesh",
+    familyName: "Shinde",
+    url: `${cleanUrl}/about`,
+    image: `${cleanUrl}/profile.webp`,
+    jobTitle: "Associate Information Security Consultant",
+    worksFor: {
+      "@type": "Organization",
+      name: "qSEAp Infotech Pvt. Ltd",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Mumbai",
+      addressCountry: "IN",
+    },
+    sameAs: [
+      "https://github.com/rushiii3",
+      "https://www.linkedin.com/in/hrushikesh-shinde-developer/",
+      "https://profile.hackthebox.com/profile/019ccd33-4310-73b7-8223-264faac08c09",
+    ],
+    knowsAbout: [
+      "Application Security",
+      "Vulnerability Assessment & Penetration Testing (VAPT)",
+      "OWASP Top 10",
+      "Burp Suite",
+      "Web Application Security",
+      "Ethical Hacking",
+      "Network Security",
+    ],
+  };
+}
+
+/* ------------------------------------------------ */
+/* WebSite Schema */
+/* ------------------------------------------------ */
+
+export function buildWebSiteSchema(siteUrl: string): WithContext<WebSite> {
+  const cleanUrl = siteUrl.replace(/\/$/, "");
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${cleanUrl}/#website`,
+    url: cleanUrl,
+    name: "Hrushikesh Shinde",
+    description:
+      "Personal portfolio and cybersecurity blog of Hrushikesh Shinde, Application Security Consultant & VAPT Specialist.",
+    publisher: {
+      "@id": `${cleanUrl}/#person`,
+    },
+    inLanguage: "en-US",
+  };
+}
+
+/* ------------------------------------------------ */
+/* Breadcrumb Schema */
+/* ------------------------------------------------ */
+
+export function buildBreadcrumbSchema(
+  items: { name: string; url?: string }[],
+): WithContext<BreadcrumbList> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      ...(item.url ? { item: item.url } : {}),
+    })),
+  };
+}
+
+/* ------------------------------------------------ */
+/* Project Schema (SoftwareApplication) */
+/* ------------------------------------------------ */
+
+export function buildProjectSchema({
+  title,
+  description,
+  date,
+  image,
+  stack,
+  github,
+  link,
+  canonicalUrl,
+  authorUrl,
+}: {
+  title: string;
+  description: string;
+  slug: string;
+  date: string;
+  image: string;
+  stack?: string[];
+  github?: string;
+  link?: string;
+  canonicalUrl: string;
+  authorUrl: string;
+}): WithContext<SoftwareApplication> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${canonicalUrl}#software`,
+    url: canonicalUrl,
+    name: title,
+    description,
+    applicationCategory: "SecurityApplication",
+    operatingSystem: "Web, Cross-Platform",
+    ...(image ? { image: buildImage(image) } : {}),
+    datePublished: toSchemaDate(date),
+    author: buildAuthor(authorUrl),
+    ...(stack && stack.length > 0 ? { keywords: stack.join(", ") } : {}),
+    ...(github ? { codeRepository: github } : {}),
+    ...(link ? { installUrl: link } : {}),
+  };
 }

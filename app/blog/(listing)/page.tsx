@@ -30,14 +30,9 @@ export async function generateMetadata(props: {
     };
   }
 
-  const canonicalUrl = `${baseUrl}/blog${
-    params.toString() ? `?${params.toString()}` : ""
-  }`;
+  const canonicalUrl = "/blog";
 
-  const pageTitle =
-    page !== "1"
-      ? `Blog – Page ${page} | Hrushikesh Shinde`
-      : "Blog | Hrushikesh Shinde";
+  const pageTitle = page !== "1" ? `Blog – Page ${page}` : "Blog";
 
   const description =
     "In-depth technical articles on web security, penetration testing, vulnerability research, application security, security tools, and real-world exploit writeups.";

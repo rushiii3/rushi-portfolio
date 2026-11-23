@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "seo:check": "node scripts/seo-check.mjs",
     "lint": "eslint .",
     "knip": "knip"
   },

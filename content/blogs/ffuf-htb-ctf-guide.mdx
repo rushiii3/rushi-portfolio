@@ -1,5 +1,5 @@
 ---
-title: "FFUF Commands I Use: Extension Fuzzing by Stack (ASP.NET, PHP, Java) for HTB & Pentests"
+title: "FFUF Cheat Sheet: Extension Fuzzing for HTB & Pentests"
 description: "FFUF commands for PHP, ASP.NET, Java, Python and Next.js: one command per extension (.php, .aspx, .jsp, .bak) plus my single-level fuzz method."
 date: "2026-11-05"
 category: "Security Tools"
@@ -50,8 +50,6 @@ faqSchema:
   - question: "How do I find an upload directory and the files inside it with ffuf?"
     answer: "First fuzz the root for the directory name with ffuf -u http://TARGET/FUZZ -w common.txt -ic -c -fc 404, looking for names such as uploads, media, or files. Then fuzz inside that directory with extensions the upload form accepts: ffuf -u http://TARGET/uploads/FUZZ -w common.txt -ic -c -e .jpg,.png,.pdf,.php -fc 404. Build a targeted wordlist from the filename pattern the application uses when one is visible."
 ---
-
-# FFUF Commands I Use: Extension Fuzzing by Stack (ASP.NET, PHP, Java)
 
 ## TL;DR
 

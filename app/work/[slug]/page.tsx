@@ -6,9 +6,11 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import BsGithub from "@/components/icons/react-icons/icons/BsGithub";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
+import { buildBreadcrumbSchema, buildProjectSchema, escapeJsonLd } from "@/lib/schemaBuilder";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { cache } from "react";
 export const dynamic = "force-static";
-const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
+const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "https://hrushikeshshinde.tech";
 
 type Params = {
   params: Promise<{
@@ -36,16 +38,10 @@ export async function generateMetadata(props: Params) {
 
   if (!data) return {};
 
-  const canonical = siteUrl ? `${siteUrl}/work/${slug}` : undefined;
+  const canonical = `/work/${slug}`;
 
   return {
-    metadataBase: new URL(siteUrl),
-
-    title: {
-      default: data.title,
-      template: `%s | Hrushikesh Shinde`
-    },
-
+    title: data.title,
     description: data.description,
 
     robots: {
@@ -53,30 +49,29 @@ export async function generateMetadata(props: Params) {
       follow: true,
       "max-image-preview": "large",
       "max-snippet": -1,
-      "max-video-preview": -1
+      "max-video-preview": -1,
     },
 
     alternates: {
-      canonical
+      canonical,
     },
 
     openGraph: {
-      type: "website",
+      type: "article",
       url: canonical,
       title: data.title,
       description: data.description,
       siteName: "Hrushikesh Shinde",
       publishedTime: data.date,
-      modifiedTime: data.date || data.date,
       authors: ["Hrushikesh Shinde"],
       images: [
-      {
-        url: data.image,
-        width: 1200,
-        height: 630,
-        alt: data.title
-      }]
-
+        {
+          url: data.image,
+          width: 1200,
+          height: 630,
+          alt: data.title,
+        },
+      ],
     },
 
     twitter: {
@@ -84,7 +79,6 @@ export async function generateMetadata(props: Params) {
       title: data.title,
       description: data.description,
       images: [data.image],
-      creator: "@yourhandle" // optional but recommended
     },
   };
 }
@@ -92,13 +86,53 @@ export async function generateMetadata(props: Params) {
 
 const Page = async (props: Params) => {
   const { slug } = await props.params;
-  const data = await getProjectBySlug(slug);
+  const data = await getProject(slug);
   if (!data) {
     notFound();
   }
 
+  const canonicalUrl = `${siteUrl}/work/${slug}`;
+  const authorUrl = `${siteUrl}/about`;
+  const imageUrl = data.image?.startsWith("http")
+    ? data.image
+    : `${siteUrl}${data.image?.startsWith("/") ? "" : "/"}${data.image || "og.webp"}`;
+
+  const projectJsonLd = buildProjectSchema({
+    title: data.title,
+    description: data.description,
+    slug: data.slug,
+    date: data.date,
+    image: imageUrl,
+    stack: data.stack,
+    github: data.github,
+    link: data.link,
+    canonicalUrl,
+    authorUrl,
+  });
+
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: `${siteUrl}/` },
+    { name: "Projects", url: `${siteUrl}/work` },
+    { name: data.title, url: canonicalUrl },
+  ]);
+
   return (
     <div className="md:pt-32 pt-16 w-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: escapeJsonLd(projectJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: escapeJsonLd(breadcrumbJsonLd) }}
+      />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Projects", href: "/work" },
+          { label: data.title },
+        ]}
+      />
       <h1 className="text-4xl md:text-5xl font-bold">{data.title}</h1>
       <p className="my-3 text-xs text-muted-foreground">{data.date}</p>
       <div className="flex flex-row flex-wrap gap-2 my-3 justify-start w-full">

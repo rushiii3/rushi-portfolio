@@ -39,7 +39,9 @@ const PaginatedBlogList = async ({
   page: number;
   slug?: string;
 }) => {
+  console.log("PaginatedBlogList props:", { search, category, page, slug });
   const data = await getBlogs(page, category, search);
+  console.log("PaginatedBlogList data:", data);
   if (data.blogs.length === 0 && !search) {
     return (
       <section className="flex flex-col items-center justify-center rounded-2xl border border-primary/10 bg-primary/10 py-12 text-center ">

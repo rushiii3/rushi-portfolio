@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
-import matter from "gray-matter";
 import readingTime from "reading-time";
+import { parseFrontmatter } from "./frontmatter";
 
 const rootDirectory = path.join(process.cwd(), "/content/blogs");
 const slugPattern = /^[a-z0-9-]+$/;
@@ -28,7 +28,7 @@ interface BlogFAQItem {
   answer: string;
 }
 
-interface BlogMetadata {
+export interface BlogMetadata {
   slug: string;
   date: string;
   description: string;
@@ -41,6 +41,9 @@ interface BlogMetadata {
   content?: string;
   wordCount: number;
   readingMinutes: number;
+  series?: string;
+  seriesOrder?: number;
+  isPillar?: boolean;
 }
 
 
@@ -77,8 +80,7 @@ async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
     const slug = filepath.replace(/\.mdx$/, "");
     const filePath = path.join(rootDirectory, filepath);
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data } = matter(fileContent);
-
+    const { data } = parseFrontmatter(fileContent);
     if (!data.title || !data.category) {
       return null;
     }
@@ -95,6 +97,9 @@ async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
       dateModified: data.dateModified ?? "",
       wordCount: data.wordCount ?? 0,
       readingMinutes: data.readingMinutes ?? 0,
+      series: data.series ?? undefined,
+      seriesOrder: typeof data.seriesOrder === "number" ? data.seriesOrder : undefined,
+      isPillar: Boolean(data.isPillar),
     };
   } catch (error) {
     console.error("Error fetching blog metadata", sanitizeError(error));
@@ -106,11 +111,11 @@ async function getAllBlogMetadata(): Promise<BlogMetadata[]> {
   if (process.env.NODE_ENV !== "development" && blogMetadataCache) {
     return blogMetadataCache;
   }
+  console.log("Fetching all blog metadata from filesystem...");
 
   try {
     const files = await fs.readdir(rootDirectory);
     const mdxFiles = files.filter((f) => f.endsWith(".mdx"));
-
     const blogs = (await Promise.all(mdxFiles.map(getBlogMetadata))).filter(
       (blog): blog is BlogMetadata => blog !== null,
     );
@@ -242,7 +247,7 @@ export async function getBlogBySlug(
     }
 
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data, content } = matter(fileContent);
+    const { data, content } = parseFrontmatter(fileContent);
 
     if (!data.title || !data.category) {
       return null;
@@ -268,6 +273,9 @@ export async function getBlogBySlug(
       content,
       wordCount,
       readingMinutes,
+      series: data.series ?? undefined,
+      seriesOrder: typeof data.seriesOrder === "number" ? data.seriesOrder : undefined,
+      isPillar: Boolean(data.isPillar),
       previous: navigation.previous,
       next: navigation.next,
     };
@@ -282,3 +290,60 @@ export async function getBlogBySlug(
     return null;
   }
 }
+
+export async function getRelatedBlogs(
+  currentSlug: string,
+  limit: number = 3,
+): Promise<BlogMetadata[]> {
+  const allBlogs = await getAllBlogMetadata();
+  const current = allBlogs.find((b) => b.slug === currentSlug);
+  if (!current) return [];
+
+  const currentKeywords = new Set(
+    (current.keywords || []).map((k) => k.toLowerCase().trim()),
+  );
+
+  const scored = allBlogs
+    .filter((b) => b.slug !== currentSlug)
+    .map((candidate) => {
+      let score = 0;
+      if (candidate.category.toLowerCase() === current.category.toLowerCase()) {
+        score += 5;
+      }
+      for (const kw of candidate.keywords || []) {
+        if (currentKeywords.has(kw.toLowerCase().trim())) {
+          score += 2;
+        }
+      }
+      return { candidate, score };
+    });
+
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return (
+      new Date(b.candidate.date).getTime() - new Date(a.candidate.date).getTime()
+    );
+  });
+
+  const topScored = scored.slice(0, limit).map((s) => s.candidate);
+
+  if (topScored.length < limit) {
+    const existingSlugs = new Set([currentSlug, ...topScored.map((b) => b.slug)]);
+    const fallback = allBlogs.filter((b) => !existingSlugs.has(b.slug));
+    topScored.push(...fallback.slice(0, limit - topScored.length));
+  }
+
+  return topScored;
+}
+
+export async function getSeriesBlogs(
+  seriesName: string,
+): Promise<BlogMetadata[]> {
+  const allBlogs = await getAllBlogMetadata();
+  return allBlogs
+    .filter(
+      (b) => b.series && b.series.toLowerCase() === seriesName.toLowerCase(),
+    )
+    .sort((a, b) => (a.seriesOrder ?? 99) - (b.seriesOrder ?? 99));
+}
+

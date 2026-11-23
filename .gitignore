@@ -47,3 +47,5 @@ next-env.d.ts
 SEO_AUDIT.md
 /scripts
 .agents/
+INTERNAL_LINKING_AUDIT.md
+INTERNAL_LINKING_SUGGESTIONS.md

@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import matter from "gray-matter";
+import { parseFrontmatter } from "./frontmatter";
 
 const rootDirectory = path.join(process.cwd(), "/content/projects");
 const slugPattern = /^[a-z0-9-]+$/;
@@ -46,7 +46,7 @@ const projectDetailCache = new Map<string, ProjectMetadata | null>();
     const slug = filepath.replace(/\.mdx$/, "");
     const filePath = path.join(rootDirectory, filepath);
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data } = matter(fileContent);
+    const { data } = parseFrontmatter(fileContent);
 
     if (!data.title || !data.category) {
       return null;
@@ -126,7 +126,7 @@ export async function getProjectBySlug(
     }
 
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data, content } = matter(fileContent);
+    const { data, content } = parseFrontmatter(fileContent);
 
     if (!data.title || !data.category) {
       return null;

@@ -25,8 +25,6 @@ const fontSans = Space_Grotesk({
   variable: "--font-grotesk-sans",
   subsets: ["latin"],
   display: "swap",
-  // preload: true,
-  weight: ["400", "500", "700"], // Only these 3 weights
 });
 
 const fontSerif = Merriweather({
@@ -41,8 +39,6 @@ const fontMono = Fira_Code({
   variable: "--font-fira-mono",
   subsets: ["latin"],
   display: "swap",
-  // preload: true,
-  weight: ["400", "500", "700"], // Only these 3 weights
 });
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || "https://hrushikeshshinde.tech"),

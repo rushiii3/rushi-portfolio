@@ -1,5 +1,6 @@
 import BlogShimmer from "@/components/BlogShimmer";
 import PaginatedBlogList from "@/components/PaginatedBlogList";
+import PillarGuidesHub from "@/components/PillarGuidesHub";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -83,6 +84,7 @@ const Page = async (props: {
   return (
     <>
       {search ? <p>You searched for &#34;{search}&#34; </p> : null}
+      {/* {!search && currentPage === 1 && <PillarGuidesHub />} */}
       <Suspense fallback={<BlogShimmer />}>
         <PaginatedBlogList category="all" page={currentPage} search={search} />
       </Suspense>

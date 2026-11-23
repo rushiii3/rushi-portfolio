@@ -1,10 +1,12 @@
 import MDXContent from "@/components/mdx-content";
+import Link from "next/link";
 import MdOutlineEditCalendar from "@/components/icons/react-icons/icons/MdOutlineEditCalendar";
 import MdOutlineCalendarToday from "@/components/icons/react-icons/icons/MdOutlineCalendarToday";
 import MdOutlineSchedule from "@/components/icons/react-icons/icons/MdOutlineSchedule";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getBlogBySlug, getAllBlogs } from "@/lib/blogs";
+import { getBlogBySlug, getAllBlogs, getRelatedBlogs } from "@/lib/blogs";
+import { blogCategories } from "@/content/info";
 import { cache } from "react";
 import RegisterCopyButton from "./_component/RegisterCopyButton";
 import {
@@ -18,6 +20,9 @@ import nextDynamic from "next/dynamic";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { RelatedArticles } from "@/components/RelatedArticles";
+import { SeriesCallout } from "@/components/SeriesCallout";
+import { TableOfContents, extractToc } from "@/components/TableOfContents";
 
 const ShareArticle = nextDynamic(() => import("./_component/ShareArticle"));
 
@@ -124,16 +129,19 @@ export default async function Page(props: {params: Params;}) {
     readingMinutes: data.readingMinutes
   });
 
+  const categorySlug =
+    blogCategories.find((c) => c.name.toLowerCase() === data.category.toLowerCase())?.slug || "all";
+
   const faqJsonLd = buildFAQSchema(faqItems);
   const breadcrumbJsonLd = buildBreadcrumbSchema([
     { name: "Home", url: `${siteUrl}/` },
     { name: "Blog", url: `${siteUrl}/blog` },
+    { name: data.category, url: `${siteUrl}/blog/category/${categorySlug}` },
     { name: data.title, url: canonicalUrl },
   ]);
 
-  const relatedPosts = blogs
-    .filter((blog) => blog.slug !== data.slug)
-    .slice(0, 2);
+  const relatedArticles = await getRelatedBlogs(slug, 3);
+  const tocItems = extractToc(data.content);
 
   return (
     <div className="md:pt-32 pt-16 w-full dark:text-white text-black">
@@ -164,10 +172,15 @@ export default async function Page(props: {params: Params;}) {
           items={[
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
+            { label: data.category, href: `/blog/category/${categorySlug}` },
             { label: data.title },
           ]}
         />
-        <Badge className="uppercase">{data.category}</Badge>
+        <Link href={`/blog/category/${categorySlug}`} className="inline-block mb-3">
+          <Badge className="uppercase hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors cursor-pointer">
+            {data.category}
+          </Badge>
+        </Link>
         <h1 className="text-3xl md:text-4xl lg:text-6xl font-black  leading-tight tracking-tight">
           {data.title}
         </h1>
@@ -220,6 +233,16 @@ export default async function Page(props: {params: Params;}) {
           className="w-full h-auto object-cover rounded-2xl"
           title={data.title} />
         
+        {data.series && (
+          <SeriesCallout
+            seriesName={data.series}
+            currentSlug={data.slug}
+            currentOrder={data.seriesOrder}
+          />
+        )}
+
+        <TableOfContents items={tocItems} />
+
         <div className="max-w-full mt-5 prose dark:prose-invert prose-strong:text-black dark:prose-strong:text-white  prose-headings:mt-8 prose-headings:font-semibold prose-h1:text-4xl md:prose-h1:text-5xl prose-h2:text-3xl md:prose-h2:text-4xl prose-h3:text-2xl md:prose-h3:text-3xl prose-h4:text-xl md:prose-h4:text-2xl prose-h5:text-lg md:prose-h5:text-xl prose-h6:text-md prose-img:rounded-2xl">
           {data.content ? <MDXContent source={data.content} /> : null}
         </div>
@@ -229,6 +252,7 @@ export default async function Page(props: {params: Params;}) {
         title={data.title}
         hashtags={data.keywords} />
       
+      <RelatedArticles articles={relatedArticles} />
       <BlogPostNavigation previous={data.previous} next={data.next} />
       <RegisterCopyButton />
     </div>);

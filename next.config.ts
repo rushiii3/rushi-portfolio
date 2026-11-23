@@ -140,7 +140,7 @@ const nextConfig: NextConfig = {
   },
 
   compiler: {
-    removeConsole: true,
+    removeConsole: false,
   },
   poweredByHeader: false,
 };

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "seo:check": "node scripts/seo-check.mjs",
+    "links:check": "node scripts/link-check.mjs",
     "lint": "eslint .",
     "knip": "knip"
   },
@@ -16,6 +17,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
     "lucide-react": "^0.483.0",
     "motion": "^12.5.0",
     "next": "^16.2.4",
@@ -48,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -33,7 +33,7 @@ const fontSerif = Merriweather({
   variable: "--font-merriweather-serif",
   subsets: ["latin"],
   display: "swap",
-  // preload: true,
+  preload: false,
   weight: ["400", "700"], // Only these 2 weights
 });
 

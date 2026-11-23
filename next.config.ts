@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -34,12 +35,21 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   transpilePackages: ["next-mdx-remote"],
-  // turbopack: {
-  //   resolveAlias: {
-  //     "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
-  //     "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
-  //   },
-  // },
+  turbopack: {
+    resolveAlias: {
+      "../build/polyfills/polyfill-module": "./lib/empty-polyfill.js",
+      "next/dist/build/polyfills/polyfill-module": "./lib/empty-polyfill.js",
+    },
+  },
+  webpack: (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "../build/polyfills/polyfill-module": path.resolve("./lib/empty-polyfill.js"),
+      "next/dist/build/polyfills/polyfill-module": path.resolve("./lib/empty-polyfill.js"),
+    };
+    return config;
+  },
   async redirects() {
     return [
       {
@@ -134,6 +144,7 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "react-icons/*",
       "motion",
+      "radix-ui",
     ],
   },
 

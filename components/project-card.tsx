@@ -53,6 +53,7 @@ const Projectcard = ({ project }: { project: ProjectMetadata }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 referrerPolicy="no-referrer"
+                aria-label={`View ${project.title} source code on GitHub`}
               >
                 <BsGithub className="text-8xl" />
               </Link>
@@ -63,12 +64,14 @@ const Projectcard = ({ project }: { project: ProjectMetadata }) => {
             <Button
               className="rounded-full hover:rotate-45 transition-all"
               size={"icon"}
+              asChild
             >
               <Link
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 referrerPolicy="no-referrer"
+                aria-label={`Visit ${project.title} live site`}
               >
                 <ArrowUpRight />
               </Link>

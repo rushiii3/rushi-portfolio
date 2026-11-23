@@ -9,9 +9,11 @@ import { cache } from "react";
 import RegisterCopyButton from "./_component/RegisterCopyButton";
 import { buildBlogSchema, buildFAQSchema } from "@/lib/schemaBuilder";
 import { BlogPostNavigation } from "./_component/BlogPostNavigation";
-import ShareArticle from "./_component/ShareArticle";
+import nextDynamic from "next/dynamic";
 import { formatDisplayDate } from "@/lib/helper";
 import { Badge } from "@/components/ui/badge";
+
+const ShareArticle = nextDynamic(() => import("./_component/ShareArticle"));
 
 export const dynamic = "force-static";
 const siteUrl = process.env.NEXT_PUBLIC_URL?.replace(/\/$/, "") || "";
@@ -199,7 +201,7 @@ export default async function Page(props: {params: Params;}) {
           height={630}
           priority
           fetchPriority="high"
-          quality={85}
+          quality={75}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
           className="w-full h-auto object-cover rounded-2xl"
           title={data.title} />

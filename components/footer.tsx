@@ -65,7 +65,11 @@ export default function FooterSection() {
         </div>
 
         <div className="relative w-full">
-          <p className="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7">
+          <p
+            aria-hidden="true"
+            inert
+            className="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7"
+          >
             Let&apos;s Connect
           </p>
           <div className="flex justify-between items-end border-t backdrop-blur border-zinc-200 pt-8 pb-6 relative z-10">

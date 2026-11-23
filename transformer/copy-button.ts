@@ -92,21 +92,6 @@ export function transformerCopyButton(
           },
         ],
       });
-      node.children.push({
-        type: "element",
-        tagName: "style",
-        properties: {},
-        children: [
-          {
-            type: "text",
-            value: copyButtonStyle({
-              copyIcon: options.copyIcon,
-              successIcon: options.successIcon,
-              visibility: options.visibility,
-            }),
-          },
-        ],
-      });
     },
   };
 }

@@ -1,0 +1,36 @@
+---
+// src/pages/index.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import AboutMe from "../components/sections/AboutMe.astro";
+import Skills from "../components/sections/Skills.astro";
+import Experience from "../components/sections/Experience.astro";
+import Projects from "../components/sections/Projects.astro";
+import Blog from "../components/sections/Blog.astro";
+import { buildPersonSchema, buildWebSiteSchema } from "../lib/schemaBuilder";
+
+const siteUrl = `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL}`;
+const personSchema = buildPersonSchema(siteUrl);
+const websiteSchema = buildWebSiteSchema(siteUrl);
+
+const jsonLdGraph = {
+  "@context": "https://schema.org",
+  "@graph": [personSchema, websiteSchema],
+};
+---
+
+<BaseLayout
+  title="Hrushikesh Shinde | Application Security & VAPT Specialist"
+  description="Associate Information Security Consultant specializing in Application Security, VAPT, OWASP Top 10, and web app security testing in Mumbai, India."
+  canonical="/"
+  jsonLd={jsonLdGraph}
+>
+  <div class="min-h-screen w-full flex flex-col justify-center items-start">
+    <Hero />
+    <AboutMe />
+    <Skills />
+    <Experience />
+    <Projects limit={6} />
+    <Blog limit={6} />
+  </div>
+</BaseLayout>

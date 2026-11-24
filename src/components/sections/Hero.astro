@@ -1,0 +1,55 @@
+---
+// src/components/sections/Hero.astro
+import { personalInfo, socialLinks } from '@/data/info';
+---
+
+<section class="md:mt-52 mt-20 mx-auto lg:mb-32 w-full">
+  <div class="w-full">
+    <div class="grid items-center gap-8 lg:grid-cols-3">
+      <!-- Text column -->
+      <div class="flex flex-col items-center text-center lg:items-start lg:text-left order-2 lg:order-1 lg:col-span-2">
+        <h1 class="my-6 text-pretty text-4xl font-bold lg:text-6xl tracking-tight text-neutral-900 dark:text-white">
+          {personalInfo.name}
+        </h1>
+
+        <p class="mb-8 max-w-xl text-neutral-600 dark:text-neutral-400 lg:text-xl leading-relaxed">
+          {personalInfo.title}
+        </p>
+
+        <!-- Social links -->
+        <div class="flex max-w-2xl justify-center md:justify-start gap-3 flex-row flex-wrap">
+          {socialLinks.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.name}
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-sm font-medium transition-all shadow-sm"
+            >
+              <span>{link.name}</span>
+              <svg class="size-3.5 shrink-0 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Image column -->
+      <div class="order-1 lg:order-2 lg:col-span-1">
+        <div class="relative aspect-square md:aspect-[2/3] w-full overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm bg-neutral-100 dark:bg-neutral-900">
+          <img
+            src={personalInfo.image}
+            alt="Hrushikesh Shinde"
+            width="600"
+            height="900"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

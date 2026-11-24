@@ -1,0 +1,119 @@
+---
+// src/components/sections/Skills.astro
+import { skillsData } from '../../data/info';
+
+const tabs = [
+  { id: 'security', title: 'Security', data: skillsData.security },
+  { id: 'infrastructure', title: 'Infrastructure', data: skillsData.infrastructure },
+  { id: 'programming', title: 'Programming', data: skillsData.technical_background },
+  { id: 'soft-skills', title: 'Soft Skills', data: skillsData.soft_skills },
+];
+---
+
+<section class="py-12 lg:py-16 w-full">
+  <div class="w-full">
+    <h2 class="text-6xl md:text-8xl font-bold tracking-tighter leading-tight md:pr-8 mb-6 text-neutral-900 dark:text-white">
+      Skills & Expertise
+    </h2>
+
+    <!-- Tab bar -->
+    <div
+      role="tablist"
+      class="flex flex-row items-center justify-start relative overflow-auto no-visible-scrollbar max-w-4xl gap-2 mb-6"
+    >
+      {tabs.map((tab, idx) => (
+        <button
+          type="button"
+          role="tab"
+          data-tab-target={tab.id}
+          aria-selected={idx === 0 ? 'true' : 'false'}
+          class={`skill-tab-btn px-4 py-2 rounded-full text-sm font-bold transition-colors cursor-pointer select-none ${
+            idx === 0
+              ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+              : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+          }`}
+        >
+          {tab.title}
+        </button>
+      ))}
+    </div>
+
+    <!-- Tab contents -->
+    <div class="relative w-full">
+      {tabs.map((tab, idx) => (
+        <div
+          id={`tab-content-${tab.id}`}
+          class={`skill-panel w-full rounded-2xl p-6 md:p-10 border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 transition-opacity duration-300 ${
+            idx === 0 ? 'block' : 'hidden'
+          }`}
+        >
+          <h3 class="text-2xl font-bold mb-6 text-neutral-900 dark:text-white">
+            {tab.title} Skills
+          </h3>
+
+          <div class="flex flex-col gap-6">
+            {Object.entries(tab.data).map(([categoryKey, catData]: [string, any]) => (
+              <div class="mb-2">
+                <h4 class="text-base font-semibold capitalize mb-3 text-neutral-800 dark:text-neutral-200">
+                  {catData.title || categoryKey.replace(/_/g, ' ')}
+                </h4>
+                <div class="flex flex-wrap gap-2">
+                  {catData.items.map((item: any) => {
+                    const label = typeof item === 'string' ? item : item.name;
+                    return (
+                      <span class="inline-flex items-center text-xs border border-neutral-300 dark:border-neutral-700 px-3 py-1.5 rounded-lg text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900/80 shadow-xs">
+                        {label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function setupSkillTabs() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.skill-tab-btn');
+    const panels = document.querySelectorAll<HTMLElement>('.skill-panel');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-tab-target');
+        if (!targetId) return;
+
+        // Update buttons
+        buttons.forEach((b) => {
+          b.setAttribute('aria-selected', 'false');
+          b.className =
+            'skill-tab-btn px-4 py-2 rounded-full text-sm font-bold transition-colors cursor-pointer select-none text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800';
+        });
+
+        btn.setAttribute('aria-selected', 'true');
+        btn.className =
+          'skill-tab-btn px-4 py-2 rounded-full text-sm font-bold transition-colors cursor-pointer select-none bg-neutral-900 text-white dark:bg-white dark:text-neutral-900';
+
+        // Update panels
+        panels.forEach((p) => {
+          if (p.id === `tab-content-${targetId}`) {
+            p.classList.remove('hidden');
+            p.classList.add('block');
+          } else {
+            p.classList.add('hidden');
+            p.classList.remove('block');
+          }
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSkillTabs);
+  } else {
+    setupSkillTabs();
+  }
+</script>

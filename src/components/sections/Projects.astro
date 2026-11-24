@@ -1,0 +1,56 @@
+---
+// src/components/sections/Projects.astro
+import SectionTitle from '../SectionTitle.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { getAllProjects } from '../../lib/content';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = 6 } = Astro.props;
+const allProjects = await getAllProjects();
+const projects = limit ? allProjects.slice(0, limit) : allProjects;
+---
+
+<section class="py-12 lg:py-16 w-full text-neutral-900 dark:text-white">
+  <div class="text-left w-full">
+    <div class="flex items-center justify-between mb-8">
+      <SectionTitle
+        title="Work & Projects"
+        className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight"
+      />
+      <a
+        href="/work"
+        class="text-sm font-semibold text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+      >
+        View all &rarr;
+      </a>
+    </div>
+
+    {projects.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {projects.map((project) => (
+          <ProjectCard
+            project={{
+              slug: project.id.replace(/\.mdx$/, ''),
+              title: project.data.title,
+              description: project.data.description,
+              image: project.data.image,
+              date: project.data.date,
+              category: project.data.category,
+              type: project.data.type,
+              stack: project.data.stack,
+              github: project.data.github,
+              link: project.data.link,
+            }}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="w-full text-base font-normal leading-7 text-center text-neutral-500 mt-10">
+        No projects found.
+      </p>
+    )}
+  </div>
+</section>

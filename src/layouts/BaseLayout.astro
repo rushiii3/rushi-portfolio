@@ -1,0 +1,85 @@
+---
+// src/layouts/BaseLayout.astro
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import SEO, { type Props as SEOProps } from '../components/SEO.astro';
+import '../styles/global.css';
+
+interface Props extends SEOProps {
+  className?: string;
+}
+
+const { className = '', ...seoProps } = Astro.props;
+const gtmId = import.meta.env.PUBLIC_GTM_ID || import.meta.env.NEXT_PUBLIC_GTM_ID;
+---
+
+<!doctype html>
+<html lang="en" class="dark scroll-smooth" data-scroll-behavior="smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-title" content="Hrushikesh Shinde" />
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/icon0.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
+
+    <!-- Google Fonts Preconnect & Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Merriweather:wght@400;700&family=Space+Grotesk:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Dark Mode Default Script -->
+    <script is:inline>
+      (function () {
+        try {
+          document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Google Consent Mode Defaults -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'denied',
+        wait_for_update: 500,
+      });
+    </script>
+
+    {gtmId && (
+      <script is:inline define:vars={{ gtmId }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',gtmId);
+      </script>
+    )}
+
+    <!-- SEO Meta Tags & JSON-LD -->
+    <SEO {...seoProps} />
+  </head>
+  <body class="bg-background text-foreground min-h-screen selection:bg-neutral-800 selection:text-white dark:selection:bg-neutral-200 dark:selection:text-black">
+    <div class="relative flex min-h-screen flex-col">
+      <Header />
+      <main class={`max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-dvh w-full ${className}`}>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <CookieConsent />
+  </body>
+</html>

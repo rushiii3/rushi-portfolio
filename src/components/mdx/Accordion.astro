@@ -1,0 +1,13 @@
+---
+// src/components/mdx/Accordion.astro
+interface Props {
+  className?: string;
+  [key: string]: any;
+}
+
+const { className = 'w-full my-4' } = Astro.props;
+---
+
+<div class={`accordion-container ${className}`}>
+  <slot />
+</div>

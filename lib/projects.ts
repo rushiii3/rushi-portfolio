@@ -34,10 +34,17 @@ export interface ProjectMetadata {
   type: string;
   category: string;
   content?: string;
+  contentImages: string[];
 }
 
 let projectMetadataCache: ProjectMetadata[] | null = null;
 const projectDetailCache = new Map<string, ProjectMetadata | null>();
+
+export function extractContentImages(content?: string): string[] {
+  if (!content) return [];
+  const matches = [...content.matchAll(/!\[.*?\]\((https?:\/\/[^\s\)]+)/g)];
+  return [...new Set(matches.map((m) => m[1]))];
+}
 
  async function getProjectMetadata(
   filepath: string,
@@ -46,7 +53,7 @@ const projectDetailCache = new Map<string, ProjectMetadata | null>();
     const slug = filepath.replace(/\.mdx$/, "");
     const filePath = path.join(rootDirectory, filepath);
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data } = parseFrontmatter(fileContent);
+    const { data, content } = parseFrontmatter(fileContent);
 
     if (!data.title || !data.category) {
       return null;
@@ -63,6 +70,7 @@ const projectDetailCache = new Map<string, ProjectMetadata | null>();
       title: data.title ?? "",
       type: data.type ?? "",
       category: data.category ?? "",
+      contentImages: extractContentImages(content),
     };
   } catch (error) {
     console.error("Error fetching project metadata", sanitizeError(error));
@@ -144,6 +152,7 @@ export async function getProjectBySlug(
       type: data.type ?? "",
       category: data.category ?? "",
       content,
+      contentImages: extractContentImages(content),
     };
 
     if (process.env.NODE_ENV !== "development") {

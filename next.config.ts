@@ -133,14 +133,16 @@ const nextConfig: NextConfig = {
     turbopackMinify: true,
     optimizePackageImports: [
       "lucide-react",
-      "react-icons/*",
+      "react-icons",
       "motion",
+      "motion/react",
       "radix-ui",
+      "next-themes",
     ],
   },
 
   compiler: {
-    removeConsole: false,
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },
   poweredByHeader: false,
 };

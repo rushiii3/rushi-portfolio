@@ -47,7 +47,7 @@ export default function CookieConsent() {
 
       const timer = setTimeout(() => {
         setVisible(true);
-      }, 0);
+      }, 1500);
       return () => clearTimeout(timer);
     } else {
       const parsed = JSON.parse(storedConsent);

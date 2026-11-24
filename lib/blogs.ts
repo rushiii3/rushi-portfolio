@@ -44,6 +44,7 @@ export interface BlogMetadata {
   series?: string;
   seriesOrder?: number;
   isPillar?: boolean;
+  contentImages: string[];
 }
 
 
@@ -75,12 +76,18 @@ function parseFaqSchema(value: unknown): BlogFAQItem[] {
     .filter((item) => item.question.length > 0 && item.answer.length > 0);
 }
 
+export function extractContentImages(content?: string): string[] {
+  if (!content) return [];
+  const matches = [...content.matchAll(/!\[.*?\]\((https?:\/\/[^\s\)]+)/g)];
+  return [...new Set(matches.map((m) => m[1]))];
+}
+
 async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
   try {
     const slug = filepath.replace(/\.mdx$/, "");
     const filePath = path.join(rootDirectory, filepath);
     const fileContent = await fs.readFile(filePath, "utf8");
-    const { data } = parseFrontmatter(fileContent);
+    const { data, content } = parseFrontmatter(fileContent);
     if (!data.title || !data.category) {
       return null;
     }
@@ -100,6 +107,7 @@ async function getBlogMetadata(filepath: string): Promise<BlogMetadata | null> {
       series: data.series ?? undefined,
       seriesOrder: typeof data.seriesOrder === "number" ? data.seriesOrder : undefined,
       isPillar: Boolean(data.isPillar),
+      contentImages: extractContentImages(content),
     };
   } catch (error) {
     console.error("Error fetching blog metadata", sanitizeError(error));
@@ -111,7 +119,6 @@ async function getAllBlogMetadata(): Promise<BlogMetadata[]> {
   if (process.env.NODE_ENV !== "development" && blogMetadataCache) {
     return blogMetadataCache;
   }
-  console.log("Fetching all blog metadata from filesystem...");
 
   try {
     const files = await fs.readdir(rootDirectory);
@@ -276,6 +283,7 @@ export async function getBlogBySlug(
       series: data.series ?? undefined,
       seriesOrder: typeof data.seriesOrder === "number" ? data.seriesOrder : undefined,
       isPillar: Boolean(data.isPillar),
+      contentImages: extractContentImages(content),
       previous: navigation.previous,
       next: navigation.next,
     };

@@ -11,9 +11,25 @@ export function ThemeProvider({
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
 
-export const CursorGlow = dynamic(() => import("@/components/cursor-glow"), {
+const LazyCursorGlow = dynamic(() => import("@/components/cursor-glow"), {
   ssr: false,
 });
+
+export function CursorGlow() {
+  const [shouldLoad, setShouldLoad] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      window.matchMedia("(pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setShouldLoad(true);
+    }
+  }, []);
+
+  if (!shouldLoad) return null;
+  return <LazyCursorGlow />;
+}
 export const TopLoader = dynamic(() => import("@/components/TopLoader"), {
   ssr: false,
 });

@@ -8,6 +8,7 @@
     "start": "next start",
     "seo:check": "node scripts/seo-check.mjs",
     "links:check": "node scripts/link-check.mjs",
+    "images:check": "node scripts/image-check.mjs",
     "lint": "eslint .",
     "knip": "knip"
   },

@@ -20,7 +20,7 @@ export default function FooterSection() {
 
           <div className="grid grid-cols-3 gap-12 sm:gap-24">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
                 Pages
               </p>
               <nav className="flex flex-col gap-2">
@@ -34,7 +34,7 @@ export default function FooterSection() {
               </nav>
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
                 Connect
               </p>
               <nav className="flex flex-col gap-2">
@@ -48,7 +48,7 @@ export default function FooterSection() {
               </nav>
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
                 Blog Categories
               </p>
               <nav className="flex flex-col gap-2">
@@ -65,15 +65,14 @@ export default function FooterSection() {
         </div>
 
         <div className="relative w-full">
-          <p
+          <div
             aria-hidden="true"
             inert
-            className="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7"
-          >
-            Let&apos;s Connect
-          </p>
-          <div className="flex justify-between items-end border-t backdrop-blur border-zinc-200 pt-8 pb-6 relative z-10">
-            <span className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            data-text="Let's Connect"
+            className="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7 before:content-[attr(data-text)]"
+          />
+          <div className="flex justify-between items-end border-t backdrop-blur border-zinc-200 dark:border-zinc-800 pt-8 pb-6 relative z-10">
+            <span className="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
               © 2026 Hrushikesh Shinde{" "}
             </span>
             <div className="flex gap-8">

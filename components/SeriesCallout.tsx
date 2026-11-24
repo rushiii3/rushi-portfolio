@@ -15,7 +15,7 @@ export async function SeriesCallout({
   if (!seriesPosts || seriesPosts.length <= 1) return null;
 
   return (
-    <div className="my-6 p-4 md:p-5 rounded-2xl border border-white/20 dark:text-neutral-200">
+    <div className="my-6 p-4 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 text-neutral-900 dark:text-neutral-200">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
         <Layers className="size-4 shrink-0" />
         <span>
@@ -32,12 +32,12 @@ export async function SeriesCallout({
           <span>View all {seriesPosts.length} chapters in this series</span>
           <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" />
         </summary>
-        <ol className="mt-3 space-y-2 pt-3 border-t border-white-500/20 text-xs">
+        <ol className="mt-3 space-y-2 pt-3 border-t border-neutral-200 dark:border-neutral-800 text-xs">
           {seriesPosts.map((post, idx) => {
             const isCurrent = post.slug === currentSlug;
             return (
               <li key={post.slug} className="flex items-start gap-2">
-                <span className="font-mono text-neutral-400 dark:text-neutral-500 shrink-0">
+                <span className="font-mono text-neutral-600 dark:text-neutral-400 shrink-0">
                   {idx + 1}.
                 </span>
                 {isCurrent ? (
@@ -46,7 +46,7 @@ export async function SeriesCallout({
                     aria-current="page"
                   >
                     {post.title}{" "}
-                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-white  ml-1.5">
+                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 ml-1.5">
                       Current
                     </span>
                   </span>

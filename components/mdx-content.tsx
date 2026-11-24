@@ -1,18 +1,51 @@
-import { JSX } from "react";
+import React, { JSX } from "react";
 import Link from "next/link";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
-import MDXImage from "./mdx-image";
+import { transformerCopyButton } from "@/transformer/copy-button";
+import { Screenshot } from "./mdx/screenshot";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "./mdx-faq-item";
-import { transformerCopyButton } from "@/transformer/copy-button";
+
+function rehypeUnwrapImages() {
+  return (tree: any) => {
+    function unwrap(node: any) {
+      if (!node || !Array.isArray(node.children)) return;
+
+      const newChildren: any[] = [];
+      for (const child of node.children) {
+        if (child.type === "element" && child.tagName === "p" && Array.isArray(child.children)) {
+          const meaningful = child.children.filter((c: any) => {
+            if (c.type === "text" && (!c.value || c.value.trim() === "")) return false;
+            return true;
+          });
+
+          const allImages =
+            meaningful.length > 0 &&
+            meaningful.every((c: any) => c.type === "element" && c.tagName === "img");
+
+          if (allImages) {
+            newChildren.push(...meaningful);
+            continue;
+          }
+        }
+
+        unwrap(child);
+        newChildren.push(child);
+      }
+      node.children = newChildren;
+    }
+
+    unwrap(tree);
+  };
+}
 
 function isExternal(href: string) {
   return /^(https?:)?\/\//.test(href);
@@ -52,6 +85,7 @@ export default function MDXContent(
 
       rehypePlugins: [
         ...(props.options?.mdxOptions?.rehypePlugins ?? []),
+        rehypeUnwrapImages,
         rehypeSlug,
         [
           rehypeAutolinkHeadings,
@@ -87,14 +121,37 @@ export default function MDXContent(
     },
   };
 
+  const Paragraph = (props: React.HTMLAttributes<HTMLParagraphElement>) => {
+    const childrenArray = React.Children.toArray(props.children);
+    const hasBlockChild = childrenArray.some((child) => {
+      if (React.isValidElement(child)) {
+        const type = child.type;
+        return (
+          type === "figure" ||
+          type === Screenshot ||
+          (typeof type === "function" && (type.name === "Screenshot" || type.name === "figure"))
+        );
+      }
+      return false;
+    });
+
+    if (hasBlockChild) {
+      return <div className="my-4">{props.children}</div>;
+    }
+
+    return <p {...props} />;
+  };
+
   const components = {
     ...(props.components ?? {}),
     a: Anchor,
+    p: Paragraph,
     Accordion,
     AccordionItem,
     AccordionTrigger,
     AccordionContent,
-    img: (props: any) => <MDXImage {...props} />,
+    img: (props: any) => <Screenshot {...props} />,
+    Screenshot,
     // code: (props: any) => <pre {...props} className="not-prose" />,
   };
 

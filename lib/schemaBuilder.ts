@@ -48,12 +48,27 @@ function buildAuthor(authorUrl: string): Person {
   };
 }
 
-function buildImage(url: string): ImageObject {
+function buildImage(
+  url: string,
+  options?: {
+    id?: string;
+    caption?: string;
+    authorUrl?: string;
+    articleId?: string;
+    width?: string;
+    height?: string;
+  },
+): ImageObject {
   return {
     "@type": "ImageObject",
+    ...(options?.id ? { "@id": options.id } : {}),
     url,
-    width: "1200",
-    height: "630",
+    contentUrl: url,
+    width: options?.width || "1200",
+    height: options?.height || "675",
+    ...(options?.caption ? { caption: options.caption, description: options.caption } : {}),
+    ...(options?.authorUrl ? { creator: buildAuthor(options.authorUrl) } : {}),
+    ...(options?.articleId ? { isPartOf: { "@id": options.articleId } } : {}),
   };
 }
 
@@ -68,6 +83,7 @@ export function buildBlogSchema({
   modifiedAt,
   canonicalUrl,
   imageUrl,
+  contentImages,
   keywords,
   wordCount,
   logoUrl,
@@ -81,6 +97,7 @@ export function buildBlogSchema({
   modifiedAt?: string;
   canonicalUrl: string;
   imageUrl: string;
+  contentImages?: string[];
   keywords: string[];
   wordCount: number;
   logoUrl: string;
@@ -88,11 +105,32 @@ export function buildBlogSchema({
   category: string;
   readingMinutes: number;
 }): WithContext<BlogPosting> {
+  const articleId = `${canonicalUrl}#article`;
+  const heroImageObj = buildImage(imageUrl, {
+    id: `${canonicalUrl}#primaryimage`,
+    authorUrl,
+    articleId,
+    width: "1200",
+    height: "630",
+  });
+
+  const contentImageObjs = (contentImages || []).map((imgUrl, idx) =>
+    buildImage(imgUrl, {
+      id: `${canonicalUrl}#image-${idx + 1}`,
+      authorUrl,
+      articleId,
+      width: "1200",
+      height: "675",
+    }),
+  );
+
+  const allImages = [heroImageObj, ...contentImageObjs];
+
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
 
-    "@id": `${canonicalUrl}#article`,
+    "@id": articleId,
     url: canonicalUrl,
 
     mainEntityOfPage: {
@@ -114,7 +152,7 @@ export function buildBlogSchema({
       logo: buildImage(logoUrl),
     },
 
-    image: buildImage(imageUrl),
+    image: allImages,
 
     articleSection: category,
     keywords,

@@ -13,7 +13,7 @@ export function RelatedArticles({ articles }: { articles: BlogMetadata[] }) {
         </h2>
         <Link
           href="/blog"
-          className="text-xs md:text-sm font-medium text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
+          className="text-xs md:text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors"
         >
           View all &rarr;
         </Link>
@@ -32,7 +32,7 @@ export function RelatedArticles({ articles }: { articles: BlogMetadata[] }) {
                   {article.category}
                 </Badge>
                 {article.readingMinutes > 0 && (
-                  <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                  <span className="text-[11px] text-neutral-600 dark:text-neutral-400">
                     {article.readingMinutes} min read
                   </span>
                 )}
@@ -44,7 +44,7 @@ export function RelatedArticles({ articles }: { articles: BlogMetadata[] }) {
                 {article.description}
               </p>
             </div>
-            <div className="mt-4 pt-2 border-t border-neutral-100 dark:border-neutral-800/80 flex items-center justify-end text-xs font-medium text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+            <div className="mt-4 pt-2 border-t border-neutral-100 dark:border-neutral-800/80 flex items-center justify-end text-xs font-medium text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
               Read article &rarr;
             </div>
           </Link>

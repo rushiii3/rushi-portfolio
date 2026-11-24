@@ -21,11 +21,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const siteLastModified = latestBlogDate > latestProjectDate ? latestBlogDate : latestProjectDate;
 
+  // Note: Google Images sitemaps only consume the image location URL.
+  // Deprecated tags (image:caption, image:title, image:license) are omitted per Google documentation.
   const projectUrls: MetadataRoute.Sitemap = projects.map((project) => ({
     url: `${baseUrl}/work/${project.slug}`,
     lastModified: project.date ? new Date(project.date) : new Date("2025-01-01"),
     changeFrequency: "monthly",
     priority: 0.7,
+    images: [project.image, ...(project.contentImages || [])].filter(
+      (url): url is string => Boolean(url) && (url.startsWith("http://") || url.startsWith("https://")),
+    ),
   }));
 
   const blogUrls: MetadataRoute.Sitemap = blogs.map((blog) => ({
@@ -35,6 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       : new Date(blog.date),
     changeFrequency: "monthly",
     priority: 0.7,
+    images: [blog.image, ...(blog.contentImages || [])].filter(
+      (url): url is string => Boolean(url) && (url.startsWith("http://") || url.startsWith("https://")),
+    ),
   }));
 
   const categoryUrls: MetadataRoute.Sitemap = blogCategories

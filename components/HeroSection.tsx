@@ -12,7 +12,7 @@ const HeroSection = ({
       <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight md:pr-8">
         {title}
       </h1>
-      <p className="text-gray-400 max-w-3xl">{description}</p>
+      <p className="text-neutral-600 dark:text-neutral-400 max-w-3xl">{description}</p>
     </div>
   );
 };

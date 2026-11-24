@@ -121,6 +121,7 @@ export default async function Page(props: {params: Params;}) {
     modifiedAt: data.dateModified || data.date,
     canonicalUrl: canonicalUrl,
     imageUrl: data.image,
+    contentImages: data.contentImages || [],
     keywords: data.keywords,
     wordCount: data.wordCount,
     logoUrl: logoUrl,
@@ -194,7 +195,7 @@ export default async function Page(props: {params: Params;}) {
               <MdOutlineCalendarToday className="text-base size-5" />
               <span>
                 Published on:{" "}
-                <span className="dark:text-slate-300 text-slate-500">
+                <span className="dark:text-slate-300 text-slate-600">
                   {formatDisplayDate(data.date)}
                 </span>
               </span>
@@ -204,7 +205,7 @@ export default async function Page(props: {params: Params;}) {
               <MdOutlineEditCalendar className="text-base size-5" />
               <span>
                 Last Modified:{" "}
-                <span className="dark:text-slate-300 text-slate-500">
+                <span className="dark:text-slate-300 text-slate-600">
                   {formatDisplayDate(data.dateModified || data.date)}
                 </span>
               </span>
@@ -214,7 +215,7 @@ export default async function Page(props: {params: Params;}) {
               <MdOutlineSchedule className="text-base size-5" />
               <span>
                 Reading Time:{" "}
-                <span className="dark:text-slate-300 text-slate-500">
+                <span className="dark:text-slate-300 text-slate-600">
                   {data.readingMinutes} min read
                 </span>
               </span>

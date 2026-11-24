@@ -53,11 +53,11 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
           <div className="flex items-center gap-2">
             <ListTree className="size-4 text-neutral-500" />
             <span>Table of Contents</span>
-            <span className="text-xs font-normal text-neutral-400">
+            <span className="text-xs font-normal text-neutral-600 dark:text-neutral-400">
               ({items.length} sections)
             </span>
           </div>
-          <ChevronDown className="size-4 text-neutral-400 transition-transform group-open:rotate-180" />
+          <ChevronDown className="size-4 text-neutral-500 dark:text-neutral-400 transition-transform group-open:rotate-180" />
         </summary>
 
         <ol className="mt-3.5 space-y-1 pt-3 border-t border-neutral-200/80 dark:border-neutral-800 text-xs md:text-sm">
@@ -66,7 +66,7 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
               key={item.id}
               className={
                 item.level === 3
-                  ? "pl-4 text-neutral-500 dark:text-neutral-400"
+                  ? "pl-4 text-neutral-600 dark:text-neutral-400"
                   : "text-neutral-700 dark:text-neutral-300 font-medium"
               }
             >

@@ -1,10 +1,3 @@
-// components/mdx/mdx-image.client.tsx
-"use client";
+import { Screenshot } from "./mdx/screenshot";
 
-import dynamic from "next/dynamic";
-
-const ImageZoom = dynamic(() => import("./mdx-image-zoom"), {
-  ssr: false,
-});
-
-export default ImageZoom;
+export default Screenshot;

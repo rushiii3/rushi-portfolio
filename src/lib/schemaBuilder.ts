@@ -198,7 +198,7 @@ export function buildBlogListSchema({
   description,
   posts,
   authorUrl,
-  siteUrl = "https://hrushikeshshinde.tech",
+  siteUrl = (process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL || "").replace(/\/$/, ""),
 }: {
   blogUrl?: string;
   blogName?: string;

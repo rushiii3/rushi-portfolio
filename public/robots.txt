@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-
-Sitemap: https://hrushikeshshinde.tech/sitemap-index.xml
-Sitemap: https://hrushikeshshinde.tech/sitemap-0.xml

@@ -4,7 +4,7 @@ import { getAllBlogs } from '../lib/content';
 
 export async function GET(context: APIContext) {
   const blogs = await getAllBlogs();
-  const site = context.site || 'https://hrushikeshshinde.tech';
+  const site = context.site || `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL || 'http://localhost:4321'}`;
 
   return rss({
     title: 'Hrushikesh Shinde — Cybersecurity Blog',

@@ -11,7 +11,8 @@
     ".astro/types.d.ts",
     "src/**/*",
     "scripts/**/*",
-    "types/**/*"
+    "types/**/*",
+    "astro.config.ts"
   ],
   "exclude": [
     "dist",

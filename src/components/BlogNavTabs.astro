@@ -1,0 +1,69 @@
+---
+// src/components/BlogNavTabs.astro
+import { blogCategories } from "../data/info";
+
+interface Props {
+  activeSlug?: string;
+}
+
+const { activeSlug = "all" } = Astro.props;
+---
+
+<div
+  id="blog-nav-tabs-container"
+  role="navigation"
+  aria-label="Blog category filters"
+  class="w-full flex flex-row items-center gap-4 my-8 border-b border-neutral-200/60 dark:border-neutral-800 pb-4 overflow-x-auto no-scrollbar scroll-smooth scroll-px-4 focus:outline-none"
+>
+  <div class="flex flex-row items-center gap-2 flex-nowrap shrink-0">
+    {blogCategories.map((cat) => {
+      const isActive = cat.slug === activeSlug;
+      const href = cat.slug === "all" ? "/blog" : `/blog/category/${cat.slug}`;
+
+      return (
+        <a
+          href={href}
+          aria-current={isActive ? "page" : undefined}
+          data-active={isActive ? "true" : undefined}
+          class:list={[
+            "text-xs md:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition-all shrink-0 scroll-mx-2",
+            isActive
+              ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-sm"
+              : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/60",
+          ]}
+        >
+          {cat.name}
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    function centerActiveTab() {
+      var container = document.getElementById('blog-nav-tabs-container');
+      if (!container) return;
+      var activeTab = container.querySelector('[aria-current="page"]');
+      if (!activeTab) return;
+
+      var containerRect = container.getBoundingClientRect();
+      var activeRect = activeTab.getBoundingClientRect();
+      
+      // Calculate active tab's position relative to container's scroll position
+      var relativeLeft = activeRect.left - containerRect.left + container.scrollLeft;
+      var targetScrollLeft = relativeLeft - (container.clientWidth / 2) + (activeTab.clientWidth / 2);
+      
+      container.scrollLeft = Math.max(0, targetScrollLeft);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', centerActiveTab);
+    } else {
+      centerActiveTab();
+    }
+
+    document.addEventListener('astro:page-load', centerActiveTab);
+    window.addEventListener('resize', centerActiveTab);
+  })();
+</script>

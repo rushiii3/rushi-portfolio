@@ -1,0 +1,102 @@
+---
+// src/pages/blog/[...page].astro
+import type { GetStaticPaths, Page } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroSection from "../../components/HeroSection.astro";
+import BlogNavTabs from "../../components/BlogNavTabs.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import Pagination from "../../components/Pagination.astro";
+import { getAllBlogs, type BlogPost } from "../../lib/content";
+
+import {
+  buildBreadcrumbSchema,
+  buildBlogListSchema,
+} from "../../lib/schemaBuilder";
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const allBlogs = await getAllBlogs();
+  return paginate(allBlogs, { pageSize: 10 });
+};
+
+interface Props {
+  page: Page<BlogPost>;
+}
+
+const { page } = Astro.props;
+const siteUrl = `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL}`;
+const isFirstPage = page.currentPage === 1;
+
+// Canonical & Title matching SEO conventions
+const canonical = isFirstPage ? "/blog" : `/blog/${page.currentPage}`;
+const pageTitle = isFirstPage ? "Blog" : `Blog – Page ${page.currentPage}`;
+
+const breadcrumbSchema = buildBreadcrumbSchema([
+  { name: "Home", url: `${siteUrl}/` },
+  { name: "Blog", url: `${siteUrl}/blog` },
+  ...(isFirstPage
+    ? []
+    : [{ name: `Page ${page.currentPage}`, url: `${siteUrl}${canonical}` }]),
+]);
+
+const blogListSchema = buildBlogListSchema({
+  siteUrl,
+  blogUrl: `${siteUrl}${canonical}`,
+  blogName: isFirstPage ? "Blog" : `Blog – Page ${page.currentPage}`,
+  description:
+    "In-depth technical articles on web security, penetration testing, vulnerability research, application security, security tools, and real-world exploit writeups.",
+  authorUrl: `${siteUrl}/about`,
+  posts: page.data.map((b) => ({
+    title: b.data.title,
+    description: b.data.description,
+    slug: b.id.replace(/\.mdx$/, ""),
+    date: b.data.date,
+    image: b.data.image,
+  })),
+});
+
+const jsonLdGraph = {
+  "@context": "https://schema.org",
+  "@graph": [blogListSchema, breadcrumbSchema],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description="In-depth technical articles on web security, penetration testing, vulnerability research, application security, security tools, and real-world exploit writeups."
+  canonical={canonical}
+  prevUrl={page.url.prev}
+  nextUrl={page.url.next}
+  jsonLd={jsonLdGraph}
+>
+  <div class="w-full md:pt-14 pt-8 pb-20">
+    <HeroSection
+      title="Blogs"
+      description="In-depth technical articles on web security, penetration testing, vulnerability research, application security, security tools, and real-world exploit writeups."
+    />
+
+    <BlogNavTabs activeSlug="all" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {page.data.map((blog) => (
+        <BlogCard
+          article={{
+            slug: blog.id.replace(/\.mdx$/, ""),
+            title: blog.data.title,
+            description: blog.data.description,
+            image: blog.data.image,
+            date: blog.data.date,
+            category: blog.data.category,
+          }}
+        />
+      ))}
+    </div>
+
+    <Pagination
+      currentPage={page.currentPage}
+      totalPages={page.lastPage}
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+      baseUrl="/blog"
+    />
+  </div>
+</BaseLayout>

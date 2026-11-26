@@ -1,0 +1,13 @@
+---
+// src/components/mdx/Table.astro
+interface Props {
+  [key: string]: any;
+}
+const props = Astro.props;
+---
+
+<div class="my-6 w-full max-w-full overflow-x-auto rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/30 shadow-sm">
+  <table {...props} class="w-full text-left text-sm border-collapse">
+    <slot />
+  </table>
+</div>

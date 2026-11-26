@@ -1,0 +1,13 @@
+---
+// src/components/mdx/AccordionContent.astro
+interface Props {
+  className?: string;
+  [key: string]: any;
+}
+
+const { className = 'text-base leading-7' } = Astro.props;
+---
+
+<div class={`pt-2 pb-4 text-neutral-700 dark:text-neutral-300 ${className}`}>
+  <slot />
+</div>

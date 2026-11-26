@@ -1,0 +1,11 @@
+---
+// src/components/SectionTitle.astro
+interface Props {
+  title: string;
+  className?: string;
+}
+
+const { title, className = "text-5xl md:text-7xl font-bold tracking-tighter leading-tight mb-8 text-neutral-900 dark:text-neutral-100" } = Astro.props;
+---
+
+<h2 class={className}>{title}</h2>

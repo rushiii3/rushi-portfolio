@@ -1,0 +1,50 @@
+---
+// src/components/mdx/CopyButton.astro
+// Single delegated vanilla JS script for copy-to-clipboard on code blocks
+---
+
+<script is:inline>
+  (function () {
+    function setupCopyButtons() {
+      const codeBlocks = document.querySelectorAll('pre');
+      codeBlocks.forEach((pre) => {
+        if (pre.querySelector('.copy-code-btn')) return;
+
+        pre.classList.add('relative', 'group');
+
+        const btn = document.createElement('button');
+        btn.className =
+          'copy-code-btn absolute top-3 right-3 text-xs font-mono px-2 py-1 rounded border border-neutral-700/80 bg-neutral-900/90 text-neutral-300 hover:text-white hover:bg-neutral-800 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none';
+        btn.setAttribute('type', 'button');
+        btn.setAttribute('aria-label', 'Copy code snippet');
+        btn.innerText = 'Copy';
+
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const codeEl = pre.querySelector('code');
+          const text = codeEl ? codeEl.innerText : pre.innerText;
+
+          try {
+            await navigator.clipboard.writeText(text.trim());
+            btn.innerText = 'Copied!';
+            btn.classList.add('text-emerald-400', 'border-emerald-500/50');
+            setTimeout(() => {
+              btn.innerText = 'Copy';
+              btn.classList.remove('text-emerald-400', 'border-emerald-500/50');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy code snippet:', err);
+          }
+        });
+
+        pre.appendChild(btn);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupCopyButtons);
+    } else {
+      setupCopyButtons();
+    }
+  })();
+</script>

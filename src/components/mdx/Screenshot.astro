@@ -1,0 +1,54 @@
+---
+import { getOptimizedImageUrl, getImageSrcSet } from '../../lib/images';
+
+interface Props {
+  src?: string;
+  alt?: string;
+  caption?: string;
+  width?: number | string;
+  height?: number | string;
+  priority?: boolean;
+  credit?: string;
+  [key: string]: any;
+}
+
+const {
+  src,
+  alt = "",
+  caption,
+  width = 1200,
+  height = 675,
+  priority = false,
+  credit,
+} = Astro.props;
+
+if (!src) {
+  return null;
+}
+
+const effectiveAlt = (alt || "").trim() || "Technical walkthrough screenshot";
+const optimizedSrc = getOptimizedImageUrl(src, 800);
+const srcSet = getImageSrcSet(src, [640, 800, 1024, 1200]);
+---
+
+<figure class="my-8 flex flex-col items-center not-prose">
+  <div class="w-full overflow-hidden rounded-xl border border-neutral-200/80 bg-neutral-100/50 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50">
+    <img
+      src={optimizedSrc}
+      srcset={srcSet}
+      sizes="(max-width: 768px) 100vw, 800px"
+      alt={effectiveAlt}
+      width={Number(width) || 1200}
+      height={Number(height) || 675}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      class="h-auto w-full rounded-xl object-contain"
+    />
+  </div>
+  {caption && (
+    <figcaption class="mt-2.5 text-center text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
+      {caption}
+      {credit && <span class="ml-1 opacity-75">({credit})</span>}
+    </figcaption>
+  )}
+</figure>

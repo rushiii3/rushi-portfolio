@@ -1,0 +1,14 @@
+---
+// src/components/mdx/AccordionItem.astro
+interface Props {
+  className?: string;
+  value?: string;
+  [key: string]: any;
+}
+
+const { className = 'border-b border-neutral-200 dark:border-neutral-800 py-3' } = Astro.props;
+---
+
+<details class={`group accordion-item ${className}`}>
+  <slot />
+</details>

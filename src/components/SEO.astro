@@ -1,0 +1,138 @@
+---
+// src/components/SEO.astro
+export interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  publishedTime?: string;
+  modifiedTime?: string;
+  keywords?: string[];
+  jsonLd?: string | object;
+  prevUrl?: string;
+  nextUrl?: string;
+}
+
+const siteUrl = `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL}`;
+const defaultTitle =
+  "Hrushikesh Shinde | Application Security & VAPT Specialist";
+const defaultDescription =
+  "Associate Information Security Consultant specializing in Application Security, VAPT, OWASP Top 10, and web app security testing in Mumbai, India.";
+const defaultImage = `${siteUrl}/og.webp`;
+
+const {
+  title,
+  description = defaultDescription,
+  canonical,
+  ogImage = defaultImage,
+  ogType = "website",
+  publishedTime,
+  modifiedTime,
+  keywords = [],
+  jsonLd,
+  prevUrl,
+  nextUrl,
+} = Astro.props;
+
+const pageTitle = title
+  ? title.includes("Hrushikesh Shinde")
+    ? title
+    : `${title} | Hrushikesh Shinde`
+  : defaultTitle;
+
+const canonicalUrl = canonical
+  ? canonical.startsWith("http")
+    ? canonical
+    : `${siteUrl}${canonical}`
+  : new URL(Astro.url.pathname, siteUrl).toString();
+
+const resolvedPrevUrl = prevUrl
+  ? prevUrl.startsWith("http")
+    ? prevUrl
+    : `${siteUrl}${prevUrl}`
+  : undefined;
+
+const resolvedNextUrl = nextUrl
+  ? nextUrl.startsWith("http")
+    ? nextUrl
+    : `${siteUrl}${nextUrl}`
+  : undefined;
+
+const resolvedOgImage = ogImage.startsWith("http")
+  ? ogImage
+  : `${siteUrl}${ogImage}`;
+
+const defaultKeywords = [
+  "Associate Information Security Consultant",
+  "Application Security Specialist",
+  "VAPT Specialist Mumbai",
+  "Web Application Penetration Testing",
+  "OWASP Top 10 vulnerabilities",
+  "Cybersecurity Consultant India",
+  "Hrushikesh Shinde",
+];
+
+const allKeywords = Array.from(new Set([...keywords, ...defaultKeywords])).join(
+  ", ",
+);
+---
+
+<!-- Primary Meta Tags -->
+<title>{pageTitle}</title>
+<meta name="title" content={pageTitle} />
+<meta name="description" content={description} />
+<meta name="keywords" content={allKeywords} />
+<meta name="author" content="Hrushikesh Shinde" />
+<meta
+  name="robots"
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+/>
+
+<!-- Canonical & Pagination URLs -->
+<link rel="canonical" href={canonicalUrl} />
+{resolvedPrevUrl && <link rel="prev" href={resolvedPrevUrl} />}
+{resolvedNextUrl && <link rel="next" href={resolvedNextUrl} />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={resolvedOgImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Hrushikesh Shinde" />
+<meta property="og:locale" content="en_IN" />
+
+{ogType === "article" && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{ogType === "article" && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={resolvedOgImage} />
+
+<!-- Feeds & Sitemaps -->
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="Hrushikesh Shinde — Blog RSS Feed"
+  href="/rss.xml"
+/>
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Structured Data (JSON-LD) -->
+{jsonLd && (
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={typeof jsonLd === "string" ? jsonLd : JSON.stringify(jsonLd)}
+  />
+)}

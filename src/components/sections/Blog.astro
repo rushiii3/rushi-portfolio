@@ -1,0 +1,52 @@
+---
+// src/components/sections/Blog.astro
+import SectionTitle from '../SectionTitle.astro';
+import BlogCard from '../BlogCard.astro';
+import { getAllBlogs } from '../../lib/content';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = 6 } = Astro.props;
+const allBlogs = await getAllBlogs();
+const blogs = limit ? allBlogs.slice(0, limit) : allBlogs;
+---
+
+<section class="pt-12 lg:pt-16 pb-20 w-full text-neutral-900 dark:text-white">
+  <div class="w-full">
+    <div class="flex items-center justify-between mb-8">
+      <SectionTitle
+        title="Blogs"
+        className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight"
+      />
+      <a
+        href="/blog"
+        class="text-sm font-semibold text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+      >
+        View all &rarr;
+      </a>
+    </div>
+
+    {blogs.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {blogs.map((blog) => (
+          <BlogCard
+            article={{
+              slug: blog.id.replace(/\.mdx$/, ''),
+              title: blog.data.title,
+              description: blog.data.description,
+              image: blog.data.image,
+              date: blog.data.date,
+              category: blog.data.category,
+            }}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="w-full text-base font-normal leading-7 text-center text-neutral-500 mt-10">
+        No blogs found.
+      </p>
+    )}
+  </div>
+</section>

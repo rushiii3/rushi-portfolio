@@ -1,4 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Astro build output & cache
+dist/
+.astro/
 
 # dependencies
 /node_modules
@@ -13,11 +15,9 @@
 # testing
 /coverage
 
-# next.js
+# legacy
 /.next/
 /out/
-
-# production
 /build
 
 # misc
@@ -30,7 +30,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .npm-global
-# env files (can opt-in for committing if needed)
+
+# env files
 .env*
 
 # vercel
@@ -41,13 +42,14 @@ yarn-error.log*
 next-env.d.ts
 
 .venv-skill
-
 /skills
-
-SEO_AUDIT.md
-/scripts
 .agents/
-INTERNAL_LINKING_AUDIT.md
-INTERNAL_LINKING_SUGGESTIONS.md
-IMAGE_SEO_AUDIT.md
-IMAGE_SEO_SUGGESTIONS.md
+
+# Audit & Migration Reports
+/reports/
+REPORTS.md
+COMBINED_REPORTS.md
+*_AUDIT.md
+*_SUGGESTIONS.md
+MIGRATION_*.md
+/scripts

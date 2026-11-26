@@ -1,0 +1,16 @@
+---
+// src/components/mdx/AccordionTrigger.astro
+interface Props {
+  className?: string;
+  [key: string]: any;
+}
+
+const { className = 'text-base md:text-lg' } = Astro.props;
+---
+
+<summary class={`flex items-center justify-between font-semibold py-2 cursor-pointer list-none select-none text-neutral-900 dark:text-white ${className}`}>
+  <span><slot /></span>
+  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+  </svg>
+</summary>

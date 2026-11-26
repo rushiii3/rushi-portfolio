@@ -1,0 +1,148 @@
+---
+// src/pages/work/[slug].astro
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import Screenshot from "../../components/mdx/Screenshot.astro";
+import CopyButton from "../../components/mdx/CopyButton.astro";
+import Table from "../../components/mdx/Table.astro";
+
+import { getAllProjects } from "../../lib/content";
+import { getOptimizedImageUrl, getImageSrcSet } from "../../lib/images";
+import {
+  buildBreadcrumbSchema,
+  buildProjectSchema,
+} from "../../lib/schemaBuilder";
+
+export async function getStaticPaths() {
+  const projects = await getAllProjects();
+  return projects.map((entry) => ({
+    params: { slug: entry.id.replace(/\.mdx$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const slug = entry.id.replace(/\.mdx$/, "");
+const data = entry.data;
+
+const { Content } = await render(entry);
+
+const siteUrl = `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL}`;
+const canonicalUrl = `${siteUrl}/work/${slug}`;
+const authorUrl = `${siteUrl}/about`;
+const imageUrl = data.image?.startsWith("http")
+  ? data.image
+  : `${siteUrl}${data.image?.startsWith("/") ? "" : "/"}${data.image || "og.webp"}`;
+
+const projectJsonLd = buildProjectSchema({
+  title: data.title,
+  description: data.description,
+  slug,
+  date: data.date,
+  image: imageUrl,
+  stack: data.stack,
+  github: data.github,
+  link: data.link,
+  canonicalUrl,
+  authorUrl,
+});
+
+const breadcrumbJsonLd = buildBreadcrumbSchema([
+  { name: "Home", url: `${siteUrl}/` },
+  { name: "Projects", url: `${siteUrl}/work` },
+  { name: data.title, url: canonicalUrl },
+]);
+
+const jsonLdGraph = {
+  "@context": "https://schema.org",
+  "@graph": [projectJsonLd, breadcrumbJsonLd],
+};
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  canonical={`/work/${slug}`}
+  ogImage={data.image}
+  ogType="article"
+  publishedTime={data.date}
+  jsonLd={jsonLdGraph}
+>
+  <div class="md:pt-32 pt-16 pb-20 w-full">
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Projects", href: "/work" },
+        { label: data.title },
+      ]}
+    />
+
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+      {data.title}
+    </h1>
+    <p class="my-3 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+      {data.date}
+    </p>
+
+    <div class="flex flex-row flex-wrap gap-3 my-4 justify-start w-full">
+      {data.github && (
+        <a
+          href={data.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-sm font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shadow-sm"
+        >
+          <span>GitHub</span>
+          <svg class="size-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+        </a>
+      )}
+      {data.link && (
+        <a
+          href={data.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-sm font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shadow-sm"
+        >
+          <span>Live Demo</span>
+          <svg
+            class="size-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        </a>
+      )}
+    </div>
+
+    <div class="aspect-video relative rounded-2xl overflow-hidden my-6 border border-neutral-200 dark:border-neutral-800 shadow-sm">
+      <img
+        src={getOptimizedImageUrl(data.image, 1200)}
+        srcset={getImageSrcSet(data.image, [640, 800, 1024, 1200])}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+        alt={data.title}
+        width="1200"
+        height="675"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <div class="max-w-full mt-8 prose dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-img:rounded-xl">
+      <Content components={{ Screenshot, img: Screenshot, table: Table }} />
+    </div>
+
+    <CopyButton />
+  </div>
+</BaseLayout>

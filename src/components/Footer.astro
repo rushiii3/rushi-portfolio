@@ -1,0 +1,102 @@
+---
+// src/components/Footer.astro
+import { blogCategories, navPages, socialLinks } from '@/data/info';
+---
+
+<footer class="w-full text-black dark:text-white overflow-hidden">
+  <div class="mx-auto px-4 py-32 md:py-16 sm:px-6 lg:px-8 flex flex-col items-center">
+    <div class="w-full flex flex-col md:flex-row justify-between items-start gap-12 mb-20">
+      <div class="max-w-md">
+        <p class="text-3xl font-bold tracking-tight mb-6">
+          Focused on VAPT, web application security, and secure development.
+        </p>
+        <a
+          href="https://cal.com/hrushi-shinde-goijwj"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-lg font-medium border-b-2 border-zinc-900 dark:border-zinc-100 pb-1 hover:text-zinc-500 hover:border-zinc-500 transition-all"
+        >
+          Let's talk &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-3 gap-12 sm:gap-24">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
+            Pages
+          </p>
+          <nav class="flex flex-col gap-2">
+            {navPages.map((item) => (
+              <a href={item.href} class="text-sm font-medium hover:underline">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
+            Connect
+          </p>
+          <nav class="flex flex-col gap-2">
+            {socialLinks.map((link) => (
+              <a href={link.url} target="_blank" rel="noopener noreferrer" class="text-sm font-medium hover:underline">
+                {link.name}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-4">
+            Blog Categories
+          </p>
+          <nav class="flex flex-col gap-2">
+            {blogCategories.map((category) => (
+              <a
+                href={category.slug === "all" ? "/blog" : `/blog/category/${category.slug}`}
+                class="text-sm font-medium hover:underline"
+              >
+                {category.name}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative w-full">
+      <div
+        aria-hidden="true"
+        data-text="Let's Connect"
+        class="text-[12vw] font-black tracking-tighter text-zinc-950 dark:text-white select-none pointer-events-none leading-none -mb-[2vw] opacity-7 before:content-[attr(data-text)]"
+      ></div>
+      <div class="flex justify-between items-end border-t backdrop-blur border-zinc-200 dark:border-zinc-800 pt-8 pb-6 relative z-10">
+        <span class="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+          © 2026 Hrushikesh Shinde
+        </span>
+        <div class="flex gap-8">
+          <button
+            id="back-to-top"
+            type="button"
+            aria-label="Back to top of page"
+            class="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+          >
+            Back to top &uarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script is:inline>
+  (function () {
+    const btn = document.getElementById('back-to-top');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  })();
+</script>

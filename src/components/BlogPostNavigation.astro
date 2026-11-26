@@ -1,0 +1,67 @@
+---
+import { formatDisplayDate } from '../lib/helper';
+
+interface BlogNavItem {
+  slug: string;
+  title: string;
+  date: string;
+}
+
+interface Props {
+  previous?: BlogNavItem | null;
+  next?: BlogNavItem | null;
+}
+
+const { previous, next } = Astro.props;
+---
+
+{Boolean(previous || next) && (
+  <div class="space-y-6 my-12 border-t pt-12 border-slate-200 dark:border-primary/20">
+    <div class="grid gap-6 md:grid-cols-2">
+      {previous ? (
+        <a href={`/blog/${previous.slug}`} class="group block">
+          <div class="h-full p-6 rounded-xl border border-slate-200 dark:border-neutral-800 transition hover:border-primary/50 bg-primary/5">
+            <div class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Previous Post
+            </div>
+
+            <div class="mt-2 font-semibold text-lg group-hover:text-primary transition text-neutral-900 dark:text-white">
+              {previous.title}
+            </div>
+
+            <div class="pt-2 text-xs text-neutral-500 dark:text-neutral-400">
+              {formatDisplayDate(previous.date)}
+            </div>
+          </div>
+        </a>
+      ) : (
+        <div />
+      )}
+
+      {next ? (
+        <a href={`/blog/${next.slug}`} class="group block">
+          <div class="h-full p-6 rounded-xl border border-slate-200 dark:border-neutral-800 transition hover:border-primary/50 bg-primary/5">
+            <div class="flex items-center justify-end gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+              Next Post
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+
+            <div class="mt-2 font-semibold text-lg text-right group-hover:text-primary transition text-neutral-900 dark:text-white">
+              {next.title}
+            </div>
+            <div class="pt-2 text-xs text-right text-neutral-500 dark:text-neutral-400">
+              {formatDisplayDate(next.date)}
+            </div>
+          </div>
+        </a>
+      ) : (
+        <div />
+      )}
+    </div>
+  </div>
+)}

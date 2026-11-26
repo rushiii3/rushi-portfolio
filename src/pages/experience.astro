@@ -1,0 +1,29 @@
+---
+// src/pages/experience.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Experience from "../components/sections/Experience.astro";
+import { buildBreadcrumbSchema } from "../lib/schemaBuilder";
+
+const siteUrl = `${process.env.PUBLIC_URL || import.meta.env.PUBLIC_URL}`;
+const breadcrumbSchema = buildBreadcrumbSchema([
+  { name: "Home", url: `${siteUrl}/` },
+  { name: "Experience", url: `${siteUrl}/experience` },
+]);
+
+const jsonLdGraph = {
+  "@context": "https://schema.org",
+  "@graph": [breadcrumbSchema],
+};
+---
+
+<BaseLayout
+  title="Experience & Career | Hrushikesh Shinde"
+  description="Professional cybersecurity experience at qSEAp Infotech and Hacktify: web app VAPT, FinTech security assessments, OWASP remediation, and offensive testing."
+  canonical="/experience"
+  jsonLd={jsonLdGraph}
+>
+  <div class="w-full md:pt-14 pt-8">
+    <h1 class="sr-only">Work Experience & Career — Hrushikesh Shinde</h1>
+    <Experience />
+  </div>
+</BaseLayout>

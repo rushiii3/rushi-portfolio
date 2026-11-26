@@ -1,0 +1,62 @@
+---
+// src/components/PillarGuidesHub.astro
+const PILLARS = [
+  {
+    slug: "information-security-concepts",
+    cluster: "InfoSec Fundamentals",
+    title: "Information Security Concepts Explained",
+    description: "Core goals of InfoSec, risk calculation, threat models, and prevention/detection controls.",
+  },
+  {
+    slug: "owasp-top-10",
+    cluster: "Web Security",
+    title: "OWASP Top 10 Web Vulnerabilities Guide",
+    description: "Deep dive into Broken Access Control, Injection, Cryptographic Failures, and SSRF.",
+  },
+  {
+    slug: "burp-suite-for-htb-ctf-players",
+    cluster: "Security Tools",
+    title: "Burp Suite Complete Guide for HTB & CTFs",
+    description: "Master Proxy, Repeater, Intruder, Decoder, and BApp extensions with hands-on workflows.",
+  },
+];
+---
+
+<div class="mb-10 p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/40">
+  <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">
+    <svg class="size-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Start Here • Foundational Security Pillars</span>
+  </div>
+  <p class="text-xs md:text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+    New to cybersecurity or web penetration testing? Start with these three comprehensive pillar guides:
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    {PILLARS.map((pillar) => (
+      <a
+        href={`/blog/${pillar.slug}`}
+        class="group flex flex-col justify-between p-3.5 rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all"
+      >
+        <div>
+          <div class="flex items-center gap-1.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400 mb-1.5">
+            <span>{pillar.cluster}</span>
+          </div>
+          <h3 class="font-semibold text-xs md:text-sm leading-snug text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 mb-1">
+            {pillar.title}
+          </h3>
+          <p class="text-[11px] text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-relaxed">
+            {pillar.description}
+          </p>
+        </div>
+        <div class="mt-3 flex items-center gap-1 text-[11px] font-medium text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+          <span>Read pillar</span>
+          <svg class="size-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </a>
+    ))}
+  </div>
+</div>

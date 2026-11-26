@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap, { ChangeFreqEnum, type SitemapItem } from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -46,16 +48,18 @@ export default defineConfig({
       theme: 'github-dark-default',
       wrap: true,
     },
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      rehypeSlug,
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: 'wrap',
-        },
+    processor: unified({
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [
+        rehypeSlug,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: 'wrap',
+          },
+        ],
       ],
-    ],
+    }),
   },
   integrations: [
     mdx(),
@@ -127,6 +131,42 @@ export default defineConfig({
         return item;
       },
     }),
+    {
+      name: 'sitemap-alias',
+      hooks: {
+        'astro:server:setup': ({ server }) => {
+          server.middlewares.use((req, res, next) => {
+            const rawUrl = req.url?.split('?')[0];
+            if (rawUrl === '/sitemap.xml' || rawUrl === '/sitemap-index.xml') {
+              const indexPath = path.resolve('dist/sitemap-index.xml');
+              if (fs.existsSync(indexPath)) {
+                res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                return res.end(fs.readFileSync(indexPath));
+              }
+              const xml = `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="${site}/sitemap.xsl"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>${site}/sitemap-0.xml</loc><lastmod>${new Date().toISOString()}</lastmod></sitemap></sitemapindex>`;
+              res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+              return res.end(xml);
+            }
+            if (rawUrl === '/sitemap-0.xml') {
+              const chunkPath = path.resolve('dist/sitemap-0.xml');
+              if (fs.existsSync(chunkPath)) {
+                res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+                return res.end(fs.readFileSync(chunkPath));
+              }
+            }
+            next();
+          });
+        },
+        'astro:build:done': async ({ dir }) => {
+          const destDir = fileURLToPath(dir);
+          const indexPath = path.join(destDir, 'sitemap-index.xml');
+          const sitemapPath = path.join(destDir, 'sitemap.xml');
+          if (fs.existsSync(indexPath)) {
+            fs.copyFileSync(indexPath, sitemapPath);
+          }
+        },
+      },
+    },
   ],
   vite: {
     plugins: [tailwindcss()],
